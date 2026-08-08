@@ -253,36 +253,42 @@ function InterviewIQApp() {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col bg-background text-foreground font-sans selection:bg-primary/20 selection:text-indigo-900">
+    <div 
+      className="min-h-screen w-full flex flex-col bg-background text-foreground font-sans selection:bg-primary/20 selection:text-indigo-900 relative"
+      style={{
+        backgroundImage: "url('/bg.png')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundAttachment: "fixed"
+      }}
+    >
       {/* Premium Navbar */}
-      <nav className="h-20 border-b border-border/50 bg-background/50 backdrop-blur-xl flex items-center justify-between px-8 z-50 sticky top-0">
+      <nav className="h-20 border-b border-white/5 bg-black/20 backdrop-blur-xl flex items-center justify-between px-8 z-50 sticky top-0">
         <Link 
           to="/"
           onClick={() => setAppState("HOME")}
           className="flex items-center gap-3 group"
         >
-          <div className="bg-linear-to-br from-primary to-chart-2 size-8 rounded-lg flex items-center justify-center shadow-glow group-hover:scale-105 transition-transform">
+          <div className="bg-linear-to-br from-[#c084fc] to-[#2dd4bf] size-8 rounded-lg flex items-center justify-center shadow-[0_0_15px_rgba(45,212,191,0.3)] group-hover:scale-105 transition-transform">
             <span className="text-white font-bold text-lg leading-none">IQ</span>
           </div>
-          <span className="text-xl font-bold tracking-tight text-foreground">
-            AB<span className="text-primary">InterviewIQ</span>
+          <span className="text-xl font-bold tracking-tight text-white">
+            AB<span className="bg-linear-to-r from-[#c084fc] to-[#2dd4bf] text-transparent bg-clip-text">InterviewIQ</span>
           </span>
         </Link>
         
       </nav>
 
       {/* Main Content Area */}
-      <main className="flex-1 flex flex-col items-center justify-center p-8 relative overflow-hidden">
+      <main className="flex-1 flex flex-col items-center justify-center p-8 relative overflow-hidden bg-black/40">
         
-        {/* Abstract Background Decoration (Static) */}
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-1/4 right-1/4 w-120 h-120 bg-chart-2/10 rounded-full blur-3xl pointer-events-none" />
+        {/* Removed Static Abstract Background Decoration to use the new image */}
 
         {/* Interactive Radial Glow */}
         <div 
           className="pointer-events-none fixed inset-0 z-0 transition-opacity duration-500"
           style={{
-            background: `radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(139, 92, 246, 0.08), transparent 40%)`
+            background: `radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(192, 132, 252, 0.05), transparent 40%)`
           }}
         />
 
@@ -307,36 +313,39 @@ function InterviewIQApp() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.4, ease: "easeOut" }}
-              className="w-full max-w-2xl bg-card rounded-3xl shadow-panel border border-border p-10 flex flex-col gap-10 z-10 text-center relative"
+              className="w-full max-w-2xl bg-black/40 backdrop-blur-2xl rounded-3xl shadow-[0_0_50px_rgba(0,0,0,0.5)] border border-white/10 p-10 flex flex-col gap-10 z-10 text-center relative"
             >
               <div>
-                <h1 className="text-4xl font-bold text-foreground tracking-tight">Welcome to ABInterviewIQ</h1>
-                <p className="text-muted-foreground mt-3 text-lg font-medium">{TAGLINE}</p>
-                <p className="text-muted-foreground/70 mt-1 text-sm">Choose an interview mode to begin your journey.</p>
+                <h1 className="text-3xl font-bold text-white tracking-widest uppercase mb-2">WELCOME TO</h1>
+                <h2 className="text-5xl font-extrabold tracking-tight mb-6 bg-linear-to-r from-[#c084fc] to-[#2dd4bf] text-transparent bg-clip-text">
+                  ABINTERVIEWIQ
+                </h2>
+                <p className="text-white/90 mt-3 text-lg font-medium">{TAGLINE}</p>
+                <p className="text-white/60 mt-1 text-sm">Choose an interview mode to begin your journey.</p>
               </div>
               <div className="flex flex-col sm:flex-row gap-6 justify-center mt-4">
                 <button 
                   onClick={() => navigateTo("SETUP")}
-                  className="flex-1 flex flex-col items-center gap-4 bg-card border border-border hover:border-primary/50 hover:bg-primary/5 p-8 rounded-2xl transition-all group cursor-pointer"
+                  className="flex-1 flex flex-col items-center gap-4 bg-white/5 border border-white/10 hover:border-[#2dd4bf]/50 hover:bg-white/10 p-8 rounded-2xl transition-all group cursor-pointer shadow-[inset_0_0_20px_rgba(255,255,255,0.02)]"
                 >
-                  <div className="bg-primary/10 p-4 rounded-full group-hover:scale-110 transition-transform">
-                    <Target className="size-8 text-primary" />
+                  <div className="bg-[#2dd4bf]/10 p-4 rounded-full group-hover:scale-110 transition-transform shadow-[0_0_15px_rgba(45,212,191,0.2)]">
+                    <Target className="size-8 text-[#2dd4bf]" />
                   </div>
                   <div>
-                    <div className="font-semibold text-lg text-foreground">Practice Mode</div>
-                    <div className="text-sm text-muted-foreground mt-2 leading-relaxed">Hone your skills in a low-pressure simulated environment.</div>
+                    <div className="font-semibold text-lg text-white">Practice Mode</div>
+                    <div className="text-sm text-white/60 mt-2 leading-relaxed">Hone your skills in a low-pressure simulated environment.</div>
                   </div>
                 </button>
                 <Link 
                   to="/dashboard"
-                  className="flex-1 flex flex-col items-center gap-4 bg-card border border-border hover:border-chart-2/50 hover:bg-chart-2/5 p-8 rounded-2xl transition-all group cursor-pointer"
+                  className="flex-1 flex flex-col items-center gap-4 bg-white/5 border border-white/10 hover:border-[#c084fc]/50 hover:bg-white/10 p-8 rounded-2xl transition-all group cursor-pointer shadow-[inset_0_0_20px_rgba(255,255,255,0.02)]"
                 >
-                  <div className="bg-chart-2/10 p-4 rounded-full group-hover:scale-110 transition-transform">
-                    <Briefcase className="size-8 text-chart-2" />
+                  <div className="bg-[#c084fc]/10 p-4 rounded-full group-hover:scale-110 transition-transform shadow-[0_0_15px_rgba(192,132,252,0.2)]">
+                    <Briefcase className="size-8 text-[#c084fc]" />
                   </div>
                   <div>
-                    <div className="font-semibold text-lg text-foreground">Live Interview</div>
-                    <div className="text-sm text-muted-foreground mt-2 leading-relaxed">Start the adaptive technical interview session.</div>
+                    <div className="font-semibold text-lg text-white">Live Interview</div>
+                    <div className="text-sm text-white/60 mt-2 leading-relaxed">Start the adaptive technical interview session.</div>
                   </div>
                 </Link>
               </div>
