@@ -124,6 +124,11 @@ function InterviewIQApp() {
       handleViolation("Copying text is not allowed.");
     };
 
+    const preventContext = (e: MouseEvent) => {
+      e.preventDefault();
+      handleViolation("Right-click menu is disabled.");
+    };
+
     const preventShortcuts = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && ['c', 'p', 's'].includes(e.key.toLowerCase())) {
         e.preventDefault();
@@ -138,6 +143,7 @@ function InterviewIQApp() {
     document.addEventListener("visibilitychange", handleVisibilityChange);
     document.addEventListener("fullscreenchange", handleFullscreenChange);
     document.addEventListener("copy", preventCopy);
+    document.addEventListener("contextmenu", preventContext);
     document.addEventListener("keydown", preventShortcuts);
     document.addEventListener("keyup", preventShortcuts);
 
@@ -145,6 +151,7 @@ function InterviewIQApp() {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       document.removeEventListener("fullscreenchange", handleFullscreenChange);
       document.removeEventListener("copy", preventCopy);
+      document.removeEventListener("contextmenu", preventContext);
       document.removeEventListener("keydown", preventShortcuts);
       document.removeEventListener("keyup", preventShortcuts);
     };
