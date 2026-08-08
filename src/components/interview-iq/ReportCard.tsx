@@ -1,5 +1,14 @@
 import { motion } from "framer-motion";
-import { ArrowRight, Share2, Award, Zap, Target } from "lucide-react";
+import { ArrowRight, Share2, Award, Zap, Target, TrendingUp, AlertCircle } from "lucide-react";
+import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from "recharts";
+
+const mockRadarData = [
+  { subject: "Technical", score: 85, fullMark: 100 },
+  { subject: "Communication", score: 90, fullMark: 100 },
+  { subject: "Problem Solving", score: 75, fullMark: 100 },
+  { subject: "Empathy", score: 80, fullMark: 100 },
+  { subject: "Culture Fit", score: 95, fullMark: 100 },
+];
 
 interface ReportCardProps {
   score: number;
@@ -40,8 +49,67 @@ export function ReportCard({ score, originalAnswer, strongerAnswer, onRestart }:
         </div>
       </div>
 
+      {/* Content Body Grid */}
+      <div className="grid md:grid-cols-2">
+        {/* Radar Chart Section */}
+        <div className="p-8 border-b md:border-b-0 md:border-r border-border bg-card flex flex-col gap-4">
+          <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+            Competency Breakdown
+          </div>
+          <div className="h-64 w-full relative">
+            <ResponsiveContainer width="100%" height="100%">
+              <RadarChart cx="50%" cy="50%" outerRadius="70%" data={mockRadarData}>
+                <PolarGrid stroke="var(--color-border)" />
+                <PolarAngleAxis dataKey="subject" tick={{ fill: "var(--color-muted-foreground)", fontSize: 11 }} />
+                <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
+                <Radar
+                  name="Score"
+                  dataKey="score"
+                  stroke="var(--color-primary)"
+                  fill="var(--color-primary)"
+                  fillOpacity={0.2}
+                />
+              </RadarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* Feedback Cards Section */}
+        <div className="p-8 bg-muted/30 flex flex-col gap-6">
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center gap-2 text-xs font-semibold text-chart-2 uppercase tracking-wider">
+              <TrendingUp className="size-4" />
+              Key Strengths
+            </div>
+            <ul className="space-y-2">
+              <li className="bg-card p-3 rounded-xl border border-border text-sm text-foreground shadow-sm flex gap-3">
+                <span className="text-chart-2 font-bold">•</span>
+                Clear articulation of complex React concepts.
+              </li>
+              <li className="bg-card p-3 rounded-xl border border-border text-sm text-foreground shadow-sm flex gap-3">
+                <span className="text-chart-2 font-bold">•</span>
+                Strong focus on measurable performance metrics.
+              </li>
+            </ul>
+          </div>
+
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center gap-2 text-xs font-semibold text-destructive uppercase tracking-wider">
+              <AlertCircle className="size-4" />
+              Areas to Improve
+            </div>
+            <ul className="space-y-2">
+              <li className="bg-card p-3 rounded-xl border border-border text-sm text-foreground shadow-sm flex gap-3">
+                <span className="text-destructive font-bold">•</span>
+                Could provide more detail on the specific hooks used for optimization.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
       {/* Side-by-Side Comparison */}
-      <div className="p-8 grid md:grid-cols-2 gap-6 bg-muted/50">
+      <div className="p-8 grid md:grid-cols-2 gap-6 bg-muted/50 border-t border-border">
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
             <Target className="size-4" />

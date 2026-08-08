@@ -1,6 +1,15 @@
-import { CheckCircle2, AlertTriangle, ArrowRight, RotateCcw } from "lucide-react";
+import { CheckCircle2, AlertTriangle, ArrowRight, RotateCcw, TrendingUp, AlertCircle, Award } from "lucide-react";
 import type { Candidate, InterviewFeedback } from "@/lib/interview/types";
 import { Button } from "@/components/ui/button";
+import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from "recharts";
+
+const mockRadarData = [
+  { subject: "Technical", score: 85, fullMark: 100 },
+  { subject: "Communication", score: 90, fullMark: 100 },
+  { subject: "Problem Solving", score: 75, fullMark: 100 },
+  { subject: "Empathy", score: 80, fullMark: 100 },
+  { subject: "Culture Fit", score: 95, fullMark: 100 },
+];
 
 interface Props {
   candidate: Candidate;
@@ -38,30 +47,66 @@ export function FeedbackReport({
           </div>
         </div>
 
-        <div className="space-y-8 p-8">
-          <div>
-            <h3 className="text-sm uppercase tracking-widest text-muted-foreground">Overall summary</h3>
-            <p className="mt-3 text-base leading-relaxed">{feedback.summary}</p>
+        <div className="flex flex-col border-t border-border bg-background">
+          {/* Content Body Grid */}
+          <div className="grid md:grid-cols-2">
+            {/* Radar Chart Section */}
+            <div className="p-8 border-b md:border-b-0 md:border-r border-border bg-card flex flex-col gap-4">
+              <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                Competency Breakdown
+              </div>
+              <div className="h-64 w-full relative">
+                <ResponsiveContainer width="100%" height="100%">
+                  <RadarChart cx="50%" cy="50%" outerRadius="70%" data={mockRadarData}>
+                    <PolarGrid stroke="var(--color-border)" />
+                    <PolarAngleAxis dataKey="subject" tick={{ fill: "var(--color-muted-foreground)", fontSize: 11 }} />
+                    <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
+                    <Radar
+                      name="Score"
+                      dataKey="score"
+                      stroke="var(--color-primary)"
+                      fill="var(--color-primary)"
+                      fillOpacity={0.2}
+                    />
+                  </RadarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            {/* Feedback Summary Section */}
+            <div className="p-8 bg-muted/30 flex flex-col justify-center">
+              <h3 className="text-sm uppercase tracking-widest text-muted-foreground mb-4">Overall summary</h3>
+              <p className="text-base leading-relaxed text-foreground">{feedback.summary}</p>
+            </div>
           </div>
 
-          <Block
-            title="Strengths"
-            items={feedback.strengths}
-            icon={<CheckCircle2 className="size-4 text-primary" />}
-          />
-          <Block
-            title="Gaps"
-            items={feedback.gaps}
-            icon={<AlertTriangle className="size-4 text-accent" />}
-          />
-          <Block
-            title="Recommended next steps"
-            items={feedback.next}
-            icon={<ArrowRight className="size-4 text-primary" />}
-          />
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-0 border-t border-border">
+            <Block
+              title="Key Strengths"
+              items={feedback.strengths}
+              icon={<TrendingUp className="size-4" />}
+              iconClass="text-chart-2"
+            />
+            <Block
+              title="Areas to Improve"
+              items={feedback.gaps}
+              icon={<AlertCircle className="size-4" />}
+              iconClass="text-destructive"
+              className="border-t md:border-t-0 md:border-l border-border"
+            />
+            <Block
+              title="Next Steps"
+              items={feedback.next}
+              icon={<ArrowRight className="size-4" />}
+              iconClass="text-primary"
+              className="border-t lg:border-t-0 lg:border-l border-border"
+            />
+          </div>
+        </div>
 
-          <Button onClick={onReset} size="lg" className="w-full sm:w-auto rounded-none shadow-(--shadow-glow)">
-            <RotateCcw className="mr-2 size-4" />
+        <div className="p-8 bg-card border-t border-border flex justify-end">
+          <Button onClick={onReset} size="lg" className="rounded-full px-8 shadow-glow gap-2">
+            <RotateCcw className="size-4" />
             Run another interview
           </Button>
         </div>
@@ -74,20 +119,27 @@ function Block({
   title,
   items,
   icon,
+  iconClass,
+  className = "",
 }: {
   title: string;
   items: string[];
   icon: React.ReactNode;
+  iconClass?: string;
+  className?: string;
 }) {
   if (!items.length) return null;
   return (
-    <div>
-      <h3 className="text-sm uppercase tracking-widest text-muted-foreground">{title}</h3>
-      <ul className="mt-3 space-y-2.5">
+    <div className={`p-8 bg-muted/10 ${className}`}>
+      <div className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-wider mb-4 ${iconClass}`}>
+        {icon}
+        {title}
+      </div>
+      <ul className="space-y-3">
         {items.map((item, i) => (
-          <li key={i} className="flex gap-3 text-sm leading-relaxed">
-            <span className="mt-0.5 shrink-0">{icon}</span>
-            <span>{item}</span>
+          <li key={i} className="bg-card p-4 rounded-xl border border-border text-sm text-foreground shadow-sm flex gap-3">
+            <span className={`font-bold mt-0.5 shrink-0 ${iconClass}`}>•</span>
+            <span className="leading-relaxed">{item}</span>
           </li>
         ))}
       </ul>
