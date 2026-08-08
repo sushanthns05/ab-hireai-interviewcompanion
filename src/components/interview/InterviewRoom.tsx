@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Send, RotateCcw, Bug, Loader2 } from "lucide-react";
+import { Send, RotateCcw, Bug, Loader2, Mic } from "lucide-react";
 import type { Candidate, ChatMessage, DebugState } from "@/lib/interview/types";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -35,6 +35,7 @@ export function InterviewRoom({
   const [value, setValue] = useState("");
   const [showDebug, setShowDebug] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
+  const [isRecording, setIsRecording] = useState(false);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -165,21 +166,35 @@ export function InterviewRoom({
         {!done && (
           <div className="border-t border-border p-4">
             <div className="flex items-end gap-3">
-              <Textarea
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) submit();
-                }}
-                placeholder="Type your answer… (⌘/Ctrl + Enter to send)"
-                className="min-h-21 resize-none rounded-none focus-visible:border-primary focus-visible:ring-0 focus-visible:shadow-(--shadow-glow) bg-background/50"
-                aria-label="Your answer"
-                disabled={thinking}
-              />
-              <Button onClick={submit} disabled={thinking || !value.trim()} size="lg" className="rounded-none shadow-(--shadow-glow)">
-                <Send className="size-4" />
-                <span className="sr-only">Send answer</span>
-              </Button>
+              <div className="relative flex-1">
+                <Textarea
+                  value={value}
+                  onChange={(e) => setValue(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) submit();
+                  }}
+                  placeholder={isRecording ? "Listening..." : "Type your answer… (⌘/Ctrl + Enter to send)"}
+                  className={`min-h-21 resize-none rounded-none focus-visible:border-primary focus-visible:ring-0 focus-visible:shadow-(--shadow-glow) bg-background/50 ${isRecording ? 'border-red-500/50 shadow-[0_0_15px_rgba(239,68,68,0.2)]' : ''}`}
+                  aria-label="Your answer"
+                  disabled={thinking}
+                />
+              </div>
+              <div className="flex gap-2">
+                <Button 
+                  onClick={() => setIsRecording(!isRecording)} 
+                  variant="outline" 
+                  size="lg" 
+                  disabled={thinking}
+                  className={`rounded-none transition-all ${isRecording ? 'bg-red-500/10 text-red-500 border-red-500 animate-pulse' : 'hover:text-primary hover:border-primary'}`}
+                  title="Answer with Voice"
+                >
+                  <Mic className="size-4" />
+                </Button>
+                <Button onClick={submit} disabled={thinking || !value.trim()} size="lg" className="rounded-none shadow-(--shadow-glow)">
+                  <Send className="size-4" />
+                  <span className="sr-only">Send answer</span>
+                </Button>
+              </div>
             </div>
           </div>
         )}
