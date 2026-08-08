@@ -123,6 +123,10 @@ export function InterviewRoom({
         e.preventDefault();
         handleViolation("Developer tools are disabled.");
       }
+      if (e.key === 'PrintScreen' || e.code === 'PrintScreen') {
+        e.preventDefault();
+        handleViolation("Taking screenshots is prohibited.");
+      }
     };
 
     document.addEventListener("visibilitychange", handleVisibility);
@@ -130,6 +134,7 @@ export function InterviewRoom({
     document.addEventListener("copy", preventCopy);
     document.addEventListener("contextmenu", preventContext);
     document.addEventListener("keydown", preventShortcuts);
+    document.addEventListener("keyup", preventShortcuts);
 
     return () => {
       document.removeEventListener("visibilitychange", handleVisibility);
@@ -137,6 +142,7 @@ export function InterviewRoom({
       document.removeEventListener("copy", preventCopy);
       document.removeEventListener("contextmenu", preventContext);
       document.removeEventListener("keydown", preventShortcuts);
+      document.removeEventListener("keyup", preventShortcuts);
     };
   }, [done, warningMsg, onTerminate]);
 
@@ -214,7 +220,7 @@ export function InterviewRoom({
   return (
     <div className="w-full flex flex-col gap-4 mt-6">
       {warningMsg && (
-        <div className="fixed inset-0 z-[100] bg-black/90 flex flex-col items-center justify-center p-8 text-center backdrop-blur-xl">
+        <div className="fixed inset-0 z-100 bg-black/90 flex flex-col items-center justify-center p-8 text-center backdrop-blur-xl">
           <AlertCircle className="size-24 text-red-500 mb-6 animate-pulse" />
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">Focus Mode Violation</h2>
           <p className="text-lg text-white/70 max-w-lg mb-8 leading-relaxed">

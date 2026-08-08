@@ -16,9 +16,10 @@ interface ReportCardProps {
   originalAnswer: string;
   strongerAnswer: string;
   onRestart: () => void;
+  terminated?: boolean;
 }
 
-export function ReportCard({ score, originalAnswer, strongerAnswer, onRestart }: ReportCardProps) {
+export function ReportCard({ score, originalAnswer, strongerAnswer, onRestart, terminated = false }: ReportCardProps) {
   let performanceTitle = "";
   let performanceSubtitle = "";
 
@@ -31,6 +32,11 @@ export function ReportCard({ score, originalAnswer, strongerAnswer, onRestart }:
   } else {
     performanceTitle = "Weak performance.";
     performanceSubtitle = "Your answer missed the core concepts. Review the stronger version below for a better approach.";
+  }
+
+  if (terminated) {
+    performanceTitle = "Interview Terminated";
+    performanceSubtitle = "Your interview was ended automatically due to repeated tab-switching or exiting fullscreen. This is recorded as a policy violation.";
   }
 
   const handleShare = () => {
@@ -60,13 +66,20 @@ export function ReportCard({ score, originalAnswer, strongerAnswer, onRestart }:
       className="w-full max-w-3xl mx-auto bg-card rounded-3xl shadow-panel border border-border overflow-hidden flex flex-col"
     >
       {/* Header Banner */}
-      <div className="bg-gradient-hero p-8 border-b border-border flex items-center justify-between">
+      <div className={`p-8 border-b border-border flex items-center justify-between ${terminated ? 'bg-red-950/40 border-red-900/50' : 'bg-gradient-hero'}`}>
         <div className="flex flex-col gap-2">
-          <h2 className="text-sm font-semibold text-primary uppercase tracking-widest flex items-center gap-2">
-            <Award className="size-4" />
-            InterviewIQ Report
-          </h2>
-          <h1 className="text-3xl font-bold text-foreground tracking-tight">
+          {terminated ? (
+            <h2 className="text-sm font-semibold text-red-500 uppercase tracking-widest flex items-center gap-2">
+              <AlertCircle className="size-4" />
+              Policy Violation
+            </h2>
+          ) : (
+            <h2 className="text-sm font-semibold text-primary uppercase tracking-widest flex items-center gap-2">
+              <Award className="size-4" />
+              InterviewIQ Report
+            </h2>
+          )}
+          <h1 className={`text-3xl font-bold tracking-tight ${terminated ? 'text-red-500' : 'text-foreground'}`}>
             {performanceTitle}
           </h1>
           <p className="text-muted-foreground max-w-md mt-1">
@@ -75,8 +88,8 @@ export function ReportCard({ score, originalAnswer, strongerAnswer, onRestart }:
         </div>
         
         {/* Score Badge */}
-        <div className="flex flex-col items-center justify-center bg-card rounded-2xl shadow-glow border border-border size-28 shrink-0">
-          <span className="text-4xl font-black text-primary">{score}</span>
+        <div className={`flex flex-col items-center justify-center rounded-2xl border size-28 shrink-0 ${terminated ? 'bg-red-500/10 border-red-500/30 text-red-400' : 'bg-card border-border shadow-glow text-primary'}`}>
+          <span className="text-4xl font-black">{score}</span>
           <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-1">
             Overall
           </span>

@@ -24,6 +24,7 @@ export interface PastSession {
   messages: {role: "user" | "assistant", content: string}[];
   strongerAnswer: string;
   fragments: string[];
+  terminated?: boolean;
 }
 
 
@@ -65,6 +66,7 @@ function InterviewIQApp() {
   // Setup State variables
   const [interviewType, setInterviewType] = useState<"behavioral" | "technical">("behavioral");
   const [persona, setPersona] = useState<"hr" | "tech_lead" | "panel">("hr");
+  const [isTerminated, setIsTerminated] = useState(false);
 
   // Live State variables
   const [livePhase, setLivePhase] = useState<"ai_thinking_1" | "ai_asking" | "user_answering" | "ai_thinking_2" | "done">("ai_thinking_1");
@@ -97,14 +99,7 @@ function InterviewIQApp() {
         const newCount = prev + 1;
         if (newCount >= 4) {
           setFocusWarning("Interview terminated due to multiple focus mode violations (4/4).");
-          setTimeout(() => {
-            setAppState("HOME");
-            setFocusWarning(null);
-            setFocusViolations(0);
-            if (document.fullscreenElement && document.exitFullscreen) {
-              document.exitFullscreen().catch(() => {});
-            }
-          }, 4000);
+          endInterview(true);
         } else {
           setFocusWarning(`${message} (Warning ${newCount}/3)`);
         }
@@ -134,18 +129,24 @@ function InterviewIQApp() {
         e.preventDefault();
         handleViolation("Shortcuts are disabled.");
       }
+      if (e.key === 'PrintScreen' || e.code === 'PrintScreen') {
+        e.preventDefault();
+        handleViolation("Taking screenshots is prohibited.");
+      }
     };
 
     document.addEventListener("visibilitychange", handleVisibilityChange);
     document.addEventListener("fullscreenchange", handleFullscreenChange);
     document.addEventListener("copy", preventCopy);
     document.addEventListener("keydown", preventShortcuts);
+    document.addEventListener("keyup", preventShortcuts);
 
     return () => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       document.removeEventListener("fullscreenchange", handleFullscreenChange);
       document.removeEventListener("copy", preventCopy);
       document.removeEventListener("keydown", preventShortcuts);
+      document.removeEventListener("keyup", preventShortcuts);
     };
   }, [appState, focusWarning]);
   const [strongerAnswer, setStrongerAnswer] = useState("");
@@ -287,7 +288,9 @@ function InterviewIQApp() {
     }
   };
 
-  const endInterview = async () => {
+  const endInterview = async (isViolation = false) => {
+    if (isViolation) setIsTerminated(true);
+
     try {
       if (document.fullscreenElement && document.exitFullscreen) {
         await document.exitFullscreen();
@@ -331,7 +334,8 @@ function InterviewIQApp() {
           score: data.score,
           messages,
           strongerAnswer: parsedStrongerAnswer,
-          fragments: parsedFragments
+          fragments: parsedFragments,
+          terminated: isViolation
         };
         try {
           const existing = JSON.parse(localStorage.getItem('hireai_sessions') || '[]');
@@ -394,6 +398,7 @@ function InterviewIQApp() {
 
   const handleRestart = () => {
     setAppState("SETUP");
+    setIsTerminated(false);
   };
 
   const navigateTo = (state: AppState) => {
@@ -761,7 +766,7 @@ function InterviewIQApp() {
                       Submit Answer
                     </Button>
                     <Button 
-                      onClick={endInterview} 
+                      onClick={() => endInterview(false)} 
                       size="lg"
                       variant="destructive"
                       className="rounded-full px-4 sm:px-6 gap-1 sm:gap-2 text-sm sm:text-base"
@@ -788,9 +793,10 @@ function InterviewIQApp() {
             >
               <ReportCard 
                 score={resultScore} 
-                originalAnswer="Full mock interview completed. See the stronger version for overall feedback."
+                originalAnswer={isTerminated ? "Session was terminated early." : "Full mock interview completed. See the stronger version for overall feedback."}
                 strongerAnswer={strongerAnswer}
                 onRestart={handleRestart}
+                terminated={isTerminated}
               />
             </motion.div>
           )}
