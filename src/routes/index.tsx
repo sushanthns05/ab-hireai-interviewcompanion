@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Upload, UserCircle2, Code2, Play, LayoutDashboard, Mic, Send, Target, Briefcase, Loader2 } from "lucide-react";
+import { Upload, UserCircle2, Code2, Play, LayoutDashboard, Mic, Send, Target, Briefcase, Loader2, ArrowRight } from "lucide-react";
 import { ThinkingTrace } from "../components/interview-iq/ThinkingTrace";
 import { ConfidenceMeter } from "../components/interview-iq/ConfidenceMeter";
 import { ReportCard } from "../components/interview-iq/ReportCard";
