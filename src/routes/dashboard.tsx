@@ -1,4 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { ArrowLeft } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
@@ -118,6 +119,12 @@ function InterviewApp() {
     <main className="min-h-screen">
       <Toaster />
       <header className="mx-auto w-full max-w-6xl px-4 py-10">
+        <div className="mb-8">
+          <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors">
+            <ArrowLeft className="size-4" />
+            Back to Home
+          </Link>
+        </div>
         <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-primary">ABTalks</p>
         <h1 className="mt-2 text-4xl font-semibold sm:text-5xl">
           The <span className="text-gradient">Interview Agent</span>
