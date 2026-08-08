@@ -534,13 +534,13 @@ function InterviewIQApp() {
                     />
                   </div>
 
-                  <div className="flex justify-end gap-3 mt-2">
+                  <div className="flex flex-wrap justify-center sm:justify-end gap-2 sm:gap-3 mt-2">
                     <Button 
                       onClick={toggleRecording} 
                       variant="outline" 
                       size="lg" 
                       disabled={livePhase !== "user_answering"}
-                      className={`transition-all rounded-full px-6 gap-2 ${isRecording ? 'bg-red-500/10 text-red-500 border-red-500 animate-pulse hover:bg-red-500/20 hover:text-red-500' : 'hover:text-primary hover:border-primary'}`}
+                      className={`transition-all rounded-full px-4 sm:px-6 gap-1 sm:gap-2 text-sm sm:text-base ${isRecording ? 'bg-red-500/10 text-red-500 border-red-500 animate-pulse hover:bg-red-500/20 hover:text-red-500' : 'hover:text-primary hover:border-primary'}`}
                     >
                       <Mic className="size-5" />
                       {isRecording ? "Stop Recording" : "Use Voice"}
@@ -548,7 +548,7 @@ function InterviewIQApp() {
                     <Button 
                       onClick={submitAnswer} 
                       size="lg"
-                      className="rounded-full px-6 gap-2"
+                      className="rounded-full px-4 sm:px-6 gap-1 sm:gap-2 text-sm sm:text-base"
                       disabled={!value.trim() || livePhase !== "user_answering"}
                     >
                       <ArrowRight className="size-5" />
@@ -558,7 +558,7 @@ function InterviewIQApp() {
                       onClick={endInterview} 
                       size="lg"
                       variant="destructive"
-                      className="rounded-full px-6 gap-2"
+                      className="rounded-full px-4 sm:px-6 gap-1 sm:gap-2 text-sm sm:text-base"
                       disabled={livePhase !== "user_answering"}
                     >
                       End Interview
