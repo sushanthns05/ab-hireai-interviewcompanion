@@ -180,14 +180,6 @@ function InterviewIQApp() {
           </span>
         </div>
         
-        {/* We keep a backdoor to the original dashboard just in case */}
-        <Link 
-          to="/dashboard" 
-          className="flex items-center gap-2 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors group"
-        >
-          <Play className="size-4 text-primary group-hover:scale-110 transition-transform" />
-          Start Real Interview
-        </Link>
       </nav>
 
       {/* Main Content Area */}
