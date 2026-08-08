@@ -356,14 +356,12 @@ function InterviewIQApp() {
                   Start Practicing
                   <ArrowRight className="size-5" />
                 </button>
-                <button
-                  onClick={() => {
-                    document.getElementById('features-section')?.scrollIntoView({ behavior: 'smooth' });
-                  }}
+                <Link
+                  to="/features"
                   className="flex items-center justify-center px-8 py-4 rounded-2xl border border-white/20 text-white font-bold text-lg bg-white/5 hover:bg-white/10 transition-colors active:scale-95"
                 >
                   Explore features
-                </button>
+                </Link>
               </div>
 
               {/* Cards row below CTAs */}
@@ -394,67 +392,7 @@ function InterviewIQApp() {
                 </Link>
               </div>
 
-              {/* Features Section */}
-              <motion.div 
-                id="features-section"
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.6, ease: "easeOut" }}
-                className="w-full pt-16 sm:pt-24 mt-8 sm:mt-12 border-t border-white/10 flex flex-col items-center"
-              >
-                <h3 className="text-3xl sm:text-4xl font-bold text-white mb-12 tracking-tight">
-                  Everything you need to walk in ready.
-                </h3>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full text-left">
-                  {[
-                    {
-                      icon: Brain,
-                      title: "Adaptive Difficulty",
-                      description: "Questions adjust in real time based on how well you're answering — no fixed script.",
-                      color: "teal"
-                    },
-                    {
-                      icon: MessageSquareText,
-                      title: "Instant AI Feedback",
-                      description: "Get scored on clarity, correctness, and structure right after every answer, not just at the end.",
-                      color: "purple"
-                    },
-                    {
-                      icon: ShieldCheck,
-                      title: "Focus Mode for Live Sessions",
-                      description: "Tab-switch detection and fullscreen enforcement keep Live Interviews as close to the real thing as possible.",
-                      color: "teal"
-                    },
-                    {
-                      icon: BarChart3,
-                      title: "Performance Analytics",
-                      description: "Track score trends across sessions and see exactly which topics need more practice.",
-                      color: "purple"
-                    },
-                    {
-                      icon: History,
-                      title: "Session Replay",
-                      description: "Revisit past interviews with full transcripts and feedback to see how you've improved.",
-                      color: "teal"
-                    }
-                  ].map((feature, i) => (
-                    <div 
-                      key={i}
-                      className="flex flex-col items-start gap-4 bg-black/40 backdrop-blur-2xl border border-white/10 hover:border-white/20 p-6 sm:p-8 rounded-3xl transition-all duration-300 hover:-translate-y-1 shadow-[0_0_30px_rgba(0,0,0,0.3)] hover:shadow-[0_0_40px_rgba(0,0,0,0.5)] group"
-                    >
-                      <div className={`p-3 rounded-full transition-transform ${feature.color === 'teal' ? 'bg-[#2dd4bf]/10 shadow-[0_0_15px_rgba(45,212,191,0.2)]' : 'bg-[#c084fc]/10 shadow-[0_0_15px_rgba(192,132,252,0.2)]'}`}>
-                        <feature.icon className={`size-6 ${feature.color === 'teal' ? 'text-[#2dd4bf]' : 'text-[#c084fc]'}`} />
-                      </div>
-                      <div>
-                        <div className="font-semibold text-lg text-white">{feature.title}</div>
-                        <div className="text-sm text-white/50 mt-2 leading-relaxed line-clamp-3">{feature.description}</div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </motion.div>
+
             </motion.div>
           )}
 
