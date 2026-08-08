@@ -50,7 +50,7 @@ export function CandidateSelector({ onStart, starting }: Props) {
               type="button"
               onClick={() => setSelected(c)}
               className={`panel group text-left transition-all duration-200 ${
-                active ? "border-primary shadow-[var(--shadow-glow)]" : "hover:border-primary hover:shadow-[var(--shadow-glow)]"
+                active ? "border-primary shadow-(--shadow-glow)" : "hover:border-primary hover:shadow-(--shadow-glow)"
               }`}
               aria-pressed={active}
             >
@@ -117,7 +117,7 @@ export function CandidateSelector({ onStart, starting }: Props) {
           size="lg"
           disabled={!selected || starting}
           onClick={() => selected && onStart(selected)}
-          className="shadow-[var(--shadow-glow)]"
+          className="shadow-(--shadow-glow)"
         >
           {starting
             ? "Preparing interview…"

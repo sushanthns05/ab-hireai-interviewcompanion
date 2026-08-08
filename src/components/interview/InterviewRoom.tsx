@@ -172,11 +172,11 @@ export function InterviewRoom({
                   if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) submit();
                 }}
                 placeholder="Type your answer… (⌘/Ctrl + Enter to send)"
-                className="min-h-[84px] resize-none rounded-none focus-visible:border-primary focus-visible:ring-0 focus-visible:shadow-[var(--shadow-glow)] bg-background/50"
+                className="min-h-21 resize-none rounded-none focus-visible:border-primary focus-visible:ring-0 focus-visible:shadow-(--shadow-glow) bg-background/50"
                 aria-label="Your answer"
                 disabled={thinking}
               />
-              <Button onClick={submit} disabled={thinking || !value.trim()} size="lg" className="rounded-none shadow-[var(--shadow-glow)]">
+              <Button onClick={submit} disabled={thinking || !value.trim()} size="lg" className="rounded-none shadow-(--shadow-glow)">
                 <Send className="size-4" />
                 <span className="sr-only">Send answer</span>
               </Button>
