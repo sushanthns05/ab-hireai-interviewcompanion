@@ -6,7 +6,6 @@ import { ThinkingTrace } from "../components/interview-iq/ThinkingTrace";
 import { ConfidenceMeter } from "../components/interview-iq/ConfidenceMeter";
 import { ReportCard } from "../components/interview-iq/ReportCard";
 import { StreamingMessage } from "../components/interview/StreamingMessage";
-import { StageProgress, type Stage } from "../components/interview/StageProgress";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 
@@ -22,14 +21,6 @@ const QUESTION = "Can you describe a time when you had to optimize a slow-perfor
 function InterviewIQApp() {
   const [appState, setAppState] = useState<AppState>("HOME");
   const [isTransitioning, setIsTransitioning] = useState(false);
-
-  const mockStages: Stage[] = [
-    { id: "1", label: "Resume Parsing", status: "complete" },
-    { id: "2", label: "Behavioral", status: "complete" },
-    { id: "3", label: "Technical", status: "current" },
-    { id: "4", label: "Case Study", status: "upcoming" },
-    { id: "5", label: "Complete", status: "upcoming" },
-  ];
 
   // Setup State variables
   const [interviewType, setInterviewType] = useState<"behavioral" | "technical">("behavioral");
@@ -372,9 +363,6 @@ function InterviewIQApp() {
               transition={{ duration: 0.5, ease: "easeInOut" }}
               className="w-full flex flex-col gap-6 items-center z-10 relative"
             >
-              <div className="w-full max-w-6xl">
-                <StageProgress stages={mockStages} />
-              </div>
               <div className="w-full max-w-6xl flex flex-col lg:flex-row gap-12 items-stretch justify-center relative z-10">
               {/* Left Column: AI Interface */}
               <div className="flex-1 flex flex-col gap-8 w-full max-w-xl relative">
