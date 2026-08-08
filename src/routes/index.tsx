@@ -460,7 +460,7 @@ function InterviewIQApp() {
             initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
             animate={{ opacity: 1, backdropFilter: "blur(20px)" }}
             exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
-            className="fixed inset-0 z-[100] bg-black/80 flex flex-col items-center justify-center p-8 text-center"
+            className="fixed inset-0 bg-red-950/90 backdrop-blur-md z-100 flex flex-col items-center justify-center p-6 text-center"
           >
             <ShieldCheck className="size-24 text-red-500 mb-6 animate-pulse" />
             <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">Focus Mode Violation</h2>
@@ -533,12 +533,12 @@ function InterviewIQApp() {
                 </div>
 
                 {/* Headline */}
-                <h1 className="text-5xl sm:text-7xl font-extrabold tracking-tight mb-6 text-white leading-[1.1] max-w-[800px]">
+                <h1 className="text-5xl sm:text-7xl font-extrabold tracking-tight mb-6 text-white leading-[1.1] max-w-200">
                   Turn interview anxiety into <span className="bg-linear-to-r from-[#c084fc] to-[#2dd4bf] text-transparent bg-clip-text">confidence.</span>
                 </h1>
 
                 {/* Subtext */}
-                <p className="text-white/60 text-lg sm:text-xl max-w-[600px] leading-relaxed mx-auto">
+                <p className="text-white/60 text-lg sm:text-xl max-w-150 leading-relaxed mx-auto">
                   Practice realistic interviews, sharpen your answers, and get instant AI feedback — built to adapt to your skill level.
                 </p>
               </div>
@@ -835,7 +835,7 @@ function InterviewIQApp() {
                   <span>Back to Home</span>
                 </button>
                 <h1 className="text-3xl font-bold text-white tracking-tight">Session Replay</h1>
-                <div className="w-[100px]"></div> {/* spacer */}
+                <div className="w-25"></div> {/* spacer */}
               </div>
 
               {!selectedSession ? (
