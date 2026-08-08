@@ -10,9 +10,16 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ApiInterviewRouteImport } from './routes/api/interview'
 import { Route as ApiInterviewResetRouteImport } from './routes/api/interview-reset'
 import { Route as ApiPublicInterviewRouteImport } from './routes/api/public/interview'
+
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -37,12 +44,14 @@ const ApiPublicInterviewRoute = ApiPublicInterviewRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRoute
   '/api/interview': typeof ApiInterviewRoute
   '/api/interview-reset': typeof ApiInterviewResetRoute
   '/api/public/interview': typeof ApiPublicInterviewRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRoute
   '/api/interview': typeof ApiInterviewRoute
   '/api/interview-reset': typeof ApiInterviewResetRoute
   '/api/public/interview': typeof ApiPublicInterviewRoute
@@ -50,6 +59,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRoute
   '/api/interview': typeof ApiInterviewRoute
   '/api/interview-reset': typeof ApiInterviewResetRoute
   '/api/public/interview': typeof ApiPublicInterviewRoute
@@ -57,12 +67,17 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/api/interview' | '/api/interview-reset' | '/api/public/interview'
+    | '/'
+    | '/dashboard'
+    | '/api/interview'
+    | '/api/interview-reset'
+    | '/api/public/interview'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/api/interview' | '/api/interview-reset' | '/api/public/interview'
+  to: '/' | '/dashboard' | '/api/interview' | '/api/interview-reset' | '/api/public/interview'
   id:
     | '__root__'
     | '/'
+    | '/dashboard'
     | '/api/interview'
     | '/api/interview-reset'
     | '/api/public/interview'
@@ -70,6 +85,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DashboardRoute: typeof DashboardRoute
   ApiInterviewRoute: typeof ApiInterviewRoute
   ApiInterviewResetRoute: typeof ApiInterviewResetRoute
   ApiPublicInterviewRoute: typeof ApiPublicInterviewRoute
@@ -82,6 +98,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/interview': {
@@ -110,6 +133,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DashboardRoute: DashboardRoute,
   ApiInterviewRoute: ApiInterviewRoute,
   ApiInterviewResetRoute: ApiInterviewResetRoute,
   ApiPublicInterviewRoute: ApiPublicInterviewRoute,
