@@ -7,7 +7,6 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { StreamingMessage } from "./StreamingMessage";
-import { StageProgress, type Stage } from "./StageProgress";
 
 interface Props {
   candidate: Candidate;
@@ -137,19 +136,8 @@ export function InterviewRoom({
 
   const pct = Math.min(100, Math.round((questionCount / Math.max(targetQuestions, 1)) * 100));
 
-  const mockStages: Stage[] = [
-    { id: "1", label: "Resume Parsing", status: "complete" },
-    { id: "2", label: "Behavioral", status: "complete" },
-    { id: "3", label: "Technical", status: "current" },
-    { id: "4", label: "Case Study", status: "upcoming" },
-    { id: "5", label: "Complete", status: "upcoming" },
-  ];
-
   return (
     <div className="w-full flex flex-col gap-4 mt-6">
-      <div className="mx-auto w-full max-w-6xl px-4">
-        <StageProgress stages={mockStages} />
-      </div>
       <div className="mx-auto grid w-full max-w-6xl gap-6 px-4 pb-16 lg:grid-cols-[300px_1fr]">
         <aside className="space-y-4">
           <div className="panel p-5">
