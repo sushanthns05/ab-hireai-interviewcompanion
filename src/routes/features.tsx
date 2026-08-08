@@ -30,13 +30,15 @@ const features = [
     title: "Performance Analytics",
     description: "Track score trends across sessions and see exactly which topics need more practice, with a breakdown by subject/skill area.",
     icon: BarChart3,
-    color: "purple"
+    color: "purple",
+    linkTo: "/analytics"
   },
   {
     title: "Session Replay",
     description: "Revisit past interviews with full transcripts and feedback to see how you've improved over time.",
     icon: History,
-    color: "teal"
+    color: "teal",
+    linkTo: "/history"
   }
 ];
 
@@ -109,33 +111,53 @@ function FeaturesPage() {
                 </div>
                 
                 <div className="flex-1 w-full flex items-center justify-center mt-8 lg:mt-0 relative group">
-                  <div className="w-full max-w-md aspect-video lg:aspect-4/3 bg-black/40 backdrop-blur-2xl border border-white/10 rounded-3xl flex items-center justify-center relative overflow-hidden transition-all duration-700 hover:border-white/20 shadow-[0_0_40px_rgba(0,0,0,0.5)]">
-                    
-                    {/* Background Glow */}
-                    <div 
-                      className="absolute inset-0 opacity-50 group-hover:opacity-100 transition-opacity duration-700"
-                      style={{ background: `radial-gradient(circle at center, ${feature.color === 'teal' ? 'rgba(45,212,191,0.15)' : 'rgba(192,132,252,0.15)'} 0%, transparent 70%)` }}
-                    />
-                    
-                    {/* Decorative Grid */}
-                    <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-size-[32px_32px] mask-[radial-gradient(ellipse_60%_60%_at_50%_50%,#000_10%,transparent_100%)]"></div>
+                  {(() => {
+                    const cardContent = (
+                      <>
+                        {/* Background Glow */}
+                        <div 
+                          className="absolute inset-0 opacity-50 group-hover:opacity-100 transition-opacity duration-700"
+                          style={{ background: `radial-gradient(circle at center, ${feature.color === 'teal' ? 'rgba(45,212,191,0.15)' : 'rgba(192,132,252,0.15)'} 0%, transparent 70%)` }}
+                        />
+                        
+                        {/* Decorative Grid */}
+                        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-size-[32px_32px] mask-[radial-gradient(ellipse_60%_60%_at_50%_50%,#000_10%,transparent_100%)]"></div>
 
-                    {/* Floating Particles */}
-                    <div className={`absolute top-1/4 left-1/4 size-1.5 rounded-full ${feature.color === 'teal' ? 'bg-[#2dd4bf]' : 'bg-[#c084fc]'} blur-[1px] opacity-40 animate-pulse`}></div>
-                    <div className={`absolute bottom-1/3 right-1/4 size-2.5 rounded-full ${feature.color === 'teal' ? 'bg-[#2dd4bf]' : 'bg-[#c084fc]'} blur-[1.5px] opacity-30 animate-pulse`} style={{ animationDelay: '1s' }}></div>
-                    <div className={`absolute top-1/2 right-1/3 size-1 rounded-full ${feature.color === 'teal' ? 'bg-[#2dd4bf]' : 'bg-[#c084fc]'} blur-[0.5px] opacity-50 animate-pulse`} style={{ animationDelay: '0.5s' }}></div>
+                        {/* Floating Particles */}
+                        <div className={`absolute top-1/4 left-1/4 size-1.5 rounded-full ${feature.color === 'teal' ? 'bg-[#2dd4bf]' : 'bg-[#c084fc]'} blur-[1px] opacity-40 animate-pulse`}></div>
+                        <div className={`absolute bottom-1/3 right-1/4 size-2.5 rounded-full ${feature.color === 'teal' ? 'bg-[#2dd4bf]' : 'bg-[#c084fc]'} blur-[1.5px] opacity-30 animate-pulse`} style={{ animationDelay: '1s' }}></div>
+                        <div className={`absolute top-1/2 right-1/3 size-1 rounded-full ${feature.color === 'teal' ? 'bg-[#2dd4bf]' : 'bg-[#c084fc]'} blur-[0.5px] opacity-50 animate-pulse`} style={{ animationDelay: '0.5s' }}></div>
 
-                    {/* Icon Container */}
-                    <div className="relative z-10 flex items-center justify-center">
-                      <div className={`absolute inset-0 ${feature.color === 'teal' ? 'bg-[#2dd4bf]' : 'bg-[#c084fc]'} blur-2xl opacity-20 group-hover:opacity-40 transition-opacity duration-500 rounded-full`}></div>
-                      <div className="bg-black/60 p-6 sm:p-8 rounded-3xl border border-white/10 backdrop-blur-xl shadow-2xl transition-transform duration-500 group-hover:scale-110 group-hover:-translate-y-2">
-                        <feature.icon className={`size-16 sm:size-20 ${feature.color === 'teal' ? 'text-[#2dd4bf]' : 'text-[#c084fc]'} drop-shadow-[0_0_15px_rgba(${feature.color === 'teal' ? '45,212,191' : '192,132,252'},0.5)]`} strokeWidth={1.5} />
+                        {/* Icon Container */}
+                        <div className="relative z-10 flex items-center justify-center">
+                          <div className={`absolute inset-0 ${feature.color === 'teal' ? 'bg-[#2dd4bf]' : 'bg-[#c084fc]'} blur-2xl opacity-20 group-hover:opacity-40 transition-opacity duration-500 rounded-full`}></div>
+                          <div className="bg-black/60 p-6 sm:p-8 rounded-3xl border border-white/10 backdrop-blur-xl shadow-2xl transition-transform duration-500 group-hover:scale-110 group-hover:-translate-y-2 flex flex-col items-center gap-4">
+                            <feature.icon className={`size-16 sm:size-20 ${feature.color === 'teal' ? 'text-[#2dd4bf]' : 'text-[#c084fc]'} drop-shadow-[0_0_15px_rgba(${feature.color === 'teal' ? '45,212,191' : '192,132,252'},0.5)]`} strokeWidth={1.5} />
+                            {feature.linkTo && (
+                              <span className={`text-white font-bold bg-white/5 px-4 py-1.5 rounded-full text-sm backdrop-blur-md border border-white/10 group-hover:bg-white/10 transition-colors shadow-[0_0_15px_rgba(${feature.color === 'teal' ? '45,212,191' : '192,132,252'},0.2)]`}>
+                                View Demo
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Subtle Top Border Gradient */}
+                        <div className={`absolute top-0 left-0 right-0 h-px bg-linear-to-r from-transparent ${feature.color === 'teal' ? 'via-[#2dd4bf]' : 'via-[#c084fc]'} to-transparent opacity-30 group-hover:opacity-60 transition-opacity duration-500`}></div>
+                      </>
+                    );
+
+                    const containerClass = `w-full max-w-md aspect-video lg:aspect-4/3 bg-black/40 backdrop-blur-2xl border border-white/10 rounded-3xl flex items-center justify-center relative overflow-hidden transition-all duration-700 shadow-[0_0_40px_rgba(0,0,0,0.5)] block ${feature.linkTo ? 'hover:border-[#c084fc]/50 cursor-pointer hover:bg-white/5' : 'hover:border-white/20'}`;
+
+                    return feature.linkTo ? (
+                      <Link to={feature.linkTo as any} className={containerClass}>
+                        {cardContent}
+                      </Link>
+                    ) : (
+                      <div className={containerClass}>
+                        {cardContent}
                       </div>
-                    </div>
-
-                    {/* Subtle Top Border Gradient */}
-                    <div className={`absolute top-0 left-0 right-0 h-px bg-linear-to-r from-transparent ${feature.color === 'teal' ? 'via-[#2dd4bf]' : 'via-[#c084fc]'} to-transparent opacity-30 group-hover:opacity-60 transition-opacity duration-500`}></div>
-                  </div>
+                    );
+                  })()}
                 </div>
               </motion.div>
             ))}
