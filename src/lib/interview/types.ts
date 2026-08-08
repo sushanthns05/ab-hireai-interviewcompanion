@@ -93,6 +93,15 @@ export interface ChatMessage {
 }
 
 export interface InterviewFeedback {
+  qualification: "Strong" | "Good" | "Weak";
+  overallScore: number;
+  competencyScores: {
+    technical: number;
+    communication: number;
+    problemSolving: number;
+    empathy: number;
+    cultureFit: number;
+  };
   summary: string;
   strengths: string[];
   gaps: string[];

@@ -1,15 +1,8 @@
-import { CheckCircle2, AlertTriangle, ArrowRight, RotateCcw, TrendingUp, AlertCircle, Award } from "lucide-react";
+import { CheckCircle2, AlertTriangle, ArrowRight, RotateCcw, TrendingUp, AlertCircle, Award, Home } from "lucide-react";
 import type { Candidate, InterviewFeedback } from "@/lib/interview/types";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from "recharts";
-
-const mockRadarData = [
-  { subject: "Technical", score: 85, fullMark: 100 },
-  { subject: "Communication", score: 90, fullMark: 100 },
-  { subject: "Problem Solving", score: 75, fullMark: 100 },
-  { subject: "Empathy", score: 80, fullMark: 100 },
-  { subject: "Culture Fit", score: 95, fullMark: 100 },
-];
 
 interface Props {
   candidate: Candidate;
@@ -26,12 +19,38 @@ export function FeedbackReport({
   topicsCovered,
   onReset,
 }: Props) {
+  const radarData = feedback.competencyScores ? [
+    { subject: "Technical", score: feedback.competencyScores.technical, fullMark: 100 },
+    { subject: "Communication", score: feedback.competencyScores.communication, fullMark: 100 },
+    { subject: "Problem Solving", score: feedback.competencyScores.problemSolving, fullMark: 100 },
+    { subject: "Empathy", score: feedback.competencyScores.empathy, fullMark: 100 },
+    { subject: "Culture Fit", score: feedback.competencyScores.cultureFit, fullMark: 100 },
+  ] : [
+    { subject: "Technical", score: 85, fullMark: 100 },
+    { subject: "Communication", score: 90, fullMark: 100 },
+    { subject: "Problem Solving", score: 75, fullMark: 100 },
+    { subject: "Empathy", score: 80, fullMark: 100 },
+    { subject: "Culture Fit", score: 95, fullMark: 100 },
+  ];
+
   return (
     <section className="mx-auto w-full max-w-4xl px-4 pb-20">
       <div className="panel overflow-hidden">
         <div className="p-8" style={{ backgroundImage: "var(--gradient-hero)" }}>
           <p className="text-[11px] uppercase tracking-widest text-primary">Interview complete</p>
-          <h2 className="mt-2 text-3xl font-semibold">{candidate.member.name}</h2>
+          <div className="flex flex-wrap items-center gap-4 mt-2">
+            <h2 className="text-3xl font-semibold">{candidate.member.name}</h2>
+            {feedback.qualification && (
+              <Badge variant={feedback.qualification === "Strong" ? "default" : feedback.qualification === "Good" ? "secondary" : "destructive"}>
+                {feedback.qualification} Performance
+              </Badge>
+            )}
+            {feedback.overallScore !== undefined && (
+              <Badge variant="outline" className="font-mono bg-background/50 text-sm">
+                Score: {feedback.overallScore}/100
+              </Badge>
+            )}
+          </div>
           <p className="text-sm text-muted-foreground">
             {candidate.member.jobRole} · {candidate.member.yearsExperience} yrs experience
           </p>
@@ -57,7 +76,7 @@ export function FeedbackReport({
               </div>
               <div className="h-64 w-full relative">
                 <ResponsiveContainer width="100%" height="100%">
-                  <RadarChart cx="50%" cy="50%" outerRadius="70%" data={mockRadarData}>
+                  <RadarChart cx="50%" cy="50%" outerRadius="70%" data={radarData}>
                     <PolarGrid stroke="var(--color-border)" />
                     <PolarAngleAxis dataKey="subject" tick={{ fill: "var(--color-muted-foreground)", fontSize: 11 }} />
                     <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
@@ -104,7 +123,11 @@ export function FeedbackReport({
           </div>
         </div>
 
-        <div className="p-8 bg-card border-t border-border flex justify-end">
+        <div className="p-8 bg-card border-t border-border flex justify-end gap-4">
+          <Button variant="outline" onClick={onReset} size="lg" className="rounded-full px-8 gap-2">
+            <Home className="size-4" />
+            Back to Dashboard
+          </Button>
           <Button onClick={onReset} size="lg" className="rounded-full px-8 shadow-glow gap-2">
             <RotateCcw className="size-4" />
             Run another interview

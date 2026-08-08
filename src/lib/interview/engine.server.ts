@@ -217,12 +217,15 @@ async function generateFeedback(
     `Full interview record:\n${record}`,
     "",
     `Write the final interview feedback. Rules:`,
+    `- qualification: One of "Strong", "Good", or "Weak" based on overall performance.`,
+    `- overallScore: A number from 0 to 100 representing the overall interview score.`,
+    `- competencyScores: An object with scores (0-100) for "technical", "communication", "problemSolving", "empathy", and "cultureFit".`,
     `- summary: 2-4 sentences, overall assessment and the technical level actually demonstrated.`,
     `- strengths: 2-4 evidence-based points tied to specific answers in this interview.`,
     `- gaps: 2-4 specific knowledge or reasoning gaps. Never generic advice like "study more".`,
     `- next: 2-4 concrete next steps, referencing curriculum days by number where relevant (e.g. "Revisit Day 10 — The Retrieval & Matching Engine").`,
     `- Never claim mastery just because a mission was completed.`,
-    `Respond ONLY as JSON: {"summary": string, "strengths": string[], "gaps": string[], "next": string[]}`,
+    `Respond ONLY as JSON: {"qualification": "Strong"|"Good"|"Weak", "overallScore": number, "competencyScores": {"technical": number, "communication": number, "problemSolving": number, "empathy": number, "cultureFit": number}, "summary": string, "strengths": string[], "gaps": string[], "next": string[]}`,
   ].join("\n");
 
   const raw = await llm.structuredGenerate<Partial<InterviewFeedback>>(
@@ -234,7 +237,22 @@ async function generateFeedback(
   );
 
   const list = (v: unknown) => (Array.isArray(v) ? v.map(String).filter(Boolean).slice(0, 5) : []);
+  const safeNum = (v: unknown, fallback: number) => (typeof v === "number" ? v : fallback);
+  
+  const qualification = ["Strong", "Good", "Weak"].includes(String(raw.qualification)) 
+    ? (raw.qualification as "Strong" | "Good" | "Weak") 
+    : "Good";
+
   return {
+    qualification,
+    overallScore: safeNum(raw.overallScore, 75),
+    competencyScores: {
+      technical: safeNum((raw.competencyScores as any)?.technical, 75),
+      communication: safeNum((raw.competencyScores as any)?.communication, 75),
+      problemSolving: safeNum((raw.competencyScores as any)?.problemSolving, 75),
+      empathy: safeNum((raw.competencyScores as any)?.empathy, 75),
+      cultureFit: safeNum((raw.competencyScores as any)?.cultureFit, 75),
+    },
     summary: String(raw.summary ?? "Interview completed."),
     strengths: list(raw.strengths),
     gaps: list(raw.gaps),
