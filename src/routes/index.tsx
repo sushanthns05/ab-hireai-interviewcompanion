@@ -138,6 +138,14 @@ function InterviewIQApp() {
         e.preventDefault();
         handleViolation("Taking screenshots is prohibited.");
       }
+      if (e.altKey && e.key.toLowerCase() === 'g') {
+        e.preventDefault();
+        handleViolation("Screen capture shortcuts are disabled.");
+      }
+      if (e.metaKey && e.shiftKey && e.key.toLowerCase() === 's') {
+        e.preventDefault();
+        handleViolation("Taking screenshots is prohibited.");
+      }
     };
 
     document.addEventListener("visibilitychange", handleVisibilityChange);
