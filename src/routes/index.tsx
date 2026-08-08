@@ -52,6 +52,37 @@ function InterviewIQApp() {
 
   // Results State
   const [resultScore, setResultScore] = useState(0);
+
+  // Focus Mode State
+  const [focusWarning, setFocusWarning] = useState<string | null>(null);
+
+  // Focus Mode Enforcement
+  useEffect(() => {
+    if (appState !== "LIVE") {
+      setFocusWarning(null);
+      return;
+    }
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        setFocusWarning("Tab switch detected. Please stay focused on the interview.");
+      }
+    };
+
+    const handleFullscreenChange = () => {
+      if (!document.fullscreenElement) {
+        setFocusWarning("Fullscreen exited. Please return to fullscreen to continue.");
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+    };
+  }, [appState]);
   const [strongerAnswer, setStrongerAnswer] = useState("");
   const [aiFragments, setAiFragments] = useState<string[]>([
     "Transcribing audio input...",
@@ -192,6 +223,14 @@ function InterviewIQApp() {
   };
 
   const endInterview = async () => {
+    try {
+      if (document.fullscreenElement && document.exitFullscreen) {
+        await document.exitFullscreen();
+      }
+    } catch (err) {
+      console.warn("Exit fullscreen failed", err);
+    }
+
     if (isRecording) {
       recognitionRef.current?.stop();
       setIsRecording(false);
@@ -227,6 +266,14 @@ function InterviewIQApp() {
   };
 
   const handleStart = async () => {
+    try {
+      if (document.documentElement.requestFullscreen) {
+        await document.documentElement.requestFullscreen();
+      }
+    } catch (err) {
+      console.warn("Fullscreen request failed", err);
+    }
+
     setAppState("LIVE");
     setLivePhase("ai_thinking_1");
     setMessages([]);
@@ -297,7 +344,43 @@ function InterviewIQApp() {
           </span>
         </Link>
         
+        
       </nav>
+
+      {/* FOCUS WARNING OVERLAY */}
+      <AnimatePresence>
+        {appState === "LIVE" && focusWarning && (
+          <motion.div 
+            initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
+            animate={{ opacity: 1, backdropFilter: "blur(20px)" }}
+            exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
+            className="fixed inset-0 z-[100] bg-black/80 flex flex-col items-center justify-center p-8 text-center"
+          >
+            <ShieldCheck className="size-24 text-red-500 mb-6 animate-pulse" />
+            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">Focus Mode Violation</h2>
+            <p className="text-lg text-white/70 max-w-lg mb-8 leading-relaxed">
+              {focusWarning}
+              <br /><br />
+              Live Interviews require your full attention to simulate a real environment. No shortcuts, no second tabs.
+            </p>
+            <Button 
+              size="lg" 
+              variant="destructive"
+              className="px-8 py-6 rounded-full text-lg font-bold shadow-[0_0_20px_rgba(239,68,68,0.3)] hover:shadow-[0_0_30px_rgba(239,68,68,0.5)] transition-all"
+              onClick={async () => {
+                setFocusWarning(null);
+                try {
+                  if (document.documentElement.requestFullscreen) {
+                    await document.documentElement.requestFullscreen();
+                  }
+                } catch(e) {}
+              }}
+            >
+              Return to Interview
+            </Button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col items-center justify-center p-4 sm:p-8 relative overflow-hidden bg-black/40">
