@@ -267,7 +267,7 @@ function InterviewIQApp() {
 
   return (
     <div 
-      className="min-h-screen w-full flex flex-col bg-background text-foreground font-sans selection:bg-primary/20 selection:text-indigo-900 relative"
+      className="min-h-screen w-full flex flex-col bg-background text-foreground font-sans selection:bg-[#c084fc]/30 selection:text-white relative"
       style={{
         backgroundImage: "url('/bg.png')",
         backgroundSize: "cover",
