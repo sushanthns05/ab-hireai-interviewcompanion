@@ -346,7 +346,7 @@ function InterviewIQApp() {
                     <Target className="size-8 text-[#2dd4bf]" />
                   </div>
                   <div>
-                    <div className="font-semibold text-lg text-white">Demo Interview</div>
+                    <div className="font-semibold text-lg text-white">Mock Interview</div>
                     <div className="text-sm text-white/60 mt-2 leading-relaxed">Hone your skills in a low-pressure simulated environment.</div>
                   </div>
                 </button>
