@@ -48,7 +48,7 @@ export function StageProgress({ stages }: StageProgressProps) {
               
               {/* Connecting Line */}
               {index < stages.length - 1 && (
-                <div className="flex-1 h-[2px] mx-4 relative top-[-10px]">
+                <div className="flex-1 h-0.5 mx-4 relative -top-2.5">
                   <div className="absolute inset-0 bg-muted" />
                   <div 
                     className="absolute inset-y-0 left-0 bg-primary transition-all duration-1000"

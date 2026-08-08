@@ -189,7 +189,7 @@ function InterviewIQApp() {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col bg-background text-foreground font-sans text-foreground selection:bg-primary/20 selection:text-indigo-900">
+    <div className="min-h-screen w-full flex flex-col bg-background text-foreground font-sans selection:bg-primary/20 selection:text-indigo-900">
       {/* Premium Navbar */}
       <nav className="h-20 border-b border-border/50 bg-background/50 backdrop-blur-xl flex items-center justify-between px-8 z-50 sticky top-0">
         <Link 
