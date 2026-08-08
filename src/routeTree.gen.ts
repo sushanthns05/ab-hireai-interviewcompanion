@@ -11,16 +11,9 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardRouteImport } from './routes/dashboard'
-import { Route as ChatRouteImport } from './routes/chat'
 import { Route as ApiInterviewRouteImport } from './routes/api/interview'
 import { Route as ApiInterviewResetRouteImport } from './routes/api/interview-reset'
 import { Route as ApiPublicInterviewRouteImport } from './routes/api/public/interview'
-
-const ChatRoute = ChatRouteImport.update({
-  id: '/chat',
-  path: '/chat',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
@@ -52,7 +45,6 @@ const ApiPublicInterviewRoute = ApiPublicInterviewRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
-  '/chat': typeof ChatRoute
   '/api/interview': typeof ApiInterviewRoute
   '/api/interview-reset': typeof ApiInterviewResetRoute
   '/api/public/interview': typeof ApiPublicInterviewRoute
@@ -60,7 +52,6 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
-  '/chat': typeof ChatRoute
   '/api/interview': typeof ApiInterviewRoute
   '/api/interview-reset': typeof ApiInterviewResetRoute
   '/api/public/interview': typeof ApiPublicInterviewRoute
@@ -69,7 +60,6 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
-  '/chat': typeof ChatRoute
   '/api/interview': typeof ApiInterviewRoute
   '/api/interview-reset': typeof ApiInterviewResetRoute
   '/api/public/interview': typeof ApiPublicInterviewRoute
@@ -79,17 +69,15 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/dashboard'
-    | '/chat'
     | '/api/interview'
     | '/api/interview-reset'
     | '/api/public/interview'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/chat' | '/api/interview' | '/api/interview-reset' | '/api/public/interview'
+  to: '/' | '/dashboard' | '/api/interview' | '/api/interview-reset' | '/api/public/interview'
   id:
     | '__root__'
     | '/'
     | '/dashboard'
-    | '/chat'
     | '/api/interview'
     | '/api/interview-reset'
     | '/api/public/interview'
@@ -98,7 +86,6 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardRoute: typeof DashboardRoute
-  ChatRoute: typeof ChatRoute
   ApiInterviewRoute: typeof ApiInterviewRoute
   ApiInterviewResetRoute: typeof ApiInterviewResetRoute
   ApiPublicInterviewRoute: typeof ApiPublicInterviewRoute
@@ -118,13 +105,6 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof DashboardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/chat': {
-      id: '/chat'
-      path: '/chat'
-      fullPath: '/chat'
-      preLoaderRoute: typeof ChatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/interview': {
@@ -154,7 +134,6 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRoute: DashboardRoute,
-  ChatRoute: ChatRoute,
   ApiInterviewRoute: ApiInterviewRoute,
   ApiInterviewResetRoute: ApiInterviewResetRoute,
   ApiPublicInterviewRoute: ApiPublicInterviewRoute,
