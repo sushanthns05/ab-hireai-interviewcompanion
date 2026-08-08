@@ -5,6 +5,7 @@ import { Upload, UserCircle2, Code2, Play, LayoutDashboard, Mic, Send, Target, B
 import { ThinkingTrace } from "../components/interview-iq/ThinkingTrace";
 import { ConfidenceMeter } from "../components/interview-iq/ConfidenceMeter";
 import { ReportCard } from "../components/interview-iq/ReportCard";
+import { StreamingMessage } from "../components/interview/StreamingMessage";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 
@@ -378,8 +379,14 @@ function InterviewIQApp() {
                   </div>
                   
                   <div className="text-lg text-foreground leading-relaxed font-medium min-h-20">
-                    {livePhase === "ai_thinking_1" && <span className="text-muted-foreground italic">Thinking...</span>}
-                    {livePhase !== "ai_thinking_1" && QUESTION}
+                    {livePhase === "ai_thinking_1" ? (
+                      <div className="flex items-center gap-3 text-sm text-muted-foreground bg-surface-raised border border-border p-4 w-fit">
+                        <Loader2 className="size-5 animate-spin text-primary" />
+                        <span className="animate-pulse">Analyzing context and formulating question...</span>
+                      </div>
+                    ) : (
+                      <StreamingMessage content={QUESTION} />
+                    )}
                   </div>
                 </div>
 

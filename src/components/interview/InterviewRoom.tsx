@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { StreamingMessage } from "./StreamingMessage";
 
 interface Props {
   candidate: Candidate;
@@ -235,15 +236,24 @@ export function InterviewRoom({
                     : "bg-primary/10 border border-primary shadow-[0_0_15px_oklch(0.79_0.18_184.11/0.15)]"
                 }`}
               >
-                {m.content}
+                {m.role === "interviewer" && i === messages.length - 1 && !done ? (
+                  <StreamingMessage content={m.content} />
+                ) : (
+                  m.content
+                )}
               </div>
             </article>
           ))}
           {thinking && (
-            <p className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Loader2 className="size-4 animate-spin" />
-              Interviewer is considering your answer…
-            </p>
+            <div className="flex flex-col gap-3 max-w-[85%] animate-in fade-in slide-in-from-bottom-2 duration-300">
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-primary">
+                Interviewer
+              </p>
+              <div className="flex items-center gap-3 bg-surface-raised border border-border px-4 py-3 text-sm leading-relaxed text-muted-foreground w-fit rounded-none">
+                <Loader2 className="size-4 animate-spin text-primary" />
+                <span className="animate-pulse">Analyzing candidate response & generating adaptive follow-up...</span>
+              </div>
+            </div>
           )}
           <div ref={endRef} />
         </div>
