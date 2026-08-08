@@ -89,7 +89,7 @@ export function ReportCard({ score, originalAnswer, strongerAnswer, onRestart }:
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
             <Target className="size-4" />
-            Your Answer
+            Interview Summary
           </div>
           <div className="bg-card p-5 rounded-2xl border border-border text-sm text-muted-foreground leading-relaxed shadow-glow relative">
             "{originalAnswer}"
@@ -99,7 +99,7 @@ export function ReportCard({ score, originalAnswer, strongerAnswer, onRestart }:
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2 text-xs font-semibold text-chart-3 uppercase tracking-wider">
             <Zap className="size-4" />
-            Stronger Version
+            Feedback / Improvements
           </div>
           <div className="bg-chart-3/10 p-5 rounded-2xl border border-chart-3/30 text-sm text-foreground leading-relaxed shadow-glow relative">
             "{strongerAnswer}"

@@ -3,8 +3,10 @@ import { createLLMClient } from "@/lib/interview/llm.server";
 import { z } from "zod";
 
 const requestSchema = z.object({
-  question: z.string(),
-  answer: z.string(),
+  messages: z.array(z.object({
+    role: z.enum(["user", "assistant"]),
+    content: z.string(),
+  })),
   persona: z.string(),
 });
 
@@ -29,22 +31,24 @@ export const Route = createFileRoute("/api/evaluate-answer")({
         const parsed = requestSchema.safeParse(payload);
         if (!parsed.success) return json({ error: "Invalid payload" }, 400);
 
-        const { question, answer, persona } = parsed.data;
+        const { messages, persona } = parsed.data;
 
         try {
           const llm = createLLMClient();
-          const messages = [
+          
+          const transcript = messages.map(m => `${m.role === 'user' ? 'Candidate' : 'Interviewer'}: ${m.content}`).join('\n\n');
+
+          const llmMessages = [
             {
               role: "system" as const,
-              content: `You are an AI interviewer acting as a ${persona}. The candidate just answered this technical question:
-"${question}"
+              content: `You are an AI interviewer acting as a ${persona}. The candidate has just completed a mock interview. Here is the transcript:
 
-Their answer was:
-"${answer}"
+${transcript}
 
-Evaluate their answer. Provide a score out of 100 based on technical accuracy, clarity, and depth.
-Provide a "strongerAnswer" which is an idealized, professional version of what they could have said.
-Provide 4 short "fragments" of text (under 8 words each) that represent your "thinking process" while evaluating, like ["Transcribing audio...", "Checking for STAR method...", "Analyzing technical depth...", "Finalizing score..."]. 
+Evaluate their overall performance across the interview. Provide a score out of 100 based on technical accuracy, clarity, depth, and how well they handled the questions.
+Provide a "strongerAnswer" which summarizes the key areas they should focus on improving, or provides an idealized version of how they could have approached the interview's main topics.
+Provide 4 short "fragments" of text (under 8 words each) that represent your "thinking process" while evaluating, like ["Reviewing interview transcript...", "Analyzing core competencies...", "Identifying areas for improvement...", "Finalizing overall score..."]. 
+
 
 Respond ONLY with JSON matching this shape:
 {
@@ -55,7 +59,7 @@ Respond ONLY with JSON matching this shape:
             }
           ];
 
-          const result = await llm.structuredGenerate<{ score: number, strongerAnswer: string, fragments: string[] }>(messages, { temperature: 0.3 });
+          const result = await llm.structuredGenerate<{ score: number, strongerAnswer: string, fragments: string[] }>(llmMessages, { temperature: 0.3 });
           
           return json(result);
         } catch (error: any) {

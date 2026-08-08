@@ -16,9 +16,11 @@ export const Route = createFileRoute("/")({
 type AppState = "HOME" | "SETUP" | "LIVE" | "RESULTS";
 
 const TAGLINE = "AI-powered interview practice that adapts to you.";
-const QUESTION = "Can you describe a time when you had to optimize a slow-performing React application? What specific metrics did you target?";
 
 function InterviewIQApp() {
+  const [messages, setMessages] = useState<{role: "user" | "assistant", content: string}[]>([]);
+  const [currentQuestion, setCurrentQuestion] = useState("");
+
   const [appState, setAppState] = useState<AppState>("HOME");
   const [isTransitioning, setIsTransitioning] = useState(false);
 
@@ -39,7 +41,6 @@ function InterviewIQApp() {
 
   // Results State
   const [resultScore, setResultScore] = useState(0);
-  const [originalAnswer, setOriginalAnswer] = useState("");
   const [strongerAnswer, setStrongerAnswer] = useState("");
   const [aiFragments, setAiFragments] = useState<string[]>([
     "Transcribing audio input...",
@@ -67,20 +68,12 @@ function InterviewIQApp() {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
-  // When LIVE starts, simulate thinking, then asking, then wait for user
+  // We no longer simulate thinking on start with a timeout; we will do it in handleStart
   useEffect(() => {
     if (appState !== "LIVE") return;
-
-    setLivePhase("ai_thinking_1");
     setConfidenceScore(0);
     setCelebration(null);
     setValue("");
-
-    const t1 = setTimeout(() => {
-      setLivePhase("user_answering");
-    }, 2000); 
-
-    return () => clearTimeout(t1);
   }, [appState]);
 
   const toggleRecording = () => {
@@ -140,16 +133,52 @@ function InterviewIQApp() {
       setIsRecording(false);
     }
     
-    setOriginalAnswer(value.trim());
-    setLivePhase("ai_thinking_2");
+    const userMessage = value.trim();
+    const newMessages = [...messages, { role: "user" as const, content: userMessage }];
+    setMessages(newMessages);
+    setValue("");
+    setLivePhase("ai_thinking_1"); // Show thinking state while getting next question
 
+    try {
+      const response = await fetch("/api/interview-chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: newMessages,
+          interviewType,
+          persona,
+        }),
+      });
+      
+      const data = await response.json();
+      if (data.response) {
+        setMessages([...newMessages, { role: "assistant", content: data.response }]);
+        setCurrentQuestion(data.response);
+        if (data.fragments) setAiFragments(data.fragments);
+        setLivePhase("user_answering");
+      } else {
+        throw new Error(data.error || "Failed to get response");
+      }
+    } catch (err) {
+      console.error(err);
+      setCurrentQuestion("I seem to be having trouble connecting. Could you repeat that?");
+      setLivePhase("user_answering");
+    }
+  };
+
+  const endInterview = async () => {
+    if (isRecording) {
+      recognitionRef.current?.stop();
+      setIsRecording(false);
+    }
+    setLivePhase("ai_thinking_2");
+    
     try {
       const response = await fetch("/api/evaluate-answer", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          question: QUESTION,
-          answer: value.trim(),
+          messages,
           persona,
         }),
       });
@@ -166,14 +195,42 @@ function InterviewIQApp() {
     } catch (err) {
       console.error(err);
       setResultScore(0);
-      setStrongerAnswer("Sorry, I encountered an error evaluating your answer.");
+      setStrongerAnswer("Sorry, I encountered an error evaluating your interview.");
     }
 
     setAppState("RESULTS");
   };
 
-  const handleStart = () => {
+  const handleStart = async () => {
     setAppState("LIVE");
+    setLivePhase("ai_thinking_1");
+    setMessages([]);
+    
+    try {
+      const response = await fetch("/api/interview-chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: [],
+          interviewType,
+          persona,
+        }),
+      });
+      
+      const data = await response.json();
+      if (data.response) {
+        setMessages([{ role: "assistant", content: data.response }]);
+        setCurrentQuestion(data.response);
+        if (data.fragments) setAiFragments(data.fragments);
+        setLivePhase("user_answering");
+      } else {
+        throw new Error(data.error || "Failed to start");
+      }
+    } catch (err) {
+      console.error(err);
+      setCurrentQuestion("Hello! I am ready to begin your mock interview. Tell me when you are ready.");
+      setLivePhase("user_answering");
+    }
   };
 
   const handleRestart = () => {
@@ -386,7 +443,7 @@ function InterviewIQApp() {
                         <span className="animate-pulse">Analyzing context and formulating question...</span>
                       </div>
                     ) : (
-                      <StreamingMessage content={QUESTION} />
+                      <StreamingMessage content={currentQuestion} />
                     )}
                   </div>
                 </div>
@@ -448,12 +505,21 @@ function InterviewIQApp() {
                     </Button>
                     <Button 
                       onClick={submitAnswer} 
-                      disabled={livePhase !== "user_answering" || !value.trim()} 
-                      size="lg" 
-                      className="rounded-full px-8 shadow-(--shadow-glow) gap-2"
+                      size="lg"
+                      className="rounded-full px-6 gap-2"
+                      disabled={!value.trim() || livePhase !== "user_answering"}
                     >
-                      <Send className="size-4" />
-                      Submit
+                      <ArrowRight className="size-5" />
+                      Submit Answer
+                    </Button>
+                    <Button 
+                      onClick={endInterview} 
+                      size="lg"
+                      variant="destructive"
+                      className="rounded-full px-6 gap-2"
+                      disabled={livePhase !== "user_answering"}
+                    >
+                      End Interview
                     </Button>
                   </div>
                 </div>
@@ -474,7 +540,7 @@ function InterviewIQApp() {
             >
               <ReportCard 
                 score={resultScore} 
-                originalAnswer={originalAnswer}
+                originalAnswer="Full mock interview completed. See the stronger version for overall feedback."
                 strongerAnswer={strongerAnswer}
                 onRestart={handleRestart}
               />
