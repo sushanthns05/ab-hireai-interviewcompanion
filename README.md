@@ -1,20 +1,24 @@
 # The Interview Agent — ABTalks HireAI
 
-An adaptive AI technical interviewer for graduates of the 31-day Enterprise AI Engineering cohort. 
-It reads each candidate's real mission history, plans curriculum topics with intent, adapts 
-difficulty turn by turn, follows up on what the candidate actually said, and closes with a 
-comprehensive, structured feedback report.
+An adaptive AI technical interviewer for graduates of the 31-day Enterprise AI Engineering cohort, now featuring comprehensive mock practice capabilities. 
+It reads each candidate's real mission history, plans curriculum topics with intent, adapts difficulty turn by turn, follows up on what the candidate actually said, and closes with a comprehensive, structured feedback report.
 
 ## Features
 
-- **Interactive Landing Page & Candidate Dashboard:** A modern, animated landing page that leads to a dynamic candidate selection dashboard.
-- **Adaptive AI Interviewing:** The engine assesses seniority, tracks curriculum gaps, and controls difficulty seamlessly as the candidate answers.
+- **Live Adaptive AI Interviewing:** The core engine assesses seniority, tracks curriculum gaps, and controls difficulty seamlessly as the candidate answers real-time questions.
+- **Mock Interview Practice Mode:** Choose from various personas (HR, Technical Lead, Panel) and practice specific types of behavioral or technical questions in a low-pressure simulated environment.
+- **Strict Anti-Cheat (Focus Mode):** Active across both Live and Mock interviews. 
+  - Forces Fullscreen automatically.
+  - Intercepts tab-switching and window-switching.
+  - Blocks `PrintScreen`, developer tools, context menus, and text copying.
+  - Enforces a 4-strike violation rule that instantly terminates the session if the candidate loses focus too many times.
+- **Session Replay & History:** All practice sessions are saved locally. You can revisit past interviews to view full chat transcripts, see your overall score, and analyze the AI's provided "Ideal Response" side-by-side with your original answers.
 - **Voice Input Integration:** Supports in-browser speech-to-text allowing candidates to answer technical questions via voice.
 - **Developer Debug Panel:** Toggle the live developer panel during the interview to inspect the engine's real-time inner thoughts, phase progression, and current difficulty.
 - **Comprehensive Feedback Report:** At the end of the interview, candidates receive:
   - An **Overall Score** and **Performance Qualification** (Strong, Good, Weak).
   - A dynamic **Radar Chart** scoring 5 key competencies: Technical, Communication, Problem Solving, Empathy, and Culture Fit.
-  - Actionable insights including key strengths, areas to improve, and precise next steps referencing specific curriculum days.
+  - Actionable insights including key strengths, areas to improve, and precise next steps.
 
 ## Running Locally
 
