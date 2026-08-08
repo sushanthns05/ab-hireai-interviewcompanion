@@ -34,7 +34,6 @@ function InterviewIQApp() {
   // Setup State variables
   const [interviewType, setInterviewType] = useState<"behavioral" | "technical">("behavioral");
   const [persona, setPersona] = useState<"hr" | "tech_lead" | "panel">("hr");
-  const [resumeContext, setResumeContext] = useState("");
 
   // Live State variables
   const [livePhase, setLivePhase] = useState<"ai_thinking_1" | "ai_asking" | "user_answering" | "ai_thinking_2" | "done">("ai_thinking_1");
@@ -348,30 +347,6 @@ function InterviewIQApp() {
                       </button>
                     </div>
                   </div>
-
-                  <div className="flex flex-col gap-3">
-                    <div className="flex items-center justify-between">
-                      <label className="text-sm font-semibold text-foreground uppercase tracking-wide">
-                        Resume Context
-                      </label>
-                      <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-md">Optional</span>
-                    </div>
-                    <div className="relative group">
-                      <Textarea 
-                        value={resumeContext}
-                        onChange={(e) => setResumeContext(e.target.value)}
-                        className="min-h-32 resize-none bg-background border-border focus-visible:ring-primary/50 rounded-xl px-4 py-3 relative z-10 bg-transparent"
-                      />
-                      {resumeContext.length === 0 && (
-                        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-0">
-                          <div className="flex flex-col items-center gap-2 text-muted-foreground opacity-50 group-hover:opacity-70 transition-opacity">
-                            <Upload className="size-6" />
-                            <span className="text-sm font-medium">Upload PDF or Paste Text</span>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
                 </div>
               </div>
 
@@ -435,8 +410,8 @@ function InterviewIQApp() {
                     fragments={
                       livePhase === "ai_thinking_1" 
                         ? [
-                            resumeContext ? "Parsing provided resume text..." : "Loading standard technical baseline...",
-                            resumeContext ? "Extracting key skills and recent projects..." : "Selecting a core concept to test...",
+                            "Loading standard technical baseline...",
+                            "Selecting a core concept to test...",
                             "Calibrating technical depth for target role...",
                             "Formulating adaptive technical question..."
                           ]
