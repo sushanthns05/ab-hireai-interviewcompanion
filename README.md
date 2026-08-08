@@ -1,11 +1,22 @@
 # The Interview Agent — ABTalks AI Cohort
 
-An adaptive AI technical interviewer for graduates of the 31-day Enterprise AI Engineering cohort.
-It reads each candidate's real mission history, plans curriculum topics with intent, adapts
-difficulty turn by turn, follows up on what the candidate actually said, and closes with a
-structured feedback report.
+An adaptive AI technical interviewer for graduates of the 31-day Enterprise AI Engineering cohort. 
+It reads each candidate's real mission history, plans curriculum topics with intent, adapts 
+difficulty turn by turn, follows up on what the candidate actually said, and closes with a 
+comprehensive, structured feedback report.
 
-## Running
+## Features
+
+- **Interactive Landing Page & Candidate Dashboard:** A modern, animated landing page that leads to a dynamic candidate selection dashboard.
+- **Adaptive AI Interviewing:** The engine assesses seniority, tracks curriculum gaps, and controls difficulty seamlessly as the candidate answers.
+- **Voice Input Integration:** Supports in-browser speech-to-text allowing candidates to answer technical questions via voice.
+- **Developer Debug Panel:** Toggle the live developer panel during the interview to inspect the engine's real-time inner thoughts, phase progression, and current difficulty.
+- **Comprehensive Feedback Report:** At the end of the interview, candidates receive:
+  - An **Overall Score** and **Performance Qualification** (Strong, Good, Weak).
+  - A dynamic **Radar Chart** scoring 5 key competencies: Technical, Communication, Problem Solving, Empathy, and Culture Fit.
+  - Actionable insights including key strengths, areas to improve, and precise next steps referencing specific curriculum days.
+
+## Running Locally
 
 ```bash
 bun install
@@ -15,7 +26,7 @@ bunx vitest run    # engine + API contract tests
 
 The LLM is called through the Lovable AI Gateway (`LOVABLE_API_KEY`, server-side only).
 
-## API
+## API Structure
 
 `POST /api/interview` (also mirrored at `/api/public/interview`)
 
@@ -37,13 +48,22 @@ Response:
 { "reply": "next question or closing line", "done": false }
 ```
 
-When `done` is `true`, the response also carries the feedback report:
+When `done` is `true`, the response also carries the enriched feedback report:
 
 ```json
 {
   "reply": "Interview completed.",
   "done": true,
   "feedback": {
+    "qualification": "Strong",
+    "overallScore": 85,
+    "competencyScores": {
+      "technical": 88,
+      "communication": 90,
+      "problemSolving": 80,
+      "empathy": 85,
+      "cultureFit": 95
+    },
     "summary": "string",
     "strengths": ["string"],
     "gaps": ["string"],
@@ -52,7 +72,7 @@ When `done` is `true`, the response also carries the feedback report:
 }
 ```
 
-`GET /api/interview?sessionId=…` returns the internal state (phase, difficulty, covered days,
+`GET /api/interview?sessionId=…` returns the internal state (phase, difficulty, covered days, 
 last action + reason) for the developer panel. `POST /api/interview-reset?sessionId=…` clears it.
 
 ## How it works
@@ -65,6 +85,6 @@ last action + reason) for the developer panel. `POST /api/interview-reset?sessio
 | Sessions | `src/lib/interview/sessions.server.ts` | In-memory session store with TTL |
 | HTTP | `src/lib/interview/handler.server.ts` | Zod validation, error mapping, session lifecycle |
 
-Guarantees enforced by the engine and covered by tests: 8–12 questions, at least 4 distinct
-curriculum days, every question tied to a day plus a reason, no assumed knowledge of skipped
+Guarantees enforced by the engine and covered by tests: 8–12 questions, at least 4 distinct 
+curriculum days, every question tied to a day plus a reason, no assumed knowledge of skipped 
 missions, and difficulty that moves with answer quality.
