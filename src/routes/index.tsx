@@ -17,6 +17,11 @@ type AppState = "HOME" | "SETUP" | "LIVE" | "RESULTS";
 
 const TAGLINE = "AI-powered interview practice that adapts to you.";
 
+function cleanAiText(value: unknown): string {
+  if (typeof value !== "string") return "";
+  return value.replace(/\s*undefined\s*$/i, "").trim();
+}
+
 function InterviewIQApp() {
   const [messages, setMessages] = useState<{role: "user" | "assistant", content: string}[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState("");
@@ -151,8 +156,8 @@ function InterviewIQApp() {
       });
       
       const data = await response.json();
-      if (data.response) {
-        const cleanResponse = typeof data.response === "string" ? data.response.replace(/\s*undefined$/i, "").trim() : data.response;
+      const cleanResponse = cleanAiText(data.response);
+      if (cleanResponse) {
         setMessages([...newMessages, { role: "assistant", content: cleanResponse }]);
         setCurrentQuestion(cleanResponse);
         if (data.fragments) setAiFragments(data.fragments);
@@ -188,7 +193,7 @@ function InterviewIQApp() {
       
       if (data.score !== undefined) {
         setResultScore(data.score);
-        setStrongerAnswer(data.strongerAnswer);
+        setStrongerAnswer(cleanAiText(data.strongerAnswer));
         setAiFragments(data.fragments || aiFragments);
       } else {
         throw new Error(data.error || "Failed to evaluate");
@@ -219,8 +224,8 @@ function InterviewIQApp() {
       });
       
       const data = await response.json();
-      if (data.response) {
-        const cleanResponse = typeof data.response === "string" ? data.response.replace(/\s*undefined$/i, "").trim() : data.response;
+      const cleanResponse = cleanAiText(data.response);
+      if (cleanResponse) {
         setMessages([{ role: "assistant", content: cleanResponse }]);
         setCurrentQuestion(cleanResponse);
         if (data.fragments) setAiFragments(data.fragments);

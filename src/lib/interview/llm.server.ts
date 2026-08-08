@@ -18,6 +18,9 @@ export interface LLMClient {
   structuredGenerate<T>(messages: LLMMessage[], opts?: { temperature?: number }): Promise<T>;
 }
 
+/** Answers shorter than this are not meaningful interview attempts. */
+export const MIN_ANSWER_LENGTH = 5;
+
 export class LLMError extends Error {
   status: number;
   constructor(message: string, status = 502) {

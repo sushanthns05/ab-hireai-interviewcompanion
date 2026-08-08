@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { createLLMClient, type LLMMessage } from "@/lib/interview/llm.server";
+import { createLLMClient, MIN_ANSWER_LENGTH, type LLMMessage } from "@/lib/interview/llm.server";
 import { z } from "zod";
 
 const requestSchema = z.object({
@@ -34,6 +34,15 @@ export const Route = createFileRoute("/api/interview-chat")({
 
         const { messages, interviewType, persona } = parsed.data;
 
+        const latestUserMessage = [...messages].reverse().find((message) => message.role === "user");
+        if (latestUserMessage && latestUserMessage.content.trim().length < MIN_ANSWER_LENGTH) {
+          return json({
+            response: "Your answer is too short or invalid. Please provide a relevant response.",
+            fragments: ["Checking answer...", "Input is too short", "Score assigned: 0", "Please try again"],
+            score: 0,
+          });
+        }
+
         const systemPrompt = `You are an expert AI interviewer conducting a mock interview. Your goal is to provide a realistic, helpful, and immersive experience for the candidate.
 
 You must strictly adapt your behavior, tone, and the questions you ask based on the following configuration:
@@ -67,6 +76,8 @@ Feedback: Do not break character until the user explicitly says "End Interview."
 4. Evaluation Rules (CRITICAL)
 Relevance Check: Before responding, analyze the candidate's answer. Is it a genuine attempt to answer the previous question?
 
+Strict invalid-input rule: First, evaluate if the user's input is a genuine attempt to answer the question. If the input is nonsensical, extremely short (e.g., a single letter), or completely irrelevant, immediately respond by stating the answer is incorrect/irrelevant and do not provide a polite transition. Assign a score of 0.
+
 Handling Gibberish/Nonsense: If the user inputs a single letter (e.g., "a"), random keystrokes, excessively short answers, or completely off-topic remarks, you MUST reject it. Do NOT use polite fillers like "I catch that" or "Understood."
 
 Rejection Response: If the answer is invalid, respond directly with: "That answer is invalid, irrelevant, or incomplete." and ask them to either answer the question properly or ask if they would like to skip it. Assign a score of 0 for this attempt.
@@ -92,9 +103,15 @@ Output Constraints:
             ...messages
           ];
 
-          const result = await llm.structuredGenerate<{ response: string, fragments: string[] }>(llmMessages, { temperature: 0.7 });
-          
-          return json(result);
+          const result = await llm.structuredGenerate<{ response?: unknown, fragments?: unknown }>(llmMessages, { temperature: 0.7 });
+          const response = typeof result.response === "string"
+            ? result.response.replace(/\s*undefined\s*$/i, "").trim()
+            : "";
+          if (!response) return json({ error: "The AI returned an empty response." }, 502);
+          const fragments = Array.isArray(result.fragments)
+            ? result.fragments.filter((fragment): fragment is string => typeof fragment === "string" && fragment.trim().length > 0).slice(0, 4)
+            : [];
+          return json({ response, fragments });
         } catch (error: any) {
           console.error("Chat error", error);
           return json({ error: error.message || "Failed to process chat" }, 500);

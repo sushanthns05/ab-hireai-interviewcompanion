@@ -13,12 +13,18 @@ export function StreamingMessage({ content }: StreamingMessageProps) {
     setIsDone(false);
     
     // Split by words to stream chunk by chunk
-    const words = content.split(" ");
+    const safeContent = typeof content === "string"
+      ? content.replace(/\s*undefined\s*$/i, "").trim()
+      : "";
+    const words = safeContent ? safeContent.split(/\s+/) : [];
     let i = 0;
     
     const interval = setInterval(() => {
       if (i < words.length) {
-        setDisplayed(prev => (prev ? prev + " " + words[i] : words[i]));
+        const word = words[i];
+        if (word !== undefined) {
+          setDisplayed(prev => (prev ? prev + " " + word : word));
+        }
         i++;
       } else {
         clearInterval(interval);

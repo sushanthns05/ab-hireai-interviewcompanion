@@ -1,6 +1,6 @@
 import { z } from "zod";
 import type { Candidate, InterviewApiResponse, DebugState } from "./types";
-import { createLLMClient, LLMError } from "./llm.server";
+import { createLLMClient, LLMError, MIN_ANSWER_LENGTH } from "./llm.server";
 import { getSession, saveSession, deleteSession } from "./sessions.server";
 import { startInterview, continueInterview } from "./engine.server";
 
@@ -69,6 +69,14 @@ export async function handleInterviewRequest(request: Request): Promise<Response
   }
 
   const { sessionId, candidate, message } = parsed.data;
+
+  if (message !== undefined && message.trim().length < MIN_ANSWER_LENGTH) {
+    return json({
+      reply: "Your answer is too short or invalid. Please provide a relevant response.",
+      done: false,
+      score: 0,
+    });
+  }
 
   let llm;
   try {
