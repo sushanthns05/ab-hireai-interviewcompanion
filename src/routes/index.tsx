@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Upload, UserCircle2, Code2, Play, LayoutDashboard, Mic, Send, Target, Briefcase, Loader2, ArrowRight } from "lucide-react";
+import { Upload, UserCircle2, Code2, Play, LayoutDashboard, Mic, Send, Target, Briefcase, Loader2, ArrowRight, ArrowLeft } from "lucide-react";
 import { ThinkingTrace } from "../components/interview-iq/ThinkingTrace";
 import { ConfidenceMeter } from "../components/interview-iq/ConfidenceMeter";
 import { ReportCard } from "../components/interview-iq/ReportCard";
@@ -71,6 +71,19 @@ function InterviewIQApp() {
     };
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
+
+  // Handle browser back button
+  useEffect(() => {
+    const handlePopState = (e: PopStateEvent) => {
+      if (e.state && e.state.appState) {
+        setAppState(e.state.appState);
+      } else {
+        setAppState("HOME");
+      }
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
   }, []);
 
   // We no longer simulate thinking on start with a timeout; we will do it in handleStart
@@ -245,6 +258,7 @@ function InterviewIQApp() {
   };
 
   const navigateTo = (state: AppState) => {
+    window.history.pushState({ appState: state }, "", `?state=${state.toLowerCase()}`);
     setIsTransitioning(true);
     setTimeout(() => {
       setAppState(state);
@@ -360,9 +374,21 @@ function InterviewIQApp() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.4, ease: "easeOut" }}
-              className="w-full max-w-2xl bg-card rounded-3xl shadow-panel border border-border p-10 flex flex-col gap-10 z-10"
+              className="w-full max-w-2xl bg-card rounded-3xl shadow-panel border border-border p-10 flex flex-col gap-10 z-10 relative"
             >
-              <div className="text-center">
+              <button 
+                onClick={() => {
+                  window.history.back(); // Use browser back to maintain history stack
+                  // Fallback if no history
+                  if (window.history.state === null) navigateTo("HOME");
+                }}
+                className="absolute top-8 left-8 p-2 rounded-full hover:bg-muted text-muted-foreground transition-colors group"
+                aria-label="Go back"
+              >
+                <ArrowLeft className="size-6 group-hover:-translate-x-1 transition-transform" />
+              </button>
+              
+              <div className="text-center mt-2">
                 <h1 className="text-4xl font-bold text-foreground tracking-tight">Configure Interview</h1>
                 <p className="text-muted-foreground mt-2">Tailor your mock session to your exact needs.</p>
               </div>
