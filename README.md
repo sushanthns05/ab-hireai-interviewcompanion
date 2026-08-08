@@ -1,4 +1,4 @@
-# The Interview Agent — ABTalks AI Cohort
+# The Interview Agent — ABTalks HireAI
 
 An adaptive AI technical interviewer for graduates of the 31-day Enterprise AI Engineering cohort. 
 It reads each candidate's real mission history, plans curriculum topics with intent, adapts 
