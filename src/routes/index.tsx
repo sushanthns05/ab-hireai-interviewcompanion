@@ -171,14 +171,18 @@ function InterviewIQApp() {
     <div className="min-h-screen w-full flex flex-col bg-background text-foreground font-sans text-foreground selection:bg-primary/20 selection:text-indigo-900">
       {/* Premium Navbar */}
       <nav className="h-20 border-b border-border/50 bg-background/50 backdrop-blur-xl flex items-center justify-between px-8 z-50 sticky top-0">
-        <div className="flex items-center gap-3">
-          <div className="bg-linear-to-br from-primary to-chart-2 size-8 rounded-lg flex items-center justify-center shadow-glow">
+        <Link 
+          to="/"
+          onClick={() => setAppState("HOME")}
+          className="flex items-center gap-3 group"
+        >
+          <div className="bg-linear-to-br from-primary to-chart-2 size-8 rounded-lg flex items-center justify-center shadow-glow group-hover:scale-105 transition-transform">
             <span className="text-white font-bold text-lg leading-none">IQ</span>
           </div>
           <span className="text-xl font-bold tracking-tight text-foreground">
             AB<span className="text-primary">InterviewIQ</span>
           </span>
-        </div>
+        </Link>
         
       </nav>
 
