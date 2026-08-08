@@ -1,16 +1,20 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Upload, UserCircle2, Code2, Play, LayoutDashboard } from "lucide-react";
+import { Upload, UserCircle2, Code2, Play, LayoutDashboard, Mic, Send } from "lucide-react";
 import { ThinkingTrace } from "../components/interview-iq/ThinkingTrace";
 import { ConfidenceMeter } from "../components/interview-iq/ConfidenceMeter";
 import { ReportCard } from "../components/interview-iq/ReportCard";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/")({
   component: InterviewIQApp,
 });
 
 type AppState = "SETUP" | "LIVE" | "RESULTS";
+
+const QUESTION = "Can you describe a time when you had to optimize a slow-performing React application? What specific metrics did you target?";
 
 function InterviewIQApp() {
   const [appState, setAppState] = useState<AppState>("SETUP");
@@ -24,56 +28,139 @@ function InterviewIQApp() {
   const [confidenceScore, setConfidenceScore] = useState(0);
   const [celebration, setCelebration] = useState<string | null>(null);
 
-  // Simulated Interview Flow
+  // Input & Web Speech State
+  const [value, setValue] = useState("");
+  const [isRecording, setIsRecording] = useState(false);
+  const recognitionRef = useRef<any>(null);
+  const baseValueRef = useRef("");
+
+  // Results State
+  const [resultScore, setResultScore] = useState(0);
+  const [originalAnswer, setOriginalAnswer] = useState("");
+  const [strongerAnswer, setStrongerAnswer] = useState("");
+  const [aiFragments, setAiFragments] = useState<string[]>([
+    "Transcribing audio input...",
+    "Extracting STAR framework components...",
+    "Evaluating use of concrete metrics...",
+    "Generating feedback report..."
+  ]);
+
+  // Clean up speech recognition on unmount
+  useEffect(() => {
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
+    };
+  }, []);
+
+  // When LIVE starts, simulate thinking, then asking, then wait for user
   useEffect(() => {
     if (appState !== "LIVE") return;
 
-    // Reset sequence
     setLivePhase("ai_thinking_1");
     setConfidenceScore(0);
     setCelebration(null);
+    setValue("");
 
-    // 1. AI Thinks (generating question)
     const t1 = setTimeout(() => {
-      setLivePhase("ai_asking");
-    }, 4000); // 4 seconds of thinking
-
-    // 2. AI Asks, then User Answers
-    const t2 = setTimeout(() => {
       setLivePhase("user_answering");
-      
-      // Simulate confidence score rising
-      let score = 20;
-      const scoreInterval = setInterval(() => {
-        score += Math.random() * 15;
-        if (score > 85) score = 88;
-        setConfidenceScore(score);
-        
-        if (score > 60 && !celebration) {
-          setCelebration("Great STAR metric!");
-          setTimeout(() => setCelebration(null), 3000);
-        }
-      }, 1000);
+    }, 2000); 
 
-      // Stop answering after a few seconds
-      setTimeout(() => {
-        clearInterval(scoreInterval);
-        setLivePhase("ai_thinking_2");
-      }, 7000); // 7 seconds of answering
-      
-    }, 6000); // 2 seconds of asking
-
-    // 3. AI Thinks (evaluating)
-    const t3 = setTimeout(() => {
-      setAppState("RESULTS");
-    }, 18000); // end of sequence
-
-    return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
-      clearTimeout(t3);
-    };
+    return () => clearTimeout(t1);
   }, [appState]);
+
+  const toggleRecording = () => {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert("Voice input is not supported in this browser. Please use Chrome or Edge.");
+      return;
+    }
+
+    if (isRecording) {
+      recognitionRef.current?.stop();
+      setIsRecording(false);
+      return;
+    }
+
+    baseValueRef.current = value + (value && !value.endsWith(" ") ? " " : "");
+    const recognition = new SpeechRecognition();
+    recognition.continuous = true;
+    recognition.interimResults = true;
+
+    recognition.onresult = (event: any) => {
+      let finalTranscript = "";
+      let interimTranscript = "";
+
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        if (event.results[i].isFinal) {
+          finalTranscript += event.results[i][0].transcript + " ";
+        } else {
+          interimTranscript += event.results[i][0].transcript;
+        }
+      }
+
+      if (finalTranscript) {
+        baseValueRef.current += finalTranscript;
+      }
+
+      setValue(baseValueRef.current + interimTranscript);
+      // Simulate confidence score rising as they speak
+      setConfidenceScore(Math.min(100, Math.max(10, baseValueRef.current.length / 3)));
+    };
+
+    recognition.onerror = (event: any) => {
+      console.error("Speech recognition error:", event.error);
+      setIsRecording(false);
+    };
+
+    recognition.onend = () => {
+      setIsRecording(false);
+    };
+
+    recognition.start();
+    recognitionRef.current = recognition;
+    setIsRecording(true);
+  };
+
+  const submitAnswer = async () => {
+    if (!value.trim()) return;
+    if (isRecording) {
+      recognitionRef.current?.stop();
+      setIsRecording(false);
+    }
+    
+    setOriginalAnswer(value.trim());
+    setLivePhase("ai_thinking_2");
+
+    try {
+      const response = await fetch("/api/evaluate-answer", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          question: QUESTION,
+          answer: value.trim(),
+          persona,
+        }),
+      });
+      
+      const data = await response.json();
+      
+      if (data.score !== undefined) {
+        setResultScore(data.score);
+        setStrongerAnswer(data.strongerAnswer);
+        setAiFragments(data.fragments || aiFragments);
+      } else {
+        throw new Error(data.error || "Failed to evaluate");
+      }
+    } catch (err) {
+      console.error(err);
+      setResultScore(0);
+      setStrongerAnswer("Sorry, I encountered an error evaluating your answer.");
+    }
+
+    setAppState("RESULTS");
+  };
 
   const handleStart = () => {
     setAppState("LIVE");
@@ -197,13 +284,13 @@ function InterviewIQApp() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, filter: "blur(10px)" }}
               transition={{ duration: 0.5, ease: "easeInOut" }}
-              className="w-full max-w-5xl flex flex-col lg:flex-row gap-12 items-center lg:items-start justify-center z-10"
+              className="w-full max-w-6xl flex flex-col lg:flex-row gap-12 items-stretch justify-center z-10"
             >
               {/* Left Column: AI Interface */}
-              <div className="flex-1 flex flex-col gap-8 w-full max-w-lg relative">
+              <div className="flex-1 flex flex-col gap-8 w-full max-w-xl relative">
                 
                 {/* AI Question Box */}
-                <div className="bg-card p-8 rounded-3xl shadow-panel border border-border flex flex-col gap-6 relative overflow-hidden">
+                <div className="bg-card p-8 rounded-3xl shadow-panel border border-border flex flex-col gap-6 relative overflow-hidden h-full">
                   <div className="flex items-center gap-3">
                     <div className="bg-primary/20 size-10 rounded-full flex items-center justify-center shrink-0">
                       <UserCircle2 className="size-5 text-primary" />
@@ -216,12 +303,12 @@ function InterviewIQApp() {
                   
                   <div className="text-lg text-foreground leading-relaxed font-medium min-h-20">
                     {livePhase === "ai_thinking_1" && <span className="text-muted-foreground italic">Thinking...</span>}
-                    {livePhase !== "ai_thinking_1" && "Can you describe a time when you had to optimize a slow-performing React application? What specific metrics did you target?"}
+                    {livePhase !== "ai_thinking_1" && QUESTION}
                   </div>
                 </div>
 
                 {/* Thinking Trace Drawer/Panel */}
-                <div className="absolute top-[110%] left-0 w-full z-20">
+                <div className="absolute top-[105%] left-0 w-full z-20">
                   <ThinkingTrace 
                     isThinking={livePhase === "ai_thinking_1" || livePhase === "ai_thinking_2"} 
                     fragments={
@@ -232,33 +319,61 @@ function InterviewIQApp() {
                             "Calibrating technical depth for Mid-Level role...",
                             "Formulating behavioral + technical hybrid question..."
                           ]
-                        : [
-                            "Transcribing audio input...",
-                            "Extracting STAR framework components...",
-                            "Evaluating use of concrete metrics...",
-                            "Generating feedback report..."
-                          ]
+                        : aiFragments
                     }
                   />
                 </div>
               </div>
 
-              {/* Right Column: User Interface / Confidence Meter */}
-              <div className="flex flex-col items-center gap-4">
-                <ConfidenceMeter 
-                  isSpeaking={livePhase === "user_answering"} 
-                  confidenceScore={confidenceScore} 
-                  celebration={celebration} 
-                />
+              {/* Right Column: User Interface / Input */}
+              <div className="flex-1 flex flex-col gap-4 max-w-xl w-full">
                 
-                {livePhase === "user_answering" && (
-                  <motion.div 
-                    initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                    className="bg-card px-4 py-2 rounded-full shadow-glow border border-border text-sm font-medium text-muted-foreground animate-pulse"
-                  >
-                    Speak now...
-                  </motion.div>
-                )}
+                <div className="flex-1 bg-card rounded-3xl shadow-panel border border-border p-6 flex flex-col gap-4">
+                  <div className="flex justify-between items-center px-2">
+                    <h3 className="font-semibold text-foreground uppercase tracking-wider text-sm">Your Answer</h3>
+                    <ConfidenceMeter 
+                      isSpeaking={isRecording} 
+                      confidenceScore={confidenceScore} 
+                      celebration={celebration} 
+                    />
+                  </div>
+                  
+                  <div className="flex-1 relative flex flex-col min-h-32">
+                    <Textarea
+                      value={value}
+                      onChange={(e) => setValue(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) submitAnswer();
+                      }}
+                      placeholder={isRecording ? "Listening..." : "Type or speak your answer..."}
+                      className={`flex-1 resize-none bg-background/50 border-0 focus-visible:ring-1 focus-visible:ring-primary rounded-xl p-4 text-base leading-relaxed ${isRecording ? 'border border-red-500/50 shadow-[0_0_15px_rgba(239,68,68,0.2)]' : ''}`}
+                      disabled={livePhase !== "user_answering"}
+                    />
+                  </div>
+
+                  <div className="flex justify-end gap-3 mt-2">
+                    <Button 
+                      onClick={toggleRecording} 
+                      variant="outline" 
+                      size="lg" 
+                      disabled={livePhase !== "user_answering"}
+                      className={`transition-all rounded-full px-6 gap-2 ${isRecording ? 'bg-red-500/10 text-red-500 border-red-500 animate-pulse hover:bg-red-500/20 hover:text-red-500' : 'hover:text-primary hover:border-primary'}`}
+                    >
+                      <Mic className="size-5" />
+                      {isRecording ? "Stop Recording" : "Use Voice"}
+                    </Button>
+                    <Button 
+                      onClick={submitAnswer} 
+                      disabled={livePhase !== "user_answering" || !value.trim()} 
+                      size="lg" 
+                      className="rounded-full px-8 shadow-(--shadow-glow) gap-2"
+                    >
+                      <Send className="size-4" />
+                      Submit
+                    </Button>
+                  </div>
+                </div>
+
               </div>
             </motion.div>
           )}
@@ -274,9 +389,9 @@ function InterviewIQApp() {
               className="w-full z-10"
             >
               <ReportCard 
-                score={88} 
-                originalAnswer="Well, the app was really slow when we loaded the list. So I looked at the components and added useMemo in a few places and it got faster. We didn't really measure it but the users were happy."
-                strongerAnswer="I identified a critical render bottleneck in our main List component using React Profiler. By implementing useMemo for the expensive data sorting and virtualizing the list with react-window, we reduced time-to-interactive from 3.2s to 0.8s, resulting in a 40% drop in user complaints regarding page load."
+                score={resultScore} 
+                originalAnswer={originalAnswer}
+                strongerAnswer={strongerAnswer}
                 onRestart={handleRestart}
               />
             </motion.div>
