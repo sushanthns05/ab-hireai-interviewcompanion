@@ -13,7 +13,18 @@ export const Route = createFileRoute("/")({
   component: InterviewIQApp,
 });
 
-type AppState = "HOME" | "SETUP" | "LIVE" | "RESULTS";
+type AppState = "HOME" | "SETUP" | "LIVE" | "RESULTS" | "HISTORY";
+
+export interface PastSession {
+  id: string;
+  date: string;
+  type: string;
+  persona: string;
+  score: number;
+  messages: {role: "user" | "assistant", content: string}[];
+  strongerAnswer: string;
+  fragments: string[];
+}
 
 
 function cleanAiText(value: unknown): string {
@@ -27,6 +38,22 @@ function InterviewIQApp() {
 
   const [appState, setAppState] = useState<AppState>("HOME");
   const [isTransitioning, setIsTransitioning] = useState(false);
+
+  // History State
+  const [sessions, setSessions] = useState<PastSession[]>([]);
+  const [selectedSession, setSelectedSession] = useState<PastSession | null>(null);
+
+  useEffect(() => {
+    if (appState === "HISTORY") {
+      try {
+        const existing = JSON.parse(localStorage.getItem('hireai_sessions') || '[]');
+        setSessions(existing);
+      } catch (e) {
+        setSessions([]);
+      }
+      setSelectedSession(null);
+    }
+  }, [appState]);
 
   // Check URL for initial setup state
   useEffect(() => {
@@ -55,34 +82,72 @@ function InterviewIQApp() {
 
   // Focus Mode State
   const [focusWarning, setFocusWarning] = useState<string | null>(null);
+  const [focusViolations, setFocusViolations] = useState<number>(0);
 
   // Focus Mode Enforcement
   useEffect(() => {
     if (appState !== "LIVE") {
       setFocusWarning(null);
+      setFocusViolations(0);
       return;
     }
 
+    const handleViolation = (message: string) => {
+      setFocusViolations(prev => {
+        const newCount = prev + 1;
+        if (newCount >= 4) {
+          setFocusWarning("Interview terminated due to multiple focus mode violations (4/4).");
+          setTimeout(() => {
+            setAppState("HOME");
+            setFocusWarning(null);
+            setFocusViolations(0);
+            if (document.fullscreenElement && document.exitFullscreen) {
+              document.exitFullscreen().catch(() => {});
+            }
+          }, 4000);
+        } else {
+          setFocusWarning(`${message} (Warning ${newCount}/3)`);
+        }
+        return newCount;
+      });
+    };
+
     const handleVisibilityChange = () => {
-      if (document.hidden) {
-        setFocusWarning("Tab switch detected. Please stay focused on the interview.");
+      if (document.hidden && !focusWarning) {
+        handleViolation("Tab switch detected. Please stay focused on the interview.");
       }
     };
 
     const handleFullscreenChange = () => {
-      if (!document.fullscreenElement) {
-        setFocusWarning("Fullscreen exited. Please return to fullscreen to continue.");
+      if (!document.fullscreenElement && !focusWarning) {
+        handleViolation("Fullscreen exited. Please return to fullscreen to continue.");
+      }
+    };
+
+    const preventCopy = (e: ClipboardEvent) => {
+      e.preventDefault();
+      handleViolation("Copying text is not allowed.");
+    };
+
+    const preventShortcuts = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && ['c', 'p', 's'].includes(e.key.toLowerCase())) {
+        e.preventDefault();
+        handleViolation("Shortcuts are disabled.");
       }
     };
 
     document.addEventListener("visibilitychange", handleVisibilityChange);
     document.addEventListener("fullscreenchange", handleFullscreenChange);
+    document.addEventListener("copy", preventCopy);
+    document.addEventListener("keydown", preventShortcuts);
 
     return () => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       document.removeEventListener("fullscreenchange", handleFullscreenChange);
+      document.removeEventListener("copy", preventCopy);
+      document.removeEventListener("keydown", preventShortcuts);
     };
-  }, [appState]);
+  }, [appState, focusWarning]);
   const [strongerAnswer, setStrongerAnswer] = useState("");
   const [aiFragments, setAiFragments] = useState<string[]>([
     "Transcribing audio input...",
@@ -250,9 +315,30 @@ function InterviewIQApp() {
       const data = await response.json();
       
       if (data.score !== undefined) {
+        const parsedStrongerAnswer = cleanAiText(data.strongerAnswer);
+        const parsedFragments = data.fragments || aiFragments;
+        
         setResultScore(data.score);
-        setStrongerAnswer(cleanAiText(data.strongerAnswer));
-        setAiFragments(data.fragments || aiFragments);
+        setStrongerAnswer(parsedStrongerAnswer);
+        setAiFragments(parsedFragments);
+
+        // Save to LocalStorage
+        const session: PastSession = {
+          id: Date.now().toString(),
+          date: new Date().toISOString(),
+          type: interviewType,
+          persona,
+          score: data.score,
+          messages,
+          strongerAnswer: parsedStrongerAnswer,
+          fragments: parsedFragments
+        };
+        try {
+          const existing = JSON.parse(localStorage.getItem('hireai_sessions') || '[]');
+          localStorage.setItem('hireai_sessions', JSON.stringify([session, ...existing].slice(0, 50)));
+        } catch (e) {
+          console.error("Failed to save session history", e);
+        }
       } else {
         throw new Error(data.error || "Failed to evaluate");
       }
@@ -468,18 +554,18 @@ function InterviewIQApp() {
                     <div className="text-sm text-white/50 mt-2 leading-relaxed">Hone your skills in a low-pressure simulated environment.</div>
                   </div>
                 </button>
-                <Link 
-                  to="/dashboard"
+                <button 
+                  onClick={() => navigateTo("HISTORY")}
                   className="flex-1 flex flex-col items-start text-left gap-4 bg-black/40 backdrop-blur-2xl border border-white/10 hover:border-[#c084fc]/50 hover:bg-white/5 p-6 sm:p-8 rounded-3xl transition-all group cursor-pointer shadow-[0_0_30px_rgba(0,0,0,0.5)]"
                 >
                   <div className="bg-[#c084fc]/10 p-3 rounded-full group-hover:scale-110 transition-transform shadow-[0_0_15px_rgba(192,132,252,0.2)]">
-                    <Briefcase className="size-6 text-[#c084fc]" />
+                    <History className="size-6 text-[#c084fc]" />
                   </div>
                   <div>
-                    <div className="font-semibold text-lg sm:text-xl text-white group-hover:text-[#c084fc] transition-colors">Live Interview</div>
-                    <div className="text-sm text-white/50 mt-2 leading-relaxed">Start the adaptive technical interview session.</div>
+                    <div className="font-semibold text-lg sm:text-xl text-white group-hover:text-[#c084fc] transition-colors">Session Replay</div>
+                    <div className="text-sm text-white/50 mt-2 leading-relaxed">Revisit past interviews with full transcripts and feedback.</div>
                   </div>
-                </Link>
+                </button>
               </div>
 
 
@@ -580,7 +666,7 @@ function InterviewIQApp() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, filter: "blur(10px)" }}
               transition={{ duration: 0.5, ease: "easeInOut" }}
-              className="w-full flex flex-col gap-6 items-center z-10 relative"
+              className="w-full flex flex-col gap-6 items-center z-10 relative select-none"
             >
               <div className="w-full max-w-6xl flex flex-col lg:flex-row gap-8 lg:gap-12 items-stretch justify-center relative z-10">
               {/* Left Column: AI Interface */}
@@ -691,7 +777,7 @@ function InterviewIQApp() {
           )}
 
           {/* RESULTS SCREEN */}
-          {appState === "RESULTS" && (
+          {!isTransitioning && appState === "RESULTS" && (
             <motion.div
               key="results"
               initial={{ opacity: 0, y: 30 }}
@@ -706,6 +792,140 @@ function InterviewIQApp() {
                 strongerAnswer={strongerAnswer}
                 onRestart={handleRestart}
               />
+            </motion.div>
+          )}
+
+          {/* HISTORY SCREEN */}
+          {!isTransitioning && appState === "HISTORY" && (
+            <motion.div
+              key="history"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+              className="w-full max-w-5xl flex flex-col items-center gap-8 z-10 relative"
+            >
+              <div className="w-full flex justify-between items-center mb-4">
+                <button 
+                  onClick={() => navigateTo("HOME")}
+                  className="flex items-center gap-2 text-white/60 hover:text-white transition-colors"
+                >
+                  <ArrowLeft className="size-5" />
+                  <span>Back to Home</span>
+                </button>
+                <h1 className="text-3xl font-bold text-white tracking-tight">Session Replay</h1>
+                <div className="w-[100px]"></div> {/* spacer */}
+              </div>
+
+              {!selectedSession ? (
+                <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {sessions.length === 0 ? (
+                    <div className="col-span-full py-20 text-center flex flex-col items-center gap-4">
+                      <div className="bg-white/5 p-6 rounded-full inline-block">
+                        <History className="size-12 text-white/20" />
+                      </div>
+                      <h3 className="text-xl font-medium text-white">No sessions yet</h3>
+                      <p className="text-white/50 max-w-sm">Complete a mock interview to see your transcripts and feedback here.</p>
+                      <button 
+                        onClick={() => navigateTo("SETUP")}
+                        className="mt-4 px-6 py-3 rounded-full bg-primary/20 text-primary hover:bg-primary/30 transition-colors font-semibold"
+                      >
+                        Start Practicing
+                      </button>
+                    </div>
+                  ) : (
+                    sessions.map(session => (
+                      <div 
+                        key={session.id}
+                        onClick={() => setSelectedSession(session)}
+                        className="bg-card hover:bg-white/5 cursor-pointer border border-border p-6 rounded-3xl flex flex-col gap-4 transition-all hover:scale-[1.02] shadow-panel"
+                      >
+                        <div className="flex justify-between items-start">
+                          <div className="bg-primary/10 text-primary p-2 rounded-xl">
+                            <Target className="size-5" />
+                          </div>
+                          <div className="text-sm font-semibold text-white/60 bg-white/5 px-3 py-1 rounded-full">
+                            {new Date(session.date).toLocaleDateString()}
+                          </div>
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-bold text-white mb-1 capitalize">{session.type} Interview</h3>
+                          <p className="text-sm text-white/50 capitalize">Persona: {session.persona.replace('_', ' ')}</p>
+                        </div>
+                        <div className="mt-auto pt-4 border-t border-border flex justify-between items-end">
+                          <div>
+                            <div className="text-sm text-white/50 mb-1">Score</div>
+                            <div className={`text-2xl font-black ${session.score >= 80 ? 'text-green-400' : session.score >= 60 ? 'text-yellow-400' : 'text-red-400'}`}>
+                              {session.score}/100
+                            </div>
+                          </div>
+                          <ArrowRight className="size-5 text-white/30" />
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              ) : (
+                <div className="w-full bg-card rounded-3xl border border-border shadow-panel flex flex-col lg:flex-row overflow-hidden max-h-[75vh]">
+                  {/* Left Column: Transcript */}
+                  <div className="flex-1 flex flex-col border-b lg:border-b-0 lg:border-r border-border max-h-[50vh] lg:max-h-none">
+                    <div className="p-6 border-b border-border flex justify-between items-center bg-black/20">
+                      <h2 className="text-xl font-bold text-white">Full Transcript</h2>
+                      <button onClick={() => setSelectedSession(null)} className="text-sm font-medium text-white/60 hover:text-white px-4 py-2 rounded-full hover:bg-white/10 transition-colors">
+                        Close Details
+                      </button>
+                    </div>
+                    <div className="p-6 overflow-y-auto flex-1 flex flex-col gap-6">
+                      {selectedSession.messages.filter(m => m.content.trim()).map((msg, i) => (
+                        <div key={i} className={`flex gap-4 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
+                          <div className={`size-8 shrink-0 rounded-full flex items-center justify-center ${msg.role === 'user' ? 'bg-primary/20 text-primary' : 'bg-white/10 text-white/70'}`}>
+                            {msg.role === 'user' ? <UserCircle2 className="size-4" /> : <ShieldCheck className="size-4" />}
+                          </div>
+                          <div className={`p-4 rounded-2xl text-sm leading-relaxed max-w-[85%] ${msg.role === 'user' ? 'bg-primary text-white rounded-tr-sm' : 'bg-white/5 text-white/80 border border-white/5 rounded-tl-sm'}`}>
+                            {msg.content}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  {/* Right Column: Feedback */}
+                  <div className="flex-1 flex flex-col bg-black/40 overflow-y-auto max-h-[50vh] lg:max-h-none">
+                    <div className="p-6 border-b border-border sticky top-0 bg-black/40 backdrop-blur-xl z-10 flex justify-between items-center">
+                      <h2 className="text-xl font-bold text-white">Feedback Report</h2>
+                      <div className={`px-4 py-1.5 rounded-full text-lg font-bold border ${selectedSession.score >= 80 ? 'bg-green-500/10 text-green-400 border-green-500/30' : selectedSession.score >= 60 ? 'bg-yellow-500/10 text-yellow-400 border-yellow-500/30' : 'bg-red-500/10 text-red-400 border-red-500/30'}`}>
+                        {selectedSession.score}/100
+                      </div>
+                    </div>
+                    <div className="p-6 flex flex-col gap-8">
+                      <div>
+                        <h3 className="text-sm font-bold text-primary uppercase tracking-widest mb-4 flex items-center gap-2">
+                          <MessageSquareText className="size-4" />
+                          Evaluation
+                        </h3>
+                        <div className="grid grid-cols-1 gap-3">
+                          {selectedSession.fragments.map((frag, idx) => (
+                            <div key={idx} className="flex items-start gap-3 p-4 bg-white/5 rounded-xl border border-white/5">
+                              <Target className="size-4 text-primary shrink-0 mt-1" />
+                              <span className="text-sm text-white/80 leading-relaxed">{frag}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <h3 className="text-sm font-bold text-primary uppercase tracking-widest mb-4 flex items-center gap-2">
+                          <Target className="size-4" />
+                          Ideal Response Strategy
+                        </h3>
+                        <div className="p-5 bg-primary/10 border border-primary/20 rounded-2xl text-sm leading-relaxed text-white/90">
+                          {selectedSession.strongerAnswer}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </motion.div>
           )}
         </AnimatePresence>
