@@ -41,7 +41,7 @@ export function ConfidenceMeter({ isSpeaking, confidenceScore, celebration }: Co
 
       {/* Circular Gauge */}
       <div className="relative flex items-center justify-center mb-6 mt-4">
-        <svg width="120" height="120" className="rotate-[-90deg]">
+        <svg width="120" height="120" className="-rotate-90">
           <circle
             cx="60"
             cy="60"

@@ -109,7 +109,7 @@ function InterviewIQApp() {
         
         {/* Abstract Background Decoration */}
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-indigo-400/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-1/4 right-1/4 w-[30rem] h-[30rem] bg-cyan-400/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-1/4 right-1/4 w-120 h-120 bg-cyan-400/5 rounded-full blur-3xl pointer-events-none" />
 
         <AnimatePresence mode="wait">
           
@@ -225,7 +225,7 @@ function InterviewIQApp() {
                     </div>
                   </div>
                   
-                  <div className="text-lg text-slate-700 leading-relaxed font-medium min-h-[5rem]">
+                  <div className="text-lg text-slate-700 leading-relaxed font-medium min-h-20">
                     {livePhase === "ai_thinking_1" && <span className="text-slate-400 italic">Thinking...</span>}
                     {livePhase !== "ai_thinking_1" && "Can you describe a time when you had to optimize a slow-performing React application? What specific metrics did you target?"}
                   </div>

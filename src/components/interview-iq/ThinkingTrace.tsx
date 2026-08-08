@@ -20,7 +20,10 @@ export function ThinkingTrace({ fragments, isThinking }: ThinkingTraceProps) {
     let currentIndex = 0;
     const interval = setInterval(() => {
       if (currentIndex < fragments.length) {
-        setVisibleFragments((prev) => [...prev, fragments[currentIndex]]);
+        const nextFragment = fragments[currentIndex];
+        if (nextFragment) {
+          setVisibleFragments((prev) => [...prev, nextFragment]);
+        }
         currentIndex++;
       } else {
         clearInterval(interval);
