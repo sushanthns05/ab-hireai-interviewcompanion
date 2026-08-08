@@ -36,6 +36,67 @@ export function InterviewRoom({
   const [showDebug, setShowDebug] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
   const [isRecording, setIsRecording] = useState(false);
+  const recognitionRef = useRef<any>(null);
+  const baseValueRef = useRef("");
+
+  useEffect(() => {
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
+    };
+  }, []);
+
+  const toggleRecording = () => {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert("Voice input is not supported in this browser. Please use Chrome or Edge.");
+      return;
+    }
+
+    if (isRecording) {
+      recognitionRef.current?.stop();
+      setIsRecording(false);
+      return;
+    }
+
+    baseValueRef.current = value + (value && !value.endsWith(" ") ? " " : "");
+    const recognition = new SpeechRecognition();
+    recognition.continuous = true;
+    recognition.interimResults = true;
+
+    recognition.onresult = (event: any) => {
+      let finalTranscript = "";
+      let interimTranscript = "";
+
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        if (event.results[i].isFinal) {
+          finalTranscript += event.results[i][0].transcript + " ";
+        } else {
+          interimTranscript += event.results[i][0].transcript;
+        }
+      }
+
+      if (finalTranscript) {
+        baseValueRef.current += finalTranscript;
+      }
+
+      setValue(baseValueRef.current + interimTranscript);
+    };
+
+    recognition.onerror = (event: any) => {
+      console.error("Speech recognition error:", event.error);
+      setIsRecording(false);
+    };
+
+    recognition.onend = () => {
+      setIsRecording(false);
+    };
+
+    recognition.start();
+    recognitionRef.current = recognition;
+    setIsRecording(true);
+  };
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -181,7 +242,7 @@ export function InterviewRoom({
               </div>
               <div className="flex gap-2">
                 <Button 
-                  onClick={() => setIsRecording(!isRecording)} 
+                  onClick={toggleRecording} 
                   variant="outline" 
                   size="lg" 
                   disabled={thinking}
