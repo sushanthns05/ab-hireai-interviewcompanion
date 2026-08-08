@@ -60,7 +60,7 @@ export function FeedbackReport({
             icon={<ArrowRight className="size-4 text-primary" />}
           />
 
-          <Button onClick={onReset} size="lg" className="w-full sm:w-auto rounded-none shadow-(--shadow-glow)">
+          <Button onClick={onReset} size="lg" className="w-full sm:w-auto">
             <RotateCcw className="mr-2 size-4" />
             Run another interview
           </Button>

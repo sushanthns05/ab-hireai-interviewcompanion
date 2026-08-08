@@ -49,8 +49,8 @@ export function CandidateSelector({ onStart, starting }: Props) {
               key={c.member.id}
               type="button"
               onClick={() => setSelected(c)}
-              className={`panel group text-left transition-all duration-200 ${
-                active ? "border-primary shadow-(--shadow-glow)" : "hover:border-primary hover:shadow-(--shadow-glow)"
+              className={`panel group text-left transition-all duration-200 hover:-translate-y-0.5 ${
+                active ? "ring-2 ring-primary" : "hover:border-primary/40"
               }`}
               aria-pressed={active}
             >
@@ -69,15 +69,15 @@ export function CandidateSelector({ onStart, starting }: Props) {
                 </div>
 
                 <dl className="mt-4 grid grid-cols-3 gap-2 text-center">
-                  <div className="rounded-none bg-secondary/60 py-2">
+                  <div className="rounded-lg bg-secondary/60 py-2">
                     <dt className="text-[10px] uppercase tracking-wide text-muted-foreground">Exp</dt>
                     <dd className="font-mono text-sm">{c.member.yearsExperience}y</dd>
                   </div>
-                  <div className="rounded-none bg-secondary/60 py-2">
+                  <div className="rounded-lg bg-secondary/60 py-2">
                     <dt className="text-[10px] uppercase tracking-wide text-muted-foreground">Missions</dt>
                     <dd className="font-mono text-sm">{c.signals.missionsCompleted}</dd>
                   </div>
-                  <div className="rounded-none bg-secondary/60 py-2">
+                  <div className="rounded-lg bg-secondary/60 py-2">
                     <dt className="text-[10px] uppercase tracking-wide text-muted-foreground">1st try</dt>
                     <dd className="font-mono text-sm">{c.signals.missionsFirstTry}</dd>
                   </div>
@@ -117,7 +117,7 @@ export function CandidateSelector({ onStart, starting }: Props) {
           size="lg"
           disabled={!selected || starting}
           onClick={() => selected && onStart(selected)}
-          className="shadow-(--shadow-glow)"
+          className="shadow-[var(--shadow-glow)]"
         >
           {starting
             ? "Preparing interview…"

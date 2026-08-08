@@ -67,9 +67,9 @@ export function InterviewRoom({
                 {questionCount} / {targetQuestions}
               </span>
             </div>
-            <div className="mt-2 h-2 overflow-hidden rounded-none bg-secondary">
+            <div className="mt-2 h-2 overflow-hidden rounded-full bg-secondary">
               <div
-                className="h-full rounded-none transition-all duration-500"
+                className="h-full rounded-full transition-all duration-500"
                 style={{ width: `${pct}%`, backgroundImage: "var(--gradient-line)" }}
               />
             </div>
@@ -143,10 +143,10 @@ export function InterviewRoom({
                 {m.role === "interviewer" ? "Interviewer" : "Candidate"}
               </p>
               <div
-                className={`whitespace-pre-wrap rounded-none px-4 py-3 text-sm leading-relaxed ${
+                className={`whitespace-pre-wrap rounded-xl px-4 py-3 text-sm leading-relaxed ${
                   m.role === "interviewer"
                     ? "bg-surface-raised border border-border"
-                    : "bg-primary/10 border border-primary shadow-[0_0_15px_oklch(0.6_0.25_15/0.15)]"
+                    : "bg-primary/12 border border-primary/30"
                 }`}
               >
                 {m.content}
@@ -172,11 +172,11 @@ export function InterviewRoom({
                   if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) submit();
                 }}
                 placeholder="Type your answer… (⌘/Ctrl + Enter to send)"
-                className="min-h-21 resize-none rounded-none focus-visible:border-primary focus-visible:ring-0 focus-visible:shadow-(--shadow-glow) bg-background/50"
+                className="min-h-[84px] resize-none"
                 aria-label="Your answer"
                 disabled={thinking}
               />
-              <Button onClick={submit} disabled={thinking || !value.trim()} size="lg" className="rounded-none shadow-(--shadow-glow)">
+              <Button onClick={submit} disabled={thinking || !value.trim()} size="lg">
                 <Send className="size-4" />
                 <span className="sr-only">Send answer</span>
               </Button>
