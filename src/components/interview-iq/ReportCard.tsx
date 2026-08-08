@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 import { ArrowRight, Share2, Award, Zap, Target, TrendingUp, AlertCircle } from "lucide-react";
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from "recharts";
 
@@ -31,6 +32,25 @@ export function ReportCard({ score, originalAnswer, strongerAnswer, onRestart }:
     performanceTitle = "Weak performance.";
     performanceSubtitle = "Your answer missed the core concepts. Review the stronger version below for a better approach.";
   }
+
+  const handleShare = () => {
+    const textToShare = `I just practiced a mock interview on ABInterviewIQ and scored ${score}/100! 🚀\n\nResult: ${performanceTitle}`;
+    
+    if (navigator.share) {
+      navigator.share({
+        title: 'My Interview IQ Score',
+        text: textToShare,
+      }).catch((err) => {
+        console.error('Error sharing:', err);
+      });
+    } else {
+      navigator.clipboard.writeText(textToShare).then(() => {
+        toast.success("Results copied to clipboard!");
+      }).catch(() => {
+        toast.error("Failed to copy results.");
+      });
+    }
+  };
 
   return (
     <motion.div 
@@ -98,7 +118,10 @@ export function ReportCard({ score, originalAnswer, strongerAnswer, onRestart }:
         >
           Try another question
         </button>
-        <button className="flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:hover:bg-primary/80 hover:shadow-glow transition-all active:scale-95">
+        <button 
+          onClick={handleShare}
+          className="flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:hover:bg-primary/80 hover:shadow-glow transition-all active:scale-95"
+        >
           <Share2 className="size-4" />
           Share Results
         </button>
