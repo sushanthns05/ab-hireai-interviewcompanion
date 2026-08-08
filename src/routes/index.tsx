@@ -559,18 +559,18 @@ function InterviewIQApp() {
                     <div className="text-sm text-white/50 mt-2 leading-relaxed">Hone your skills in a low-pressure simulated environment.</div>
                   </div>
                 </button>
-                <button 
-                  onClick={() => navigateTo("HISTORY")}
+                <Link 
+                  to="/dashboard"
                   className="flex-1 flex flex-col items-start text-left gap-4 bg-black/40 backdrop-blur-2xl border border-white/10 hover:border-[#c084fc]/50 hover:bg-white/5 p-6 sm:p-8 rounded-3xl transition-all group cursor-pointer shadow-[0_0_30px_rgba(0,0,0,0.5)]"
                 >
                   <div className="bg-[#c084fc]/10 p-3 rounded-full group-hover:scale-110 transition-transform shadow-[0_0_15px_rgba(192,132,252,0.2)]">
-                    <History className="size-6 text-[#c084fc]" />
+                    <Briefcase className="size-6 text-[#c084fc]" />
                   </div>
                   <div>
-                    <div className="font-semibold text-lg sm:text-xl text-white group-hover:text-[#c084fc] transition-colors">Session Replay</div>
-                    <div className="text-sm text-white/50 mt-2 leading-relaxed">Revisit past interviews with full transcripts and feedback.</div>
+                    <div className="font-semibold text-lg sm:text-xl text-white group-hover:text-[#c084fc] transition-colors">Live Interview</div>
+                    <div className="text-sm text-white/50 mt-2 leading-relaxed">Start the adaptive technical interview session.</div>
                   </div>
-                </button>
+                </Link>
               </div>
 
 
