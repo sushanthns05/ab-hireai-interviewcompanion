@@ -86,20 +86,22 @@ function InterviewIQApp() {
   return (
     <div className="min-h-screen w-full flex flex-col bg-background text-foreground font-sans text-foreground selection:bg-primary/20 selection:text-indigo-900">
       {/* Premium Navbar */}
-      <nav className="h-20 border-b border-border bg-white/80 backdrop-blur-md flex items-center justify-between px-8 z-50 sticky top-0">
+      <nav className="h-20 border-b border-border/50 bg-background/50 backdrop-blur-xl flex items-center justify-between px-8 z-50 sticky top-0">
         <div className="flex items-center gap-3">
-          <div className="bg-primary size-8 rounded-lg flex items-center justify-center shadow-glow">
+          <div className="bg-linear-to-br from-primary to-chart-2 size-8 rounded-lg flex items-center justify-center shadow-glow">
             <span className="text-white font-bold text-lg leading-none">IQ</span>
           </div>
-          <span className="text-xl font-bold tracking-tight text-foreground">InterviewIQ</span>
+          <span className="text-xl font-bold tracking-tight text-foreground">
+            AB<span className="text-primary">InterviewIQ</span>
+          </span>
         </div>
         
         {/* We keep a backdoor to the original dashboard just in case */}
         <Link 
           to="/dashboard" 
-          className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+          className="flex items-center gap-2 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors group"
         >
-          <Play className="size-4" />
+          <Play className="size-4 text-primary group-hover:scale-110 transition-transform" />
           Start Real Interview
         </Link>
       </nav>
