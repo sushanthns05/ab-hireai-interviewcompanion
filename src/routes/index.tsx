@@ -25,10 +25,10 @@ function LandingPage() {
         {/* Call to Action */}
         <div className="mt-8">
           <Link
-            to="/dashboard"
+            to="/chat"
             className="inline-flex h-14 items-center justify-center bg-primary px-8 text-lg font-semibold uppercase tracking-wider text-primary-foreground shadow-[0_0_20px_oklch(0.79_0.18_184.11/0.5)] transition-all hover:scale-105 hover:shadow-[0_0_30px_oklch(0.79_0.18_184.11/0.8)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
-            Initialize Dashboard
+            Launch Antigravity
           </Link>
         </div>
       </div>
