@@ -20,6 +20,31 @@ interface Props {
   onReset: () => void;
 }
 
+const mergeText = (existing: string, addition: string) => {
+  if (!existing.trim()) return addition;
+  if (!addition.trim()) return existing;
+
+  const existingWords = existing.trim().split(/\s+/);
+  const additionWords = addition.trim().split(/\s+/);
+
+  let maxOverlap = 0;
+  for (let i = 1; i <= Math.min(existingWords.length, additionWords.length); i++) {
+    const endExisting = existingWords.slice(-i).join(" ").toLowerCase().replace(/[.,?!]/g, '');
+    const startAddition = additionWords.slice(0, i).join(" ").toLowerCase().replace(/[.,?!]/g, '');
+    
+    if (endExisting === startAddition) {
+      maxOverlap = i;
+    }
+  }
+
+  if (maxOverlap > 0) {
+    const remainingAddition = additionWords.slice(maxOverlap).join(" ");
+    return remainingAddition ? existing.trim() + " " + remainingAddition : existing.trim();
+  }
+
+  return existing.trim() + " " + additionWords.join(" ");
+};
+
 export function InterviewRoom({
   candidate,
   messages,
@@ -66,18 +91,21 @@ export function InterviewRoom({
     recognition.interimResults = true;
 
     recognition.onresult = (event: any) => {
-      let finalTranscript = "";
-      let interimTranscript = "";
+      let currentSessionFinal = "";
+      let currentSessionInterim = "";
 
       for (let i = 0; i < event.results.length; i++) {
+        const transcript = event.results[i][0].transcript;
         if (event.results[i].isFinal) {
-          finalTranscript += event.results[i][0].transcript + " ";
+          currentSessionFinal = mergeText(currentSessionFinal, transcript);
         } else {
-          interimTranscript += event.results[i][0].transcript;
+          currentSessionInterim = mergeText(currentSessionInterim, transcript);
         }
       }
 
-      setValue(baseValueRef.current + finalTranscript + interimTranscript);
+      const sessionTotal = mergeText(currentSessionFinal, currentSessionInterim);
+      const finalText = mergeText(baseValueRef.current, sessionTotal);
+      setValue(finalText + (finalText && !finalText.endsWith(" ") ? " " : ""));
     };
 
     recognition.onerror = (event: any) => {
