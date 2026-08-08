@@ -16,13 +16,13 @@ import type {
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
     meta: [
-      { title: "The Interview Agent — ABTalks AI Cohort" },
+      { title: "Live Interview — ABInterviewIQ" },
       {
         name: "description",
         content:
           "Adaptive AI technical interviewer for ABTalks cohort graduates: personalized questions, live follow-ups and structured feedback.",
       },
-      { property: "og:title", content: "The Interview Agent — ABTalks AI Cohort" },
+      { property: "og:title", content: "Live Interview — ABInterviewIQ" },
       {
         property: "og:description",
         content:

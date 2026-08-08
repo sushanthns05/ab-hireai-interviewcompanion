@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Upload, UserCircle2, Code2, Play, LayoutDashboard, Mic, Send } from "lucide-react";
+import { Upload, UserCircle2, Code2, Play, LayoutDashboard, Mic, Send, Target, Briefcase, Loader2 } from "lucide-react";
 import { ThinkingTrace } from "../components/interview-iq/ThinkingTrace";
 import { ConfidenceMeter } from "../components/interview-iq/ConfidenceMeter";
 import { ReportCard } from "../components/interview-iq/ReportCard";
@@ -14,10 +14,12 @@ export const Route = createFileRoute("/")({
 
 type AppState = "HOME" | "SETUP" | "LIVE" | "RESULTS";
 
+const TAGLINE = "AI-powered interview practice that adapts to you.";
 const QUESTION = "Can you describe a time when you had to optimize a slow-performing React application? What specific metrics did you target?";
 
 function InterviewIQApp() {
   const [appState, setAppState] = useState<AppState>("HOME");
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   // Setup State variables
   const [interviewType, setInterviewType] = useState<"behavioral" | "technical">("behavioral");
@@ -52,6 +54,16 @@ function InterviewIQApp() {
         recognitionRef.current.stop();
       }
     };
+  }, []);
+
+  // Mouse tracking for radial glow
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      document.documentElement.style.setProperty('--mouse-x', `${e.clientX}px`);
+      document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`);
+    };
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
   // When LIVE starts, simulate thinking, then asking, then wait for user
@@ -167,6 +179,14 @@ function InterviewIQApp() {
     setAppState("SETUP");
   };
 
+  const navigateTo = (state: AppState) => {
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setAppState(state);
+      setIsTransitioning(false);
+    }, 400); // simulate short loading state
+  };
+
   return (
     <div className="min-h-screen w-full flex flex-col bg-background text-foreground font-sans text-foreground selection:bg-primary/20 selection:text-indigo-900">
       {/* Premium Navbar */}
@@ -189,37 +209,57 @@ function InterviewIQApp() {
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col items-center justify-center p-8 relative overflow-hidden">
         
-        {/* Abstract Background Decoration */}
+        {/* Abstract Background Decoration (Static) */}
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-1/4 right-1/4 w-120 h-120 bg-chart-2/10 rounded-full blur-3xl pointer-events-none" />
 
+        {/* Interactive Radial Glow */}
+        <div 
+          className="pointer-events-none fixed inset-0 z-0 transition-opacity duration-500"
+          style={{
+            background: `radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(139, 92, 246, 0.08), transparent 40%)`
+          }}
+        />
+
         <AnimatePresence mode="wait">
+          {isTransitioning && (
+            <motion.div
+              key="transition"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 z-50 flex items-center justify-center bg-background/50 backdrop-blur-sm"
+            >
+              <Loader2 className="size-10 text-primary animate-spin" />
+            </motion.div>
+          )}
           
           {/* HOME SCREEN */}
-          {appState === "HOME" && (
+          {!isTransitioning && appState === "HOME" && (
             <motion.div
               key="home"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.4, ease: "easeOut" }}
-              className="w-full max-w-2xl bg-card rounded-3xl shadow-panel border border-border p-10 flex flex-col gap-10 z-10 text-center"
+              className="w-full max-w-2xl bg-card rounded-3xl shadow-panel border border-border p-10 flex flex-col gap-10 z-10 text-center relative"
             >
               <div>
                 <h1 className="text-4xl font-bold text-foreground tracking-tight">Welcome to ABInterviewIQ</h1>
-                <p className="text-muted-foreground mt-3 text-lg">Choose an interview mode to begin your journey.</p>
+                <p className="text-muted-foreground mt-3 text-lg font-medium">{TAGLINE}</p>
+                <p className="text-muted-foreground/70 mt-1 text-sm">Choose an interview mode to begin your journey.</p>
               </div>
               <div className="flex flex-col sm:flex-row gap-6 justify-center mt-4">
                 <button 
-                  onClick={() => setAppState("SETUP")}
+                  onClick={() => navigateTo("SETUP")}
                   className="flex-1 flex flex-col items-center gap-4 bg-card border border-border hover:border-primary/50 hover:bg-primary/5 p-8 rounded-2xl transition-all group cursor-pointer"
                 >
                   <div className="bg-primary/10 p-4 rounded-full group-hover:scale-110 transition-transform">
-                    <UserCircle2 className="size-8 text-primary" />
+                    <Target className="size-8 text-primary" />
                   </div>
                   <div>
-                    <div className="font-semibold text-lg text-foreground">Mock Interview</div>
-                    <div className="text-sm text-muted-foreground mt-1">Practice with our AI</div>
+                    <div className="font-semibold text-lg text-foreground">Practice Mode</div>
+                    <div className="text-sm text-muted-foreground mt-2 leading-relaxed">Hone your skills in a low-pressure simulated environment.</div>
                   </div>
                 </button>
                 <Link 
@@ -227,11 +267,11 @@ function InterviewIQApp() {
                   className="flex-1 flex flex-col items-center gap-4 bg-card border border-border hover:border-chart-2/50 hover:bg-chart-2/5 p-8 rounded-2xl transition-all group cursor-pointer"
                 >
                   <div className="bg-chart-2/10 p-4 rounded-full group-hover:scale-110 transition-transform">
-                    <Play className="size-8 text-chart-2" />
+                    <Briefcase className="size-8 text-chart-2" />
                   </div>
                   <div>
-                    <div className="font-semibold text-lg text-foreground">Real Interview</div>
-                    <div className="text-sm text-muted-foreground mt-1">Go to actual dashboard</div>
+                    <div className="font-semibold text-lg text-foreground">Live Interview</div>
+                    <div className="text-sm text-muted-foreground mt-2 leading-relaxed">Start the adaptive technical interview session.</div>
                   </div>
                 </Link>
               </div>
@@ -239,7 +279,7 @@ function InterviewIQApp() {
           )}
 
           {/* SETUP SCREEN */}
-          {appState === "SETUP" && (
+          {!isTransitioning && appState === "SETUP" && (
             <motion.div
               key="setup"
               initial={{ opacity: 0, y: 20 }}

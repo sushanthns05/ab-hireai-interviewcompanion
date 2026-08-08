@@ -77,14 +77,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "The Interview Agent — ABTalks AI Cohort" },
+      { title: "ABInterviewIQ — Practice & Live AI Interviews" },
       {
         name: "description",
         content:
           "An adaptive AI technical interviewer for the ABTalks 31-day Enterprise AI Engineering cohort.",
       },
       { name: "author", content: "ABTalks" },
-      { property: "og:title", content: "The Interview Agent — ABTalks AI Cohort" },
+      { property: "og:title", content: "ABInterviewIQ — Practice & Live AI Interviews" },
       {
         property: "og:description",
         content:
