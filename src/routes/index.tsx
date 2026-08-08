@@ -99,8 +99,8 @@ function InterviewIQApp() {
           to="/dashboard" 
           className="flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors"
         >
-          <LayoutDashboard className="size-4" />
-          Legacy Dashboard
+          <Play className="size-4" />
+          Start Real Interview
         </Link>
       </nav>
 
@@ -128,20 +128,7 @@ function InterviewIQApp() {
                 <p className="text-slate-500 mt-2">Tailor your mock session to your exact needs.</p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {/* Upload Section */}
-                <div className="flex flex-col gap-3">
-                  <label className="text-sm font-semibold text-slate-700 uppercase tracking-wide">
-                    Context
-                  </label>
-                  <button className="flex flex-col items-center justify-center gap-3 h-32 border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50 hover:bg-slate-100 hover:border-indigo-300 transition-colors group cursor-pointer">
-                    <div className="bg-white p-2 rounded-full shadow-sm group-hover:scale-110 transition-transform">
-                      <Upload className="size-5 text-indigo-500" />
-                    </div>
-                    <span className="text-sm font-medium text-slate-600">Upload Resume (PDF)</span>
-                  </button>
-                </div>
-
+              <div className="flex flex-col gap-6 max-w-md mx-auto w-full">
                 {/* Configuration Options */}
                 <div className="flex flex-col gap-6">
                   <div className="flex flex-col gap-3">
