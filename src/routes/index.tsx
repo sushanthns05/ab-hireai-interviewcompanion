@@ -294,7 +294,7 @@ function InterviewIQApp() {
       </nav>
 
       {/* Main Content Area */}
-      <main className="flex-1 flex flex-col items-center justify-center p-8 relative overflow-hidden bg-black/40">
+      <main className="flex-1 flex flex-col items-center justify-center p-4 sm:p-8 relative overflow-hidden bg-black/40">
         
         {/* Removed Static Abstract Background Decoration to use the new image */}
 
@@ -327,20 +327,20 @@ function InterviewIQApp() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.4, ease: "easeOut" }}
-              className="w-full max-w-2xl bg-black/40 backdrop-blur-2xl rounded-3xl shadow-[0_0_50px_rgba(0,0,0,0.5)] border border-white/10 p-10 flex flex-col gap-10 z-10 text-center relative"
+              className="w-full max-w-2xl bg-black/40 backdrop-blur-2xl rounded-3xl shadow-[0_0_50px_rgba(0,0,0,0.5)] border border-white/10 p-6 sm:p-10 flex flex-col gap-8 sm:gap-10 z-10 text-center relative"
             >
               <div>
-                <h1 className="text-3xl font-bold text-white tracking-widest uppercase mb-2">WELCOME TO</h1>
-                <h2 className="text-5xl font-extrabold tracking-tight mb-6 bg-linear-to-r from-[#c084fc] to-[#2dd4bf] text-transparent bg-clip-text">
+                <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-widest uppercase mb-2">WELCOME TO</h1>
+                <h2 className="text-4xl sm:text-5xl font-extrabold tracking-tight mb-4 sm:mb-6 bg-linear-to-r from-[#c084fc] to-[#2dd4bf] text-transparent bg-clip-text break-words">
                   ABINTERVIEWIQ
                 </h2>
-                <p className="text-white/90 mt-3 text-lg font-medium">{TAGLINE}</p>
+                <p className="text-white/90 mt-3 text-base sm:text-lg font-medium">{TAGLINE}</p>
                 <p className="text-white/60 mt-1 text-sm">Choose an interview mode to begin your journey.</p>
               </div>
-              <div className="flex flex-col sm:flex-row gap-6 justify-center mt-4">
+              <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center mt-4">
                 <button 
                   onClick={() => navigateTo("SETUP")}
-                  className="flex-1 flex flex-col items-center gap-4 bg-white/5 border border-white/10 hover:border-[#2dd4bf]/50 hover:bg-white/10 p-8 rounded-2xl transition-all group cursor-pointer shadow-[inset_0_0_20px_rgba(255,255,255,0.02)]"
+                  className="flex-1 flex flex-col items-center gap-4 bg-white/5 border border-white/10 hover:border-[#2dd4bf]/50 hover:bg-white/10 p-6 sm:p-8 rounded-2xl transition-all group cursor-pointer shadow-[inset_0_0_20px_rgba(255,255,255,0.02)]"
                 >
                   <div className="bg-[#2dd4bf]/10 p-4 rounded-full group-hover:scale-110 transition-transform shadow-[0_0_15px_rgba(45,212,191,0.2)]">
                     <Target className="size-8 text-[#2dd4bf]" />
@@ -352,7 +352,7 @@ function InterviewIQApp() {
                 </button>
                 <Link 
                   to="/dashboard"
-                  className="flex-1 flex flex-col items-center gap-4 bg-white/5 border border-white/10 hover:border-[#c084fc]/50 hover:bg-white/10 p-8 rounded-2xl transition-all group cursor-pointer shadow-[inset_0_0_20px_rgba(255,255,255,0.02)]"
+                  className="flex-1 flex flex-col items-center gap-4 bg-white/5 border border-white/10 hover:border-[#c084fc]/50 hover:bg-white/10 p-6 sm:p-8 rounded-2xl transition-all group cursor-pointer shadow-[inset_0_0_20px_rgba(255,255,255,0.02)]"
                 >
                   <div className="bg-[#c084fc]/10 p-4 rounded-full group-hover:scale-110 transition-transform shadow-[0_0_15px_rgba(192,132,252,0.2)]">
                     <Briefcase className="size-8 text-[#c084fc]" />
@@ -374,7 +374,7 @@ function InterviewIQApp() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.4, ease: "easeOut" }}
-              className="w-full max-w-2xl bg-card rounded-3xl shadow-panel border border-border p-10 flex flex-col gap-10 z-10 relative"
+              className="w-full max-w-2xl bg-card rounded-3xl shadow-panel border border-border p-6 sm:p-10 flex flex-col gap-8 sm:gap-10 z-10 relative"
             >
               <button 
                 onClick={() => {
@@ -382,14 +382,14 @@ function InterviewIQApp() {
                   // Fallback if no history
                   if (window.history.state === null) navigateTo("HOME");
                 }}
-                className="absolute top-8 left-8 p-2 rounded-full hover:bg-muted text-muted-foreground transition-colors group"
+                className="absolute top-4 left-4 sm:top-8 sm:left-8 p-2 rounded-full hover:bg-muted text-muted-foreground transition-colors group"
                 aria-label="Go back"
               >
                 <ArrowLeft className="size-6 group-hover:-translate-x-1 transition-transform" />
               </button>
               
-              <div className="text-center mt-2">
-                <h1 className="text-4xl font-bold text-foreground tracking-tight">Configure Interview</h1>
+              <div className="text-center mt-8 sm:mt-2">
+                <h1 className="text-3xl sm:text-4xl font-bold text-foreground tracking-tight">Configure Interview</h1>
                 <p className="text-muted-foreground mt-2">Tailor your mock session to your exact needs.</p>
               </div>
 
@@ -420,7 +420,7 @@ function InterviewIQApp() {
                     <label className="text-sm font-semibold text-foreground uppercase tracking-wide">
                       Persona
                     </label>
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
                       <button 
                         onClick={() => setPersona("hr")}
                         className={`flex items-center gap-2 p-3 rounded-xl border text-sm font-medium transition-all ${persona === 'hr' ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-card text-muted-foreground hover:border-primary/50'}`}
@@ -462,12 +462,12 @@ function InterviewIQApp() {
               transition={{ duration: 0.5, ease: "easeInOut" }}
               className="w-full flex flex-col gap-6 items-center z-10 relative"
             >
-              <div className="w-full max-w-6xl flex flex-col lg:flex-row gap-12 items-stretch justify-center relative z-10">
+              <div className="w-full max-w-6xl flex flex-col lg:flex-row gap-8 lg:gap-12 items-stretch justify-center relative z-10">
               {/* Left Column: AI Interface */}
               <div className="flex-1 flex flex-col gap-8 w-full max-w-xl relative">
                 
                 {/* AI Question Box */}
-                <div className="bg-card p-8 rounded-3xl shadow-panel border border-border flex flex-col gap-6 relative overflow-hidden h-full">
+                <div className="bg-card p-6 sm:p-8 rounded-3xl shadow-panel border border-border flex flex-col gap-6 relative overflow-hidden h-full">
                   <div className="flex items-center gap-3">
                     <div className="bg-primary/20 size-10 rounded-full flex items-center justify-center shrink-0">
                       <UserCircle2 className="size-5 text-primary" />
