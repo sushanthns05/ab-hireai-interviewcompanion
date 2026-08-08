@@ -407,4 +407,17 @@ export async function continueInterview(
   return { reply, done: false };
 }
 
+export async function forceEndInterview(
+  llm: LLMClient,
+  session: InterviewSession,
+): Promise<{ reply: string; done: boolean; feedback?: InterviewFeedback }> {
+  const analysis = analyzeCandidate(session.candidate);
+  session.interviewPhase = "FEEDBACK";
+  session.completed = true;
+  session.feedback = await generateFeedback(llm, session, analysis);
+  const reply = "Interview ended early by the candidate.";
+  session.conversationHistory.push({ role: "interviewer", content: reply, at: Date.now() });
+  return { reply, done: true, feedback: session.feedback };
+}
+
 export const interviewLimits = { MIN_QUESTIONS, MIN_DAYS, MAX_QUESTIONS };

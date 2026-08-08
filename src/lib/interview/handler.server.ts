@@ -2,7 +2,7 @@ import { z } from "zod";
 import type { Candidate, InterviewApiResponse, DebugState } from "./types";
 import { createLLMClient, LLMError, MIN_ANSWER_LENGTH } from "./llm.server";
 import { getSession, saveSession, deleteSession } from "./sessions.server";
-import { startInterview, continueInterview } from "./engine.server";
+import { startInterview, continueInterview, forceEndInterview } from "./engine.server";
 
 const candidateSchema = z.object({
   member: z.object({
@@ -37,6 +37,7 @@ const requestSchema = z.object({
   sessionId: z.string().min(1, "sessionId is required"),
   candidate: candidateSchema.optional(),
   message: z.string().optional(),
+  forceEnd: z.boolean().optional(),
 });
 
 function json(body: unknown, status = 200) {
@@ -68,47 +69,66 @@ export async function handleInterviewRequest(request: Request): Promise<Response
     );
   }
 
-  const { sessionId, candidate, message } = parsed.data;
+    const { sessionId, candidate, message, forceEnd } = parsed.data;
 
-  if (message !== undefined && message.trim().length < MIN_ANSWER_LENGTH) {
-    return json({
-      reply: "Your answer is too short or invalid. Please provide a relevant response.",
-      done: false,
-      score: 0,
-    });
-  }
+    if (!forceEnd && message !== undefined && message.trim().length < MIN_ANSWER_LENGTH) {
+      return json({
+        reply: "Your answer is too short or invalid. Please provide a relevant response.",
+        done: false,
+        score: 0,
+      });
+    }
 
-  let llm;
-  try {
-    llm = createLLMClient();
-  } catch (e) {
-    return fail(e instanceof LLMError ? e.message : "AI provider unavailable.", 503);
-  }
+    let llm;
+    try {
+      llm = createLLMClient();
+    } catch (e) {
+      return fail(e instanceof LLMError ? e.message : "AI provider unavailable.", 503);
+    }
 
-  try {
-    const existing = getSession(sessionId);
+    try {
+      const existing = getSession(sessionId);
 
-    if (!existing) {
-      if (!candidate) {
-        return fail(
-          "Unknown sessionId. Send a candidate object with the first request to start an interview.",
-          404,
-        );
+      if (!existing) {
+        if (!candidate) {
+          return fail(
+            "Unknown sessionId. Send a candidate object with the first request to start an interview.",
+            404,
+          );
+        }
+        const { session, reply } = await startInterview(llm, sessionId, candidate as Candidate);
+        saveSession(session);
+        const body: InterviewApiResponse = { reply, done: false };
+        return json(body);
       }
-      const { session, reply } = await startInterview(llm, sessionId, candidate as Candidate);
-      saveSession(session);
-      const body: InterviewApiResponse = { reply, done: false };
-      return json(body);
-    }
 
-    if (existing.completed) {
-      const body: InterviewApiResponse = {
-        reply: "Interview completed.",
-        done: true,
-        ...(existing.feedback ? { feedback: existing.feedback } : {}),
-      };
-      return json(body);
-    }
+      if (forceEnd) {
+        if (existing.completed) {
+          const body: InterviewApiResponse = {
+            reply: "Interview already completed.",
+            done: true,
+            ...(existing.feedback ? { feedback: existing.feedback } : {}),
+          };
+          return json(body);
+        }
+        const result = await forceEndInterview(llm, existing);
+        saveSession(existing);
+        const body: InterviewApiResponse = {
+          reply: result.reply,
+          done: result.done,
+          ...(result.feedback ? { feedback: result.feedback } : {}),
+        };
+        return json(body);
+      }
+
+      if (existing.completed) {
+        const body: InterviewApiResponse = {
+          reply: "Interview completed.",
+          done: true,
+          ...(existing.feedback ? { feedback: existing.feedback } : {}),
+        };
+        return json(body);
+      }
 
     if (candidate && !message) {
       // Re-sent start request for a live session: replay the current question.

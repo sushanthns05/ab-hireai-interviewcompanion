@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Send, RotateCcw, Bug, Loader2, Mic } from "lucide-react";
+import { Send, RotateCcw, Bug, Loader2, Mic, StopCircle } from "lucide-react";
 import type { Candidate, ChatMessage, DebugState } from "@/lib/interview/types";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -19,6 +19,7 @@ interface Props {
   debug: DebugState | null;
   onSend: (text: string) => void;
   onReset: () => void;
+  onEndEarly: () => void;
 }
 
 const mergeText = (existing: string, addition: string) => {
@@ -57,6 +58,7 @@ export function InterviewRoom({
   debug,
   onSend,
   onReset,
+  onEndEarly,
 }: Props) {
   const [value, setValue] = useState("");
   const [showDebug, setShowDebug] = useState(false);
@@ -167,6 +169,10 @@ export function InterviewRoom({
           <Button variant="outline" size="sm" className="mt-5 w-full" onClick={onReset}>
             <RotateCcw className="mr-2 size-3.5" />
             Reset interview
+          </Button>
+          <Button variant="secondary" size="sm" className="mt-2 w-full text-destructive hover:text-destructive-foreground hover:bg-destructive" onClick={onEndEarly}>
+            <StopCircle className="mr-2 size-3.5" />
+            End interview early
           </Button>
         </div>
 

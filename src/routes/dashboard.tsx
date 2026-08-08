@@ -111,6 +111,20 @@ function InterviewApp() {
     setDebug(null);
   }
 
+  async function endEarly() {
+    if (!sessionId) return;
+    setThinking(true);
+    try {
+      const data = await post({ sessionId, forceEnd: true });
+      setMessages((m) => [...m, { role: "interviewer", content: data.reply, at: Date.now() }]);
+      if (data.done && data.feedback) setFeedback(data.feedback);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Could not end the interview early.");
+    } finally {
+      setThinking(false);
+    }
+  }
+
   const questionCount = debug?.questionCount ?? messages.filter((m) => m.role === "interviewer").length;
   const targetQuestions = debug?.targetQuestions ?? 10;
   const topicsCovered = debug?.coveredDays.length ?? 0;
@@ -150,6 +164,7 @@ function InterviewApp() {
           debug={debug}
           onSend={send}
           onReset={reset}
+          onEndEarly={endEarly}
         />
       )}
 
