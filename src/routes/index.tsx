@@ -12,12 +12,12 @@ export const Route = createFileRoute("/")({
   component: InterviewIQApp,
 });
 
-type AppState = "SETUP" | "LIVE" | "RESULTS";
+type AppState = "HOME" | "SETUP" | "LIVE" | "RESULTS";
 
 const QUESTION = "Can you describe a time when you had to optimize a slow-performing React application? What specific metrics did you target?";
 
 function InterviewIQApp() {
-  const [appState, setAppState] = useState<AppState>("SETUP");
+  const [appState, setAppState] = useState<AppState>("HOME");
 
   // Setup State variables
   const [interviewType, setInterviewType] = useState<"behavioral" | "technical">("behavioral");
@@ -199,6 +199,49 @@ function InterviewIQApp() {
 
         <AnimatePresence mode="wait">
           
+          {/* HOME SCREEN */}
+          {appState === "HOME" && (
+            <motion.div
+              key="home"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+              className="w-full max-w-2xl bg-card rounded-3xl shadow-panel border border-border p-10 flex flex-col gap-10 z-10 text-center"
+            >
+              <div>
+                <h1 className="text-4xl font-bold text-foreground tracking-tight">Welcome to ABInterviewIQ</h1>
+                <p className="text-muted-foreground mt-3 text-lg">Choose an interview mode to begin your journey.</p>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-6 justify-center mt-4">
+                <button 
+                  onClick={() => setAppState("SETUP")}
+                  className="flex-1 flex flex-col items-center gap-4 bg-card border border-border hover:border-primary/50 hover:bg-primary/5 p-8 rounded-2xl transition-all group cursor-pointer"
+                >
+                  <div className="bg-primary/10 p-4 rounded-full group-hover:scale-110 transition-transform">
+                    <UserCircle2 className="size-8 text-primary" />
+                  </div>
+                  <div>
+                    <div className="font-semibold text-lg text-foreground">Mock Interview</div>
+                    <div className="text-sm text-muted-foreground mt-1">Practice with our AI</div>
+                  </div>
+                </button>
+                <Link 
+                  to="/dashboard"
+                  className="flex-1 flex flex-col items-center gap-4 bg-card border border-border hover:border-chart-2/50 hover:bg-chart-2/5 p-8 rounded-2xl transition-all group cursor-pointer"
+                >
+                  <div className="bg-chart-2/10 p-4 rounded-full group-hover:scale-110 transition-transform">
+                    <Play className="size-8 text-chart-2" />
+                  </div>
+                  <div>
+                    <div className="font-semibold text-lg text-foreground">Real Interview</div>
+                    <div className="text-sm text-muted-foreground mt-1">Go to actual dashboard</div>
+                  </div>
+                </Link>
+              </div>
+            </motion.div>
+          )}
+
           {/* SETUP SCREEN */}
           {appState === "SETUP" && (
             <motion.div
