@@ -36,8 +36,8 @@ export function ThinkingTrace({ fragments, isThinking }: ThinkingTraceProps) {
   if (!isThinking && visibleFragments.length === 0) return null;
 
   return (
-    <div className="flex flex-col gap-2 p-4 rounded-xl bg-slate-50/80 border border-slate-200/60 shadow-sm backdrop-blur-md font-mono text-[13px] w-full max-w-sm">
-      <div className="flex items-center gap-2 text-indigo-600 mb-1 font-sans font-medium text-xs uppercase tracking-wider">
+    <div className="flex flex-col gap-2 p-4 rounded-xl bg-muted/80 border border-slate-200/60 shadow-glow backdrop-blur-md font-mono text-[13px] w-full max-w-sm">
+      <div className="flex items-center gap-2 text-primary mb-1 font-sans font-medium text-xs uppercase tracking-wider">
         <Sparkles className="size-3.5 animate-pulse" />
         AI is reasoning...
       </div>
@@ -63,9 +63,9 @@ export function ThinkingTrace({ fragments, isThinking }: ThinkingTraceProps) {
                   damping: 25,
                   mass: 0.8
                 }}
-                className={`flex items-start gap-2 ${isLatest ? 'text-slate-800' : 'text-slate-500'}`}
+                className={`flex items-start gap-2 ${isLatest ? 'text-foreground' : 'text-muted-foreground'}`}
               >
-                <span className="text-indigo-400 mt-0.5 opacity-60">›</span>
+                <span className="text-primary mt-0.5 opacity-60">›</span>
                 <span className="leading-snug">{fragment}</span>
               </motion.div>
             );

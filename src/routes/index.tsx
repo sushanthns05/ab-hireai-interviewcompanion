@@ -84,20 +84,20 @@ function InterviewIQApp() {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col bg-background font-sans text-foreground selection:bg-indigo-100 selection:text-indigo-900">
+    <div className="min-h-screen w-full flex flex-col bg-background text-foreground font-sans text-foreground selection:bg-primary/20 selection:text-indigo-900">
       {/* Premium Navbar */}
-      <nav className="h-20 border-b border-slate-100 bg-white/80 backdrop-blur-md flex items-center justify-between px-8 z-50 sticky top-0">
+      <nav className="h-20 border-b border-border bg-white/80 backdrop-blur-md flex items-center justify-between px-8 z-50 sticky top-0">
         <div className="flex items-center gap-3">
-          <div className="bg-indigo-600 size-8 rounded-lg flex items-center justify-center shadow-sm">
+          <div className="bg-primary size-8 rounded-lg flex items-center justify-center shadow-glow">
             <span className="text-white font-bold text-lg leading-none">IQ</span>
           </div>
-          <span className="text-xl font-bold tracking-tight text-slate-900">InterviewIQ</span>
+          <span className="text-xl font-bold tracking-tight text-foreground">InterviewIQ</span>
         </div>
         
         {/* We keep a backdoor to the original dashboard just in case */}
         <Link 
           to="/dashboard" 
-          className="flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors"
+          className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
         >
           <Play className="size-4" />
           Start Real Interview
@@ -108,8 +108,8 @@ function InterviewIQApp() {
       <main className="flex-1 flex flex-col items-center justify-center p-8 relative overflow-hidden">
         
         {/* Abstract Background Decoration */}
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-indigo-400/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-1/4 right-1/4 w-120 h-120 bg-cyan-400/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-1/4 right-1/4 w-120 h-120 bg-chart-2/10 rounded-full blur-3xl pointer-events-none" />
 
         <AnimatePresence mode="wait">
           
@@ -121,30 +121,30 @@ function InterviewIQApp() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.4, ease: "easeOut" }}
-              className="w-full max-w-2xl bg-white rounded-3xl shadow-panel border border-slate-100 p-10 flex flex-col gap-10 z-10"
+              className="w-full max-w-2xl bg-card rounded-3xl shadow-panel border border-border p-10 flex flex-col gap-10 z-10"
             >
               <div className="text-center">
-                <h1 className="text-4xl font-bold text-slate-900 tracking-tight">Configure Interview</h1>
-                <p className="text-slate-500 mt-2">Tailor your mock session to your exact needs.</p>
+                <h1 className="text-4xl font-bold text-foreground tracking-tight">Configure Interview</h1>
+                <p className="text-muted-foreground mt-2">Tailor your mock session to your exact needs.</p>
               </div>
 
               <div className="flex flex-col gap-6 max-w-md mx-auto w-full">
                 {/* Configuration Options */}
                 <div className="flex flex-col gap-6">
                   <div className="flex flex-col gap-3">
-                    <label className="text-sm font-semibold text-slate-700 uppercase tracking-wide">
+                    <label className="text-sm font-semibold text-foreground uppercase tracking-wide">
                       Type
                     </label>
-                    <div className="flex bg-slate-100 p-1 rounded-xl">
+                    <div className="flex bg-muted p-1 rounded-xl">
                       <button 
                         onClick={() => setInterviewType("behavioral")}
-                        className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${interviewType === 'behavioral' ? 'bg-white shadow-sm text-slate-900' : 'text-slate-500 hover:text-slate-700'}`}
+                        className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${interviewType === 'behavioral' ? 'bg-card shadow-glow text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
                       >
                         Behavioral
                       </button>
                       <button 
                         onClick={() => setInterviewType("technical")}
-                        className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${interviewType === 'technical' ? 'bg-white shadow-sm text-slate-900' : 'text-slate-500 hover:text-slate-700'}`}
+                        className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${interviewType === 'technical' ? 'bg-card shadow-glow text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
                       >
                         Technical
                       </button>
@@ -152,20 +152,20 @@ function InterviewIQApp() {
                   </div>
 
                   <div className="flex flex-col gap-3">
-                    <label className="text-sm font-semibold text-slate-700 uppercase tracking-wide">
+                    <label className="text-sm font-semibold text-foreground uppercase tracking-wide">
                       Persona
                     </label>
                     <div className="grid grid-cols-2 gap-2">
                       <button 
                         onClick={() => setPersona("hr")}
-                        className={`flex items-center gap-2 p-3 rounded-xl border text-sm font-medium transition-all ${persona === 'hr' ? 'border-indigo-600 bg-indigo-50 text-indigo-700' : 'border-slate-200 bg-white text-slate-600 hover:border-indigo-300'}`}
+                        className={`flex items-center gap-2 p-3 rounded-xl border text-sm font-medium transition-all ${persona === 'hr' ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-card text-muted-foreground hover:border-primary/50'}`}
                       >
                         <UserCircle2 className="size-4" />
                         Friendly HR
                       </button>
                       <button 
                         onClick={() => setPersona("tech_lead")}
-                        className={`flex items-center gap-2 p-3 rounded-xl border text-sm font-medium transition-all ${persona === 'tech_lead' ? 'border-indigo-600 bg-indigo-50 text-indigo-700' : 'border-slate-200 bg-white text-slate-600 hover:border-indigo-300'}`}
+                        className={`flex items-center gap-2 p-3 rounded-xl border text-sm font-medium transition-all ${persona === 'tech_lead' ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-card text-muted-foreground hover:border-primary/50'}`}
                       >
                         <Code2 className="size-4" />
                         Tech Lead
@@ -178,7 +178,7 @@ function InterviewIQApp() {
               <div className="flex justify-center mt-4">
                 <button 
                   onClick={handleStart}
-                  className="flex items-center gap-2 bg-indigo-600 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-indigo-700 hover:shadow-glow transition-all active:scale-95"
+                  className="flex items-center gap-2 bg-primary text-white px-8 py-4 rounded-full text-lg font-semibold hover:hover:bg-primary/80 hover:shadow-glow transition-all active:scale-95"
                 >
                   <Play className="size-5 fill-current" />
                   Start Mock Interview
@@ -201,19 +201,19 @@ function InterviewIQApp() {
               <div className="flex-1 flex flex-col gap-8 w-full max-w-lg relative">
                 
                 {/* AI Question Box */}
-                <div className="bg-white p-8 rounded-3xl shadow-panel border border-slate-100 flex flex-col gap-6 relative overflow-hidden">
+                <div className="bg-card p-8 rounded-3xl shadow-panel border border-border flex flex-col gap-6 relative overflow-hidden">
                   <div className="flex items-center gap-3">
-                    <div className="bg-indigo-100 size-10 rounded-full flex items-center justify-center shrink-0">
-                      <UserCircle2 className="size-5 text-indigo-600" />
+                    <div className="bg-primary/20 size-10 rounded-full flex items-center justify-center shrink-0">
+                      <UserCircle2 className="size-5 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-slate-900 leading-tight">AI Interviewer</h3>
-                      <p className="text-xs text-slate-500 font-medium">Tech Lead Persona</p>
+                      <h3 className="font-semibold text-foreground leading-tight">AI Interviewer</h3>
+                      <p className="text-xs text-muted-foreground font-medium">Tech Lead Persona</p>
                     </div>
                   </div>
                   
-                  <div className="text-lg text-slate-700 leading-relaxed font-medium min-h-20">
-                    {livePhase === "ai_thinking_1" && <span className="text-slate-400 italic">Thinking...</span>}
+                  <div className="text-lg text-foreground leading-relaxed font-medium min-h-20">
+                    {livePhase === "ai_thinking_1" && <span className="text-muted-foreground italic">Thinking...</span>}
                     {livePhase !== "ai_thinking_1" && "Can you describe a time when you had to optimize a slow-performing React application? What specific metrics did you target?"}
                   </div>
                 </div>
@@ -252,7 +252,7 @@ function InterviewIQApp() {
                 {livePhase === "user_answering" && (
                   <motion.div 
                     initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                    className="bg-white px-4 py-2 rounded-full shadow-sm border border-slate-100 text-sm font-medium text-slate-600 animate-pulse"
+                    className="bg-card px-4 py-2 rounded-full shadow-glow border border-border text-sm font-medium text-muted-foreground animate-pulse"
                   >
                     Speak now...
                   </motion.div>

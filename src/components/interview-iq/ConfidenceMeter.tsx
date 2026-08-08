@@ -31,10 +31,10 @@ export function ConfidenceMeter({ isSpeaking, confidenceScore, celebration }: Co
   const bars = Array.from({ length: 5 });
 
   return (
-    <div className="relative flex flex-col items-center justify-center p-6 bg-white rounded-3xl shadow-panel border border-slate-100 w-64">
+    <div className="relative flex flex-col items-center justify-center p-6 bg-card rounded-3xl shadow-panel border border-border w-64">
       <div className="absolute top-4 right-4 flex items-center gap-1.5">
-        <div className={`size-2 rounded-full ${isSpeaking ? 'bg-emerald-500 animate-pulse' : 'bg-slate-300'}`} />
-        <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+        <div className={`size-2 rounded-full ${isSpeaking ? 'bg-chart-3 animate-pulse' : 'bg-muted'}`} />
+        <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
           {isSpeaking ? 'Listening' : 'Ready'}
         </span>
       </div>
@@ -49,7 +49,7 @@ export function ConfidenceMeter({ isSpeaking, confidenceScore, celebration }: Co
             stroke="currentColor"
             strokeWidth="8"
             fill="transparent"
-            className="text-slate-100"
+            className="text-muted-foreground/30"
           />
           <motion.circle
             cx="60"
@@ -73,21 +73,21 @@ export function ConfidenceMeter({ isSpeaking, confidenceScore, celebration }: Co
 
         {/* Inner Content */}
         <div className="absolute flex flex-col items-center justify-center">
-          <motion.span className="text-3xl font-bold tracking-tighter text-slate-900">
+          <motion.span className="text-3xl font-bold tracking-tighter text-foreground">
             {Math.round(confidenceScore)}
           </motion.span>
-          <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest">
+          <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">
             Score
           </span>
         </div>
       </div>
 
       {/* Waveform indicator */}
-      <div className="flex items-center justify-center gap-1 h-8 w-full bg-slate-50 rounded-lg border border-slate-100">
+      <div className="flex items-center justify-center gap-1 h-8 w-full bg-muted rounded-lg border border-border">
         {bars.map((_, i) => (
           <motion.div
             key={i}
-            className="w-1.5 bg-indigo-400 rounded-full"
+            className="w-1.5 bg-primary/80 rounded-full"
             animate={{
               height: isSpeaking ? ["4px", `${Math.random() * 20 + 8}px`, "4px"] : "4px",
             }}
@@ -106,7 +106,7 @@ export function ConfidenceMeter({ isSpeaking, confidenceScore, celebration }: Co
         initial={{ opacity: 0, y: 10, scale: 0.9 }}
         animate={celebration ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 10, scale: 0.9 }}
         transition={{ type: "spring", stiffness: 300, damping: 20 }}
-        className="absolute -bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap bg-indigo-600 text-white text-xs font-medium px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1.5 z-10"
+        className="absolute -bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap bg-primary text-white text-xs font-medium px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1.5 z-10"
       >
         <CheckCircle2 className="size-3.5" />
         {celebration}
