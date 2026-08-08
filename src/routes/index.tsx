@@ -28,6 +28,13 @@ function InterviewIQApp() {
   const [appState, setAppState] = useState<AppState>("HOME");
   const [isTransitioning, setIsTransitioning] = useState(false);
 
+  // Check URL for initial setup state
+  useEffect(() => {
+    if (window.location.search.includes("state=setup") || window.location.hash === "#setup") {
+      setAppState("SETUP");
+    }
+  }, []);
+
   // Setup State variables
   const [interviewType, setInterviewType] = useState<"behavioral" | "technical">("behavioral");
   const [persona, setPersona] = useState<"hr" | "tech_lead" | "panel">("hr");

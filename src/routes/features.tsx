@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, Brain, MessageSquareText, ShieldCheck, BarChart3, History } from "lucide-react";
 
+// @ts-expect-error: Route tree generator hasn't picked this up yet
 export const Route = createFileRoute("/features")({
   component: FeaturesPage,
 });
@@ -102,14 +103,38 @@ function FeaturesPage() {
                     <feature.icon className={`size-8 ${feature.color === 'teal' ? 'text-[#2dd4bf]' : 'text-[#c084fc]'}`} />
                   </div>
                   <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">{feature.title}</h2>
-                  <p className="text-base sm:text-lg text-white/60 max-w-[500px] leading-relaxed">
+                  <p className="text-base sm:text-lg text-white/60 max-w-125 leading-relaxed">
                     {feature.description}
                   </p>
                 </div>
                 
-                <div className="flex-1 w-full flex items-center justify-center mt-8 lg:mt-0">
-                  <div className="w-full max-w-md aspect-video lg:aspect-[4/3] bg-black/40 backdrop-blur-2xl border border-white/10 rounded-3xl flex items-center justify-center shadow-[0_0_40px_rgba(0,0,0,0.3)]">
-                    <feature.icon className="size-20 text-white/10" strokeWidth={1} />
+                <div className="flex-1 w-full flex items-center justify-center mt-8 lg:mt-0 relative group">
+                  <div className="w-full max-w-md aspect-video lg:aspect-4/3 bg-black/40 backdrop-blur-2xl border border-white/10 rounded-3xl flex items-center justify-center relative overflow-hidden transition-all duration-700 hover:border-white/20 shadow-[0_0_40px_rgba(0,0,0,0.5)]">
+                    
+                    {/* Background Glow */}
+                    <div 
+                      className="absolute inset-0 opacity-50 group-hover:opacity-100 transition-opacity duration-700"
+                      style={{ background: `radial-gradient(circle at center, ${feature.color === 'teal' ? 'rgba(45,212,191,0.15)' : 'rgba(192,132,252,0.15)'} 0%, transparent 70%)` }}
+                    />
+                    
+                    {/* Decorative Grid */}
+                    <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-size-[32px_32px] mask-[radial-gradient(ellipse_60%_60%_at_50%_50%,#000_10%,transparent_100%)]"></div>
+
+                    {/* Floating Particles */}
+                    <div className={`absolute top-1/4 left-1/4 size-1.5 rounded-full ${feature.color === 'teal' ? 'bg-[#2dd4bf]' : 'bg-[#c084fc]'} blur-[1px] opacity-40 animate-pulse`}></div>
+                    <div className={`absolute bottom-1/3 right-1/4 size-2.5 rounded-full ${feature.color === 'teal' ? 'bg-[#2dd4bf]' : 'bg-[#c084fc]'} blur-[1.5px] opacity-30 animate-pulse`} style={{ animationDelay: '1s' }}></div>
+                    <div className={`absolute top-1/2 right-1/3 size-1 rounded-full ${feature.color === 'teal' ? 'bg-[#2dd4bf]' : 'bg-[#c084fc]'} blur-[0.5px] opacity-50 animate-pulse`} style={{ animationDelay: '0.5s' }}></div>
+
+                    {/* Icon Container */}
+                    <div className="relative z-10 flex items-center justify-center">
+                      <div className={`absolute inset-0 ${feature.color === 'teal' ? 'bg-[#2dd4bf]' : 'bg-[#c084fc]'} blur-2xl opacity-20 group-hover:opacity-40 transition-opacity duration-500 rounded-full`}></div>
+                      <div className="bg-black/60 p-6 sm:p-8 rounded-3xl border border-white/10 backdrop-blur-xl shadow-2xl transition-transform duration-500 group-hover:scale-110 group-hover:-translate-y-2">
+                        <feature.icon className={`size-16 sm:size-20 ${feature.color === 'teal' ? 'text-[#2dd4bf]' : 'text-[#c084fc]'} drop-shadow-[0_0_15px_rgba(${feature.color === 'teal' ? '45,212,191' : '192,132,252'},0.5)]`} strokeWidth={1.5} />
+                      </div>
+                    </div>
+
+                    {/* Subtle Top Border Gradient */}
+                    <div className={`absolute top-0 left-0 right-0 h-px bg-linear-to-r from-transparent ${feature.color === 'teal' ? 'via-[#2dd4bf]' : 'via-[#c084fc]'} to-transparent opacity-30 group-hover:opacity-60 transition-opacity duration-500`}></div>
                   </div>
                 </div>
               </motion.div>
@@ -127,13 +152,13 @@ function FeaturesPage() {
             <h2 className="text-3xl sm:text-4xl font-bold text-white mb-8">
               Ready to start practicing?
             </h2>
-            <Link 
-              to="/"
+            <a 
+              href="/?state=setup"
               className="flex items-center justify-center gap-2 px-8 py-4 rounded-2xl bg-linear-to-r from-[#c084fc] to-[#2dd4bf] text-white font-bold text-lg hover:opacity-90 transition-opacity active:scale-95 shadow-[0_0_20px_rgba(192,132,252,0.3)]"
             >
               Start Practicing
               <ArrowRight className="size-5" />
-            </Link>
+            </a>
           </motion.div>
 
         </div>
