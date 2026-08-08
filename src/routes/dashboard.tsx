@@ -45,6 +45,7 @@ function InterviewApp() {
   const [thinking, setThinking] = useState(false);
   const [feedback, setFeedback] = useState<InterviewFeedback | null>(null);
   const [debug, setDebug] = useState<DebugState | null>(null);
+  const [terminated, setTerminated] = useState(false);
 
   const refreshDebug = useCallback(async (id: string) => {
     try {
@@ -109,6 +110,7 @@ function InterviewApp() {
     setMessages([]);
     setFeedback(null);
     setDebug(null);
+    setTerminated(false);
   }
 
   async function endEarly() {
@@ -124,6 +126,11 @@ function InterviewApp() {
       setThinking(false);
     }
   }
+
+  const terminateInterview = () => {
+    setTerminated(true);
+    void endEarly();
+  };
 
   const questionCount = debug?.questionCount ?? messages.filter((m) => m.role === "interviewer").length;
   const targetQuestions = debug?.targetQuestions ?? 10;
@@ -165,6 +172,7 @@ function InterviewApp() {
           onSend={send}
           onReset={reset}
           onEndEarly={endEarly}
+          onTerminate={terminateInterview}
         />
       )}
 
@@ -175,6 +183,7 @@ function InterviewApp() {
           questionCount={questionCount}
           topicsCovered={topicsCovered}
           onReset={reset}
+          terminated={terminated}
         />
       )}
     </main>

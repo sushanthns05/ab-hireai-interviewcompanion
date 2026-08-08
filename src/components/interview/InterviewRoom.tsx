@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Send, RotateCcw, Bug, Loader2, Mic, StopCircle } from "lucide-react";
+import { Send, RotateCcw, Bug, Loader2, Mic, StopCircle, AlertCircle } from "lucide-react";
 import type { Candidate, ChatMessage, DebugState } from "@/lib/interview/types";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -20,6 +20,7 @@ interface Props {
   onSend: (text: string) => void;
   onReset: () => void;
   onEndEarly: () => void;
+  onTerminate: () => void;
 }
 
 const mergeText = (existing: string, addition: string) => {
@@ -59,6 +60,7 @@ export function InterviewRoom({
   onSend,
   onReset,
   onEndEarly,
+  onTerminate,
 }: Props) {
   const [value, setValue] = useState("");
   const [showDebug, setShowDebug] = useState(false);
@@ -66,6 +68,77 @@ export function InterviewRoom({
   const [isRecording, setIsRecording] = useState(false);
   const recognitionRef = useRef<any>(null);
   const baseValueRef = useRef("");
+
+  const [violations, setViolations] = useState(0);
+  const [warningMsg, setWarningMsg] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!done) {
+      try {
+        if (document.documentElement.requestFullscreen) {
+          document.documentElement.requestFullscreen();
+        }
+      } catch(e) {}
+    }
+  }, [done]);
+
+  useEffect(() => {
+    if (done) return;
+
+    const handleViolation = (msg: string) => {
+      setViolations(prev => {
+        const next = prev + 1;
+        if (next >= 4) {
+          onTerminate();
+        } else {
+          setWarningMsg(msg);
+        }
+        return next;
+      });
+    };
+
+    const handleVisibility = () => {
+      if (document.hidden && !warningMsg) handleViolation("Tab switch detected. Please stay focused.");
+    };
+
+    const handleFullscreen = () => {
+      if (!document.fullscreenElement && !warningMsg) handleViolation("Fullscreen exited.");
+    };
+
+    const preventCopy = (e: ClipboardEvent) => {
+      e.preventDefault();
+      handleViolation("Copying text is not allowed.");
+    };
+
+    const preventContext = (e: MouseEvent) => {
+      e.preventDefault();
+    };
+
+    const preventShortcuts = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && ['c', 'p', 's', 'u'].includes(e.key.toLowerCase())) {
+        e.preventDefault();
+        handleViolation("Keyboard shortcuts are disabled.");
+      }
+      if (e.key === 'F12' || ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key.toLowerCase() === 'i')) {
+        e.preventDefault();
+        handleViolation("Developer tools are disabled.");
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibility);
+    document.addEventListener("fullscreenchange", handleFullscreen);
+    document.addEventListener("copy", preventCopy);
+    document.addEventListener("contextmenu", preventContext);
+    document.addEventListener("keydown", preventShortcuts);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibility);
+      document.removeEventListener("fullscreenchange", handleFullscreen);
+      document.removeEventListener("copy", preventCopy);
+      document.removeEventListener("contextmenu", preventContext);
+      document.removeEventListener("keydown", preventShortcuts);
+    };
+  }, [done, warningMsg, onTerminate]);
 
   useEffect(() => {
     return () => {
@@ -140,6 +213,32 @@ export function InterviewRoom({
 
   return (
     <div className="w-full flex flex-col gap-4 mt-6">
+      {warningMsg && (
+        <div className="fixed inset-0 z-[100] bg-black/90 flex flex-col items-center justify-center p-8 text-center backdrop-blur-xl">
+          <AlertCircle className="size-24 text-red-500 mb-6 animate-pulse" />
+          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">Focus Mode Violation</h2>
+          <p className="text-lg text-white/70 max-w-lg mb-8 leading-relaxed">
+            {warningMsg}
+            <br/><br/>
+            Warning {violations}/3: Switching tabs or exiting fullscreen is not allowed during the interview. {4 - violations} more violation(s) will end your interview automatically.
+          </p>
+          <Button 
+            size="lg" 
+            variant="destructive"
+            className="px-8 py-6 rounded-full text-lg font-bold shadow-[0_0_20px_rgba(239,68,68,0.3)] hover:shadow-[0_0_30px_rgba(239,68,68,0.5)] transition-all"
+            onClick={async () => {
+              setWarningMsg(null);
+              try {
+                if (document.documentElement.requestFullscreen) {
+                  await document.documentElement.requestFullscreen();
+                }
+              } catch(e) {}
+            }}
+          >
+            Return to Interview
+          </Button>
+        </div>
+      )}
       <div className="mx-auto grid w-full max-w-6xl gap-6 px-4 pb-16 lg:grid-cols-[300px_1fr]">
         <aside className="space-y-4">
           <div className="panel p-5">
@@ -210,15 +309,22 @@ export function InterviewRoom({
         </div>
       </aside>
 
-      <section className="panel flex min-h-[70vh] flex-col overflow-hidden">
+      <section className="panel flex min-h-[70vh] flex-col overflow-hidden select-none">
         <div className="flex items-center justify-between border-b border-border px-5 py-3">
           <div className="flex items-center gap-2">
             <span className="size-2 animate-pulse rounded-full bg-primary" />
             <span className="text-sm font-medium">Live technical interview</span>
           </div>
-          <Badge variant="secondary" className="font-mono text-[10px]">
-            {done ? "COMPLETE" : "IN PROGRESS"}
-          </Badge>
+          <div className="flex items-center gap-4">
+            {violations > 0 && (
+              <Badge variant="destructive" className="font-mono text-[10px]">
+                Violations: {violations}/3
+              </Badge>
+            )}
+            <Badge variant="secondary" className="font-mono text-[10px]">
+              {done ? "COMPLETE" : "IN PROGRESS"}
+            </Badge>
+          </div>
         </div>
 
         <div className="flex-1 space-y-5 overflow-y-auto p-5">
