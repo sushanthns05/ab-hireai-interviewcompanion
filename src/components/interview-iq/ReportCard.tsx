@@ -18,6 +18,20 @@ interface ReportCardProps {
 }
 
 export function ReportCard({ score, originalAnswer, strongerAnswer, onRestart }: ReportCardProps) {
+  let performanceTitle = "";
+  let performanceSubtitle = "";
+
+  if (score >= 60) {
+    performanceTitle = "Strong performance.";
+    performanceSubtitle = "You demonstrated excellent technical depth, but could be more concise when setting up the STAR framework context.";
+  } else if (score >= 40) {
+    performanceTitle = "Good performance, but improvement is needed.";
+    performanceSubtitle = "You hit some key points, but the response lacked sufficient detail and structure.";
+  } else {
+    performanceTitle = "Weak performance.";
+    performanceSubtitle = "Your answer missed the core concepts. Review the stronger version below for a better approach.";
+  }
+
   return (
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
@@ -33,10 +47,10 @@ export function ReportCard({ score, originalAnswer, strongerAnswer, onRestart }:
             InterviewIQ Report
           </h2>
           <h1 className="text-3xl font-bold text-foreground tracking-tight">
-            Strong performance.
+            {performanceTitle}
           </h1>
           <p className="text-muted-foreground max-w-md mt-1">
-            You demonstrated excellent technical depth, but could be more concise when setting up the STAR framework context.
+            {performanceSubtitle}
           </p>
         </div>
         
