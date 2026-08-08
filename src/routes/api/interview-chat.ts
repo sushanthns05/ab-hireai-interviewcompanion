@@ -70,7 +70,7 @@ You must output your response in JSON format matching this schema:
   "fragments": ["string", "string", "string", "string"], // 4 short phrases representing your inner thoughts while formulating your response. E.g. ["Analyzing candidate response...", "Evaluating STAR method...", "Formulating follow-up...", "Ready"]
   "response": "string" // Your actual spoken response/question to the candidate
 }
-Respond ONLY with valid JSON.`;
+Respond ONLY with valid JSON. Do not include the word "undefined" in your response string.`;
 
         try {
           const llm = createLLMClient();

@@ -152,8 +152,9 @@ function InterviewIQApp() {
       
       const data = await response.json();
       if (data.response) {
-        setMessages([...newMessages, { role: "assistant", content: data.response }]);
-        setCurrentQuestion(data.response);
+        const cleanResponse = typeof data.response === "string" ? data.response.replace(/\s*undefined$/i, "").trim() : data.response;
+        setMessages([...newMessages, { role: "assistant", content: cleanResponse }]);
+        setCurrentQuestion(cleanResponse);
         if (data.fragments) setAiFragments(data.fragments);
         setLivePhase("user_answering");
       } else {
@@ -219,8 +220,9 @@ function InterviewIQApp() {
       
       const data = await response.json();
       if (data.response) {
-        setMessages([{ role: "assistant", content: data.response }]);
-        setCurrentQuestion(data.response);
+        const cleanResponse = typeof data.response === "string" ? data.response.replace(/\s*undefined$/i, "").trim() : data.response;
+        setMessages([{ role: "assistant", content: cleanResponse }]);
+        setCurrentQuestion(cleanResponse);
         if (data.fragments) setAiFragments(data.fragments);
         setLivePhase("user_answering");
       } else {
