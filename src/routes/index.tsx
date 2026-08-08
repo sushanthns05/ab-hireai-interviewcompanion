@@ -15,7 +15,6 @@ export const Route = createFileRoute("/")({
 
 type AppState = "HOME" | "SETUP" | "LIVE" | "RESULTS";
 
-const TAGLINE = "AI-powered interview practice that adapts to you.";
 
 function cleanAiText(value: unknown): string {
   if (typeof value !== "string") return "";
@@ -327,39 +326,68 @@ function InterviewIQApp() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.4, ease: "easeOut" }}
-              className="w-full max-w-2xl bg-black/40 backdrop-blur-2xl rounded-3xl shadow-[0_0_50px_rgba(0,0,0,0.5)] border border-white/10 p-6 sm:p-10 flex flex-col gap-8 sm:gap-10 z-10 text-center relative"
+              className="w-full max-w-3xl flex flex-col items-center gap-10 sm:gap-12 z-10 text-center relative px-4"
             >
-              <div>
-                <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-widest uppercase mb-2">WELCOME TO</h1>
-                <h2 className="text-4xl sm:text-5xl font-extrabold tracking-tight mb-4 sm:mb-6 bg-linear-to-r from-[#c084fc] to-[#2dd4bf] text-transparent bg-clip-text break-words">
-                  ABINTERVIEWIQ
-                </h2>
-                <p className="text-white/90 mt-3 text-base sm:text-lg font-medium">{TAGLINE}</p>
-                <p className="text-white/60 mt-1 text-sm">Choose an interview mode to begin your journey.</p>
+              {/* Top Text Content */}
+              <div className="flex flex-col items-center mt-8 sm:mt-12">
+                {/* Badge */}
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-md mb-8">
+                  <div className="size-2 rounded-full bg-[#2dd4bf] shadow-[0_0_8px_rgba(45,212,191,0.8)]"></div>
+                  <span className="text-white/80 text-sm font-medium">AI-powered interview practice</span>
+                </div>
+
+                {/* Headline */}
+                <h1 className="text-5xl sm:text-7xl font-extrabold tracking-tight mb-6 text-white leading-[1.1] max-w-[800px]">
+                  Turn interview anxiety into <span className="bg-linear-to-r from-[#c084fc] to-[#2dd4bf] text-transparent bg-clip-text">confidence.</span>
+                </h1>
+
+                {/* Subtext */}
+                <p className="text-white/60 text-lg sm:text-xl max-w-[600px] leading-relaxed mx-auto">
+                  Practice realistic interviews, sharpen your answers, and get instant AI feedback — built to adapt to your skill level.
+                </p>
               </div>
-              <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center mt-4">
+
+              {/* CTAs */}
+              <div className="flex flex-col w-full sm:w-auto sm:flex-row gap-4 justify-center mt-2">
+                <button
+                  onClick={() => navigateTo("SETUP")}
+                  className="flex items-center justify-center gap-2 px-8 py-4 rounded-2xl bg-linear-to-r from-[#c084fc] to-[#2dd4bf] text-white font-bold text-lg hover:opacity-90 transition-opacity active:scale-95 shadow-[0_0_20px_rgba(192,132,252,0.3)]"
+                >
+                  Start Practicing
+                  <ArrowRight className="size-5" />
+                </button>
+                <button
+                  onClick={() => {}}
+                  className="flex items-center justify-center px-8 py-4 rounded-2xl border border-white/20 text-white font-bold text-lg bg-white/5 hover:bg-white/10 transition-colors active:scale-95"
+                >
+                  Explore features
+                </button>
+              </div>
+
+              {/* Cards row below CTAs */}
+              <div className="w-full flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center mt-8 sm:mt-12">
                 <button 
                   onClick={() => navigateTo("SETUP")}
-                  className="flex-1 flex flex-col items-center gap-4 bg-white/5 border border-white/10 hover:border-[#2dd4bf]/50 hover:bg-white/10 p-6 sm:p-8 rounded-2xl transition-all group cursor-pointer shadow-[inset_0_0_20px_rgba(255,255,255,0.02)]"
+                  className="flex-1 flex flex-col items-start text-left gap-4 bg-black/40 backdrop-blur-2xl border border-white/10 hover:border-[#2dd4bf]/50 hover:bg-white/5 p-6 sm:p-8 rounded-3xl transition-all group cursor-pointer shadow-[0_0_30px_rgba(0,0,0,0.5)]"
                 >
-                  <div className="bg-[#2dd4bf]/10 p-4 rounded-full group-hover:scale-110 transition-transform shadow-[0_0_15px_rgba(45,212,191,0.2)]">
-                    <Target className="size-8 text-[#2dd4bf]" />
+                  <div className="bg-[#2dd4bf]/10 p-3 rounded-full group-hover:scale-110 transition-transform shadow-[0_0_15px_rgba(45,212,191,0.2)]">
+                    <Target className="size-6 text-[#2dd4bf]" />
                   </div>
                   <div>
-                    <div className="font-semibold text-lg text-white">Mock Interview</div>
-                    <div className="text-sm text-white/60 mt-2 leading-relaxed">Hone your skills in a low-pressure simulated environment.</div>
+                    <div className="font-semibold text-lg sm:text-xl text-white group-hover:text-[#2dd4bf] transition-colors">Mock Interview</div>
+                    <div className="text-sm text-white/50 mt-2 leading-relaxed">Hone your skills in a low-pressure simulated environment.</div>
                   </div>
                 </button>
                 <Link 
                   to="/dashboard"
-                  className="flex-1 flex flex-col items-center gap-4 bg-white/5 border border-white/10 hover:border-[#c084fc]/50 hover:bg-white/10 p-6 sm:p-8 rounded-2xl transition-all group cursor-pointer shadow-[inset_0_0_20px_rgba(255,255,255,0.02)]"
+                  className="flex-1 flex flex-col items-start text-left gap-4 bg-black/40 backdrop-blur-2xl border border-white/10 hover:border-[#c084fc]/50 hover:bg-white/5 p-6 sm:p-8 rounded-3xl transition-all group cursor-pointer shadow-[0_0_30px_rgba(0,0,0,0.5)]"
                 >
-                  <div className="bg-[#c084fc]/10 p-4 rounded-full group-hover:scale-110 transition-transform shadow-[0_0_15px_rgba(192,132,252,0.2)]">
-                    <Briefcase className="size-8 text-[#c084fc]" />
+                  <div className="bg-[#c084fc]/10 p-3 rounded-full group-hover:scale-110 transition-transform shadow-[0_0_15px_rgba(192,132,252,0.2)]">
+                    <Briefcase className="size-6 text-[#c084fc]" />
                   </div>
                   <div>
-                    <div className="font-semibold text-lg text-white">Live Interview</div>
-                    <div className="text-sm text-white/60 mt-2 leading-relaxed">Start the adaptive technical interview session.</div>
+                    <div className="font-semibold text-lg sm:text-xl text-white group-hover:text-[#c084fc] transition-colors">Live Interview</div>
+                    <div className="text-sm text-white/50 mt-2 leading-relaxed">Start the adaptive technical interview session.</div>
                   </div>
                 </Link>
               </div>
