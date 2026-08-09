@@ -18,7 +18,7 @@ Call to Action (CTA): Center a prominent, glowing button that says "Get Started"
 Functionality / Routing:
 Make this welcome page the default home route (/). When the user clicks the "Get Started" button, it should smoothly route/navigate them to the main candidate selection dashboard (the page with the candidate grid cards).
 
-AI Output:
+AI OUTPUT:
 
 I've finished building the new Welcome Landing Page!
 
