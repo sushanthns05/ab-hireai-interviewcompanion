@@ -74,6 +74,15 @@ function InterviewApp() {
   async function startInterview(c: Candidate) {
     const id = newSessionId();
     setThinking(true);
+    
+    try {
+      if (document.documentElement.requestFullscreen) {
+        await document.documentElement.requestFullscreen();
+      }
+    } catch (err) {
+      console.warn("Fullscreen request failed:", err);
+    }
+
     try {
       const data = await post({ sessionId: id, candidate: c });
       setCandidate(c);
