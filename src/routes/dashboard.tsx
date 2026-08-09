@@ -35,7 +35,9 @@ export const Route = createFileRoute("/dashboard")({
 });
 
 function newSessionId() {
-  return globalThis.crypto?.randomUUID?.() ?? `sess-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  return (
+    globalThis.crypto?.randomUUID?.() ?? `sess-${Date.now()}-${Math.random().toString(16).slice(2)}`
+  );
 }
 
 function InterviewApp() {
@@ -74,7 +76,7 @@ function InterviewApp() {
   async function startInterview(c: Candidate) {
     const id = newSessionId();
     setThinking(true);
-    
+
     try {
       if (document.documentElement.requestFullscreen) {
         await document.documentElement.requestFullscreen();
@@ -104,7 +106,9 @@ function InterviewApp() {
       setMessages((m) => [...m, { role: "interviewer", content: data.reply, at: Date.now() }]);
       if (data.done && data.feedback) setFeedback(data.feedback);
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Something went wrong. Try resending your answer.");
+      toast.error(
+        e instanceof Error ? e.message : "Something went wrong. Try resending your answer.",
+      );
     } finally {
       setThinking(false);
     }
@@ -112,7 +116,9 @@ function InterviewApp() {
 
   function reset() {
     if (sessionId) {
-      void fetch(`/api/interview-reset?sessionId=${encodeURIComponent(sessionId)}`, { method: "POST" });
+      void fetch(`/api/interview-reset?sessionId=${encodeURIComponent(sessionId)}`, {
+        method: "POST",
+      });
     }
     setCandidate(null);
     setSessionId(null);
@@ -141,7 +147,8 @@ function InterviewApp() {
     void endEarly();
   };
 
-  const questionCount = debug?.questionCount ?? messages.filter((m) => m.role === "interviewer").length;
+  const questionCount =
+    debug?.questionCount ?? messages.filter((m) => m.role === "interviewer").length;
   const targetQuestions = debug?.targetQuestions ?? 10;
   const topicsCovered = debug?.coveredDays.length ?? 0;
 
@@ -150,7 +157,10 @@ function InterviewApp() {
       <Toaster />
       <header className="mx-auto w-full max-w-6xl px-4 py-10">
         <div className="mb-8">
-          <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
+          >
             <ArrowLeft className="size-4" />
             Back to Home
           </Link>
@@ -160,9 +170,9 @@ function InterviewApp() {
           The <span className="text-gradient">Interview Agent</span>
         </h1>
         <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-          An adaptive technical interviewer for the 31-day Enterprise AI Engineering cohort. It reads the
-          candidate&apos;s mission history, chooses curriculum topics with intent, and follows up on what
-          they actually say.
+          An adaptive technical interviewer for the 31-day Enterprise AI Engineering cohort. It
+          reads the candidate&apos;s mission history, chooses curriculum topics with intent, and
+          follows up on what they actually say.
         </p>
       </header>
 
