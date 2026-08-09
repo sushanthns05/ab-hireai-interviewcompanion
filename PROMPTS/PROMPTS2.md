@@ -1,3 +1,5 @@
+PROMPT 02:
+
 Create a new landing/welcome page that serves as the entry point for the application.
 
 Visual Style:
@@ -15,3 +17,11 @@ Call to Action (CTA): Center a prominent, glowing button that says "Get Started"
 
 Functionality / Routing:
 Make this welcome page the default home route (/). When the user clicks the "Get Started" button, it should smoothly route/navigate them to the main candidate selection dashboard (the page with the candidate grid cards).
+
+AI Output:
+
+I've finished building the new Welcome Landing Page!
+
+Everything has been committed and pushed to GitHub. The new page features the gradient text, glowing neon buttons, and the precise copy you requested. The old dashboard interface has now been smoothly relocated to /dashboard.
+
+ You should see the new landing page live on Lovable once it finishes syncing!
