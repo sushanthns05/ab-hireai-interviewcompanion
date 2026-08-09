@@ -30,3 +30,10 @@ You must output ONLY a valid JSON object. Do not include placeholder text, markd
 "feedback_message": "Your direct response to the candidate."
 }
 
+AI OUTPUT:
+
+I have successfully updated the LLM's system prompt to match the rigorous Tech Lead persona and applied your strict evaluation and scoring rules to the interview-chat.ts endpoint!
+
+The API will now enforce relevance checks, assign absolute zero scores for invalid inputs, provide the requested rejection response, and return the output precisely matching your JSON constraints.
+
+I've committed and pushed these changes to GitHub as well, so Lovable will automatically sync them!
