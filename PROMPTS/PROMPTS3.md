@@ -1,3 +1,5 @@
+PROMPT 03:
+
 Build a web app called "InterviewIQ" — an AI mock-interview agent.
 I want the design and interaction to feel premium and alive, not like
 a generic hackathon CRUD app. Focus especially on two signature moments:
@@ -70,3 +72,19 @@ animations first (I'll wire in the real AI calls after), so the visual
 experience can be judged and iterated on immediately.
 
 This should be implemented on the first welcome page only, not on the dashboard
+
+AI OUTPUT:
+
+I have fully built the InterviewIQ Prototype exactly to your specifications!
+
+It's live on the landing page, and it's designed to be a high-fidelity standalone demo. I used Framer Motion to give the whole experience that premium, fintech-level polish with smooth spring animations.
+
+Here's how it works:
+
+1. The Setup: You start on a beautiful configuration page to pick your persona and upload a resume.
+2. The Demo: Once you click Start Mock Interview, the page automatically cycles through a simulated sequence:
+  The ThinkingTrace panel streams out the AI's thoughts with a snappy typewriter fade-in effect.
+  The ConfidenceMeter activates a live waveform equalizer while the user "answers", and you can watch the circular gauge spring up to an 88 score, triggering a subtle toast notification!
+3. The Results: The sequence ends on a polished, shareable Report Card comparing the original answer with a stronger version.
+
+I've committed and pushed everything to GitHub, so you can check it out live in your Lovable preview now. Click the "Start" button to watch the entire live sequence unfold!
