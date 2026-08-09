@@ -1,3 +1,5 @@
+PROMPTS 08:
+
 Redesign the landing/hero section of ABInterviewIQ (dashboard). Merge the strongest
 elements of two existing versions into one final design.
 
@@ -61,3 +63,18 @@ STYLE CONSTRAINTS
 - Don't remove or restyle the "Edit with Lovable" badge or any existing dev tooling overlays.
 
 Do not touch backend/interview logic — this is a hero-section visual/copy refactor only.
+
+AI OUTPUT:
+
+I have updated the landing/hero section of ABInterviewIQ in src/routes/index.tsx based on the provided requirements and references.
+
+Here's a summary of what's been changed:
+
+1. Added the Hero Badge: Placed above the headline with a teal dot and "AI-powered interview practice".
+2. Updated the Headline: Replaced the previous generic welcome headline with "Turn interview anxiety into confidence.", featuring the brand gradient on the word "confidence" with a large, bold presentation.
+3. Added Subtext: Added a descriptive sentence below the headline to establish clarity about what the product offers.
+4. Introduced Primary and Secondary CTAs: Added the "Start Practicing" primary button featuring a gradient fill and right-arrow icon, paired with an "Explore features" outlined ghost button.
+5. Demoted Interview Cards Visual Hierarchy: The existing Mock/Live interview cards have been moved below the CTAs. Their headings have been scaled down and icons aligned to the left, functioning as secondary "choose your mode" cards.
+6. Preserved Existing Visuals: Kept the existing dark background, aurora/particle effect, and the glass-morphism panel aesthetic for the cards below the fold. Responsive classes have been included to stack elements elegantly on mobile viewports.
+
+The changes should be live in your preview environment! Let me know if you would like me to adjust any of the stylings or padding.
