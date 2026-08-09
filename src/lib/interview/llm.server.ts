@@ -29,8 +29,23 @@ export class LLMError extends Error {
   }
 }
 
-const DEFAULT_BASE_URL = "https://ai.gateway.lovable.dev/v1";
-const DEFAULT_MODEL = "google/gemini-3.6-flash";
+import fs from "node:fs";
+import path from "node:path";
+
+const DEFAULT_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai/";
+const DEFAULT_MODEL = "gemini-1.5-flash";
+
+function getEnvVar(key: string, defaultValue?: string): string | undefined {
+  if (process.env[key]) return process.env[key];
+  try {
+    const envContent = fs.readFileSync(path.resolve(process.cwd(), ".env"), "utf-8");
+    const match = envContent.match(new RegExp(`^${key}=(.*)$`, "m"));
+    if (match && match[1]) return match[1].trim();
+  } catch (e) {
+    // ignore
+  }
+  return defaultValue;
+}
 
 function extractJson(text: string): unknown {
   const fenced = text.match(/```(?:json)?\s*([\s\S]*?)```/i);
@@ -48,10 +63,10 @@ function extractJson(text: string): unknown {
 }
 
 export function createLLMClient(): LLMClient {
-  const baseUrl = process.env["LLM_BASE_URL"] || DEFAULT_BASE_URL;
-  const model = process.env["LLM_MODEL"] || DEFAULT_MODEL;
-  const explicitKey = process.env["LLM_API_KEY"];
-  const lovableKey = process.env["LOVABLE_API_KEY"];
+  const baseUrl = getEnvVar("LLM_BASE_URL", DEFAULT_BASE_URL);
+  const model = getEnvVar("LLM_MODEL", DEFAULT_MODEL);
+  const explicitKey = getEnvVar("LLM_API_KEY");
+  const lovableKey = getEnvVar("LOVABLE_API_KEY");
   const apiKey = explicitKey || lovableKey;
 
   if (!apiKey) {

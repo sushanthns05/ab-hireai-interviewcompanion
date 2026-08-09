@@ -10,26 +10,54 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as FeaturesRouteImport } from './routes/features'
+import { Route as HistoryRouteImport } from './routes/history'
+import { Route as ApiEvaluateAnswerRouteImport } from './routes/api/evaluate-answer'
 import { Route as ApiInterviewRouteImport } from './routes/api/interview'
+import { Route as ApiInterviewChatRouteImport } from './routes/api/interview-chat'
 import { Route as ApiInterviewResetRouteImport } from './routes/api/interview-reset'
 import { Route as ApiPublicInterviewRouteImport } from './routes/api/public/interview'
-import { Route as ApiEvaluateAnswerRouteImport } from './routes/api/evaluate-answer'
-
-const DashboardRoute = DashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AnalyticsRoute = AnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FeaturesRoute = FeaturesRouteImport.update({
+  id: '/features',
+  path: '/features',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HistoryRoute = HistoryRouteImport.update({
+  id: '/history',
+  path: '/history',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiEvaluateAnswerRoute = ApiEvaluateAnswerRouteImport.update({
+  id: '/api/evaluate-answer',
+  path: '/api/evaluate-answer',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiInterviewRoute = ApiInterviewRouteImport.update({
   id: '/api/interview',
   path: '/api/interview',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiInterviewChatRoute = ApiInterviewChatRouteImport.update({
+  id: '/api/interview-chat',
+  path: '/api/interview-chat',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiInterviewResetRoute = ApiInterviewResetRouteImport.update({
@@ -42,65 +70,94 @@ const ApiPublicInterviewRoute = ApiPublicInterviewRouteImport.update({
   path: '/api/public/interview',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiEvaluateAnswerRoute = ApiEvaluateAnswerRouteImport.update({
-  id: '/api/evaluate-answer',
-  path: '/api/evaluate-answer',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/analytics': typeof AnalyticsRoute
   '/dashboard': typeof DashboardRoute
+  '/features': typeof FeaturesRoute
+  '/history': typeof HistoryRoute
+  '/api/evaluate-answer': typeof ApiEvaluateAnswerRoute
   '/api/interview': typeof ApiInterviewRoute
+  '/api/interview-chat': typeof ApiInterviewChatRoute
   '/api/interview-reset': typeof ApiInterviewResetRoute
   '/api/public/interview': typeof ApiPublicInterviewRoute
-  '/api/evaluate-answer': typeof ApiEvaluateAnswerRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/analytics': typeof AnalyticsRoute
   '/dashboard': typeof DashboardRoute
+  '/features': typeof FeaturesRoute
+  '/history': typeof HistoryRoute
+  '/api/evaluate-answer': typeof ApiEvaluateAnswerRoute
   '/api/interview': typeof ApiInterviewRoute
+  '/api/interview-chat': typeof ApiInterviewChatRoute
   '/api/interview-reset': typeof ApiInterviewResetRoute
   '/api/public/interview': typeof ApiPublicInterviewRoute
-  '/api/evaluate-answer': typeof ApiEvaluateAnswerRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/analytics': typeof AnalyticsRoute
   '/dashboard': typeof DashboardRoute
+  '/features': typeof FeaturesRoute
+  '/history': typeof HistoryRoute
+  '/api/evaluate-answer': typeof ApiEvaluateAnswerRoute
   '/api/interview': typeof ApiInterviewRoute
+  '/api/interview-chat': typeof ApiInterviewChatRoute
   '/api/interview-reset': typeof ApiInterviewResetRoute
   '/api/public/interview': typeof ApiPublicInterviewRoute
-  '/api/evaluate-answer': typeof ApiEvaluateAnswerRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/analytics'
     | '/dashboard'
+    | '/features'
+    | '/history'
+    | '/api/evaluate-answer'
     | '/api/interview'
+    | '/api/interview-chat'
     | '/api/interview-reset'
     | '/api/public/interview'
-    | '/api/evaluate-answer'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/api/interview' | '/api/interview-reset' | '/api/public/interview' | '/api/evaluate-answer'
+  to:
+    | '/'
+    | '/analytics'
+    | '/dashboard'
+    | '/features'
+    | '/history'
+    | '/api/evaluate-answer'
+    | '/api/interview'
+    | '/api/interview-chat'
+    | '/api/interview-reset'
+    | '/api/public/interview'
   id:
     | '__root__'
     | '/'
+    | '/analytics'
     | '/dashboard'
+    | '/features'
+    | '/history'
+    | '/api/evaluate-answer'
     | '/api/interview'
+    | '/api/interview-chat'
     | '/api/interview-reset'
     | '/api/public/interview'
-    | '/api/evaluate-answer'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AnalyticsRoute: typeof AnalyticsRoute
   DashboardRoute: typeof DashboardRoute
+  FeaturesRoute: typeof FeaturesRoute
+  HistoryRoute: typeof HistoryRoute
+  ApiEvaluateAnswerRoute: typeof ApiEvaluateAnswerRoute
   ApiInterviewRoute: typeof ApiInterviewRoute
+  ApiInterviewChatRoute: typeof ApiInterviewChatRoute
   ApiInterviewResetRoute: typeof ApiInterviewResetRoute
   ApiPublicInterviewRoute: typeof ApiPublicInterviewRoute
-  ApiEvaluateAnswerRoute: typeof ApiEvaluateAnswerRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -112,6 +169,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/analytics': {
+      id: '/analytics'
+      path: '/analytics'
+      fullPath: '/analytics'
+      preLoaderRoute: typeof AnalyticsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard': {
       id: '/dashboard'
       path: '/dashboard'
@@ -119,11 +183,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/features': {
+      id: '/features'
+      path: '/features'
+      fullPath: '/features'
+      preLoaderRoute: typeof FeaturesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/history': {
+      id: '/history'
+      path: '/history'
+      fullPath: '/history'
+      preLoaderRoute: typeof HistoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/evaluate-answer': {
+      id: '/api/evaluate-answer'
+      path: '/api/evaluate-answer'
+      fullPath: '/api/evaluate-answer'
+      preLoaderRoute: typeof ApiEvaluateAnswerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/interview': {
       id: '/api/interview'
       path: '/api/interview'
       fullPath: '/api/interview'
       preLoaderRoute: typeof ApiInterviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/interview-chat': {
+      id: '/api/interview-chat'
+      path: '/api/interview-chat'
+      fullPath: '/api/interview-chat'
+      preLoaderRoute: typeof ApiInterviewChatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/interview-reset': {
@@ -140,24 +232,31 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicInterviewRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/evaluate-answer': {
-      id: '/api/evaluate-answer'
-      path: '/api/evaluate-answer'
-      fullPath: '/api/evaluate-answer'
-      preLoaderRoute: typeof ApiEvaluateAnswerRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AnalyticsRoute: AnalyticsRoute,
   DashboardRoute: DashboardRoute,
+  FeaturesRoute: FeaturesRoute,
+  HistoryRoute: HistoryRoute,
+  ApiEvaluateAnswerRoute: ApiEvaluateAnswerRoute,
   ApiInterviewRoute: ApiInterviewRoute,
+  ApiInterviewChatRoute: ApiInterviewChatRoute,
   ApiInterviewResetRoute: ApiInterviewResetRoute,
   ApiPublicInterviewRoute: ApiPublicInterviewRoute,
-  ApiEvaluateAnswerRoute: ApiEvaluateAnswerRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
