@@ -1,4 +1,4 @@
-PROMPTS 08:
+PROMPT 08:
 
 Redesign the landing/hero section of ABInterviewIQ (dashboard). Merge the strongest
 elements of two existing versions into one final design.
