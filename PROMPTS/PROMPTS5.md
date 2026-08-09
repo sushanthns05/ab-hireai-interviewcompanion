@@ -1,4 +1,4 @@
-PROMPTS 05:
+PROMPT 05:
 
 # Interview System Flow
 
