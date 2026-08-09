@@ -101,7 +101,11 @@ export function createLLMClient(): LLMClient {
 
     if (res.status === 429) throw new LLMError("AI rate limit reached. Please retry shortly.", 429);
     if (res.status === 402) throw new LLMError("AI credits exhausted for this workspace.", 402);
-    if (!res.ok) throw new LLMError("The AI provider returned an error.", 502);
+    if (!res.ok) {
+      const errText = await res.text().catch(() => "could not read error text");
+      console.error("[LLM ERROR] Status:", res.status, "Body:", errText);
+      throw new LLMError(`The AI provider returned an error: ${res.status} ${errText}`, 502);
+    }
 
     const data = (await res.json()) as { choices?: { message?: { content?: string } }[] };
     const content = data.choices?.[0]?.message?.content;
