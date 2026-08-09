@@ -1,3 +1,5 @@
+PROMPT 11:
+
 Implement anti-cheat protections for the Live Interview session in ABInterviewIQ.
 
 1. DISABLE COPY / TEXT SELECTION / SCREENSHOTS (best-effort, client-side)
@@ -77,3 +79,15 @@ STYLING
 
 Reuse any existing anti-cheat logic already present in the SET exam portal codebase if
 accessible/similar — same visibilitychange + fullscreen pattern likely already exists there.
+
+AI OUTPUT:
+
+I've implemented the enhanced focus mode and anti-cheat restrictions!
+
+Here is what's running during the Live Interview now:
+
+1. No Text Selection or Copying: The entire interview screen text is set to unselectable (select-none). Trying to copy text manually or using keyboard shortcuts (Ctrl+C/Cmd+C) will be blocked and will instantly log a focus violation warning.
+2. Shortcuts Disabled: Other common shortcuts like printing (Ctrl+P) and saving (Ctrl+S) are intercepted and blocked as well.
+3. 3-Strike Rule (4th = Termination): The app now keeps track of every time you switch tabs, exit fullscreen, or try to use a banned shortcut. Each time, it adds to a running tally. The warning overlay will specify which warning number you're on (e.g., Warning 1/3).
+4. Auto-Termination: On your 4th violation, a final termination message displays: "Interview terminated due to multiple focus mode violations (4/4)", and after 4 seconds, you are automatically kicked out of fullscreen mode and dropped back into the Home screen without saving the session.
+Try trying to copy text or switching tabs 4 times to see the termination kick in! 
