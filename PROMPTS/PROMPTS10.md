@@ -1,3 +1,5 @@
+PROMPT 10:
+
 Add a new route/page "/features" to ABInterviewIQ. Clicking "Explore features" in the hero
 navigates to this page (client-side routing, not a full page reload).
 
@@ -86,3 +88,21 @@ CONSTRAINTS
   add the new /features route and wire the button to it.
 - Content is static/presentational; no backend wiring needed unless a feature is already
   functional elsewhere in the app.
+
+AI OUTPUT:
+
+I have successfully created the new /features page and wired the hero button to it!
+
+Here is what's been done:
+
+1. Removed the features section from the Home Page, maintaining a cleaner layout there.
+2. reated src/routes/features.tsx, establishing a brand-new page with its own client-side route.
+3. Wired the 'Explore features' button in the hero to navigate directly to /features via client-side routing.
+4. Built out the Features Page, containing:
+  A consistent navbar featuring a prominent "← Back to Home" link.
+  A compact page intro section.
+  5 full-width, alternating left/right layout sections highlighting each feature. Each section contains the text descriptions, custom circular icons, and a placeholder visual glass-card on the opposing side.
+  A bottom Call-to-Action to guide the user back to starting a practice session.
+5. Applied Animations and Responsiveness: Used framer-motion for scroll-triggered reveal animations. The layout gracefully responds to smaller viewports by stacking the content elements correctly.
+
+You can now click the "Explore features" button on your preview! Let me know how it looks and if you are ready to push these changes!
