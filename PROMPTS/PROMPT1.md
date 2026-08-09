@@ -12,22 +12,22 @@ The interviewer must behave like an experienced technical interviewer.
 
 It must NOT behave like:
 
-* a static questionnaire
-* a list of predefined questions
-* a chatbot that randomly asks curriculum questions
-* a generic AI interviewer
+- a static questionnaire
+- a list of predefined questions
+- a chatbot that randomly asks curriculum questions
+- a generic AI interviewer
 
 Instead, it should:
 
-* understand the candidate's background
-* understand exactly what they completed, skipped, or struggled with
-* select relevant curriculum topics
-* ask an initial technical question
-* evaluate the candidate's response
-* decide whether to probe deeper, change topic, clarify, challenge an assumption, or move on
-* remember everything discussed
-* progressively assess technical depth
-* finish with actionable interview feedback
+- understand the candidate's background
+- understand exactly what they completed, skipped, or struggled with
+- select relevant curriculum topics
+- ask an initial technical question
+- evaluate the candidate's response
+- decide whether to probe deeper, change topic, clarify, challenge an assumption, or move on
+- remember everything discussed
+- progressively assess technical depth
+- finish with actionable interview feedback
 
 The central idea:
 
@@ -39,9 +39,9 @@ The central idea:
 
 The project contains three authoritative source files:
 
-* `curriculum.json`
-* `candidates.json`
-* `technical-spec.md`
+- `curriculum.json`
+- `candidates.json`
+- `technical-spec.md`
 
 Use these files directly.
 
@@ -49,26 +49,26 @@ Do NOT invent curriculum days, candidate missions, candidate information, or API
 
 The curriculum contains:
 
-* 31 days
-* 8 modules
-* daily titles
-* daily objectives
-* tools used
+- 31 days
+- 8 modules
+- daily titles
+- daily objectives
+- tools used
 
 Candidate profiles contain:
 
-* member ID
-* name
-* job role
-* years of experience
-* education
-* completion status
-* mission history
-* passed/failed/skipped missions
-* attempt counts
-* commit days
-* missions completed
-* first-try completion signals
+- member ID
+- name
+- job role
+- years of experience
+- education
+- completion status
+- mission history
+- passed/failed/skipped missions
+- attempt counts
+- commit days
+- missions completed
+- first-try completion signals
 
 The technical specification defines the API contract and must be followed exactly.
 
@@ -251,16 +251,16 @@ Personalization is one of the most important features.
 
 Use:
 
-* job role
-* years of experience
-* education
-* passed missions
-* failed missions
-* skipped missions
-* attempt count
-* commit days
-* missions completed
-* missions first try
+- job role
+- years of experience
+- education
+- passed missions
+- failed missions
+- skipped missions
+- attempt count
+- commit days
+- missions completed
+- missions first try
 
 to influence the interview.
 
@@ -316,10 +316,10 @@ Topics with high attempt counts.
 
 These are valuable because they may reveal:
 
-* partial understanding
-* memorized knowledge
-* fragile understanding
-* areas requiring deeper probing
+- partial understanding
+- memorized knowledge
+- fragile understanding
+- areas requiring deeper probing
 
 ### C. Failed missions
 
@@ -339,49 +339,49 @@ Examples:
 
 Senior Data Engineer:
 
-* embeddings
-* vector search
-* retrieval
-* RAG
-* evaluation
-* production systems
+- embeddings
+- vector search
+- retrieval
+- RAG
+- evaluation
+- production systems
 
 Backend Software Engineer:
 
-* FastAPI
-* APIs
-* function calling
-* streaming
-* memory
-* deployment
+- FastAPI
+- APIs
+- function calling
+- streaming
+- memory
+- deployment
 
 AI Engineer:
 
-* RAG
-* agents
-* MCP
-* prompting
-* evaluation
-* production AI
+- RAG
+- agents
+- MCP
+- prompting
+- evaluation
+- production AI
 
 DevOps Engineer:
 
-* Docker
-* Kubernetes
-* observability
-* production readiness
-* reliability
+- Docker
+- Kubernetes
+- observability
+- production readiness
+- reliability
 
 Principal Architect / Distinguished Engineer:
 
-* architecture tradeoffs
-* RAG architecture
-* agent orchestration
-* MCP
-* production architecture
-* scalability
-* reliability
-* security
+- architecture tradeoffs
+- RAG architecture
+- agent orchestration
+- MCP
+- production architecture
+- scalability
+- reliability
+- security
 
 For non-AI technical roles, adjust questions toward practical application and system integration rather than assuming deep AI specialization.
 
@@ -548,9 +548,9 @@ The conversation must feel adaptive.
 
 Initialize difficulty based on:
 
-* job role
-* years of experience
-* curriculum coverage
+- job role
+- years of experience
+- curriculum coverage
 
 Then dynamically adjust.
 
@@ -570,27 +570,27 @@ Do not make the interview unfair.
 
 For an intern/junior candidate:
 
-* emphasize fundamentals
-* practical implementation
-* simple system design
+- emphasize fundamentals
+- practical implementation
+- simple system design
 
 For senior candidates:
 
-* emphasize architecture
-* tradeoffs
-* failure modes
-* scalability
-* production concerns
+- emphasize architecture
+- tradeoffs
+- failure modes
+- scalability
+- production concerns
 
 For principal/distinguished candidates:
 
-* focus heavily on architecture decisions
-* organizational/system tradeoffs
-* reliability
-* scalability
-* security
-* observability
-* production engineering
+- focus heavily on architecture decisions
+- organizational/system tradeoffs
+- reliability
+- scalability
+- security
+- observability
+- production engineering
 
 ---
 
@@ -637,18 +637,9 @@ Required structure:
 ```json
 {
   "summary": "...",
-  "strengths": [
-    "...",
-    "..."
-  ],
-  "gaps": [
-    "...",
-    "..."
-  ],
-  "next": [
-    "...",
-    "..."
-  ]
+  "strengths": ["...", "..."],
+  "gaps": ["...", "..."],
+  "next": ["...", "..."]
 }
 ```
 
@@ -656,25 +647,25 @@ Required structure:
 
 `summary`:
 
-* overall assessment
-* technical level observed
-* major strengths/gaps
+- overall assessment
+- technical level observed
+- major strengths/gaps
 
 `strengths`:
 
-* evidence-based
-* tied to actual interview responses
-* concise
+- evidence-based
+- tied to actual interview responses
+- concise
 
 `gaps`:
 
-* specific knowledge or reasoning gaps
-* never generic statements such as "study more"
+- specific knowledge or reasoning gaps
+- never generic statements such as "study more"
 
 `next`:
 
-* concrete learning recommendations
-* tied to curriculum days where possible
+- concrete learning recommendations
+- tied to curriculum days where possible
 
 Example:
 
@@ -723,28 +714,28 @@ Use a clean separation between:
 
 Controls:
 
-* state
-* question count
-* curriculum coverage
-* topic selection
-* interview phase
+- state
+- question count
+- curriculum coverage
+- topic selection
+- interview phase
 
 ### Candidate Analyzer
 
 Analyzes:
 
-* profile
-* mission history
-* learning signals
+- profile
+- mission history
+- learning signals
 
 ### Question Generator
 
 Generates:
 
-* initial questions
-* follow-ups
-* scenario questions
-* challenge questions
+- initial questions
+- follow-ups
+- scenario questions
+- challenge questions
 
 ### Answer Evaluator
 
@@ -835,10 +826,10 @@ AI Interview Agent
 
 Show:
 
-* candidate name
-* job role
-* experience
-* interview progress
+- candidate name
+- job role
+- experience
+- interview progress
 
 Do NOT expose sensitive/internal analytics unnecessarily.
 
@@ -912,9 +903,9 @@ Status
 
 When a candidate is selected:
 
-* create a unique sessionId
-* send the candidate object to `/api/interview`
-* begin the interview
+- create a unique sessionId
+- send the candidate object to `/api/interview`
+- begin the interview
 
 For development/demo purposes, preload the candidate data from `candidates.json`.
 
@@ -926,12 +917,12 @@ Make the application easy to demonstrate during a hackathon.
 
 Include:
 
-* candidate selector
-* start interview button
-* reset interview
-* interview progress
-* conversation
-* final feedback
+- candidate selector
+- start interview button
+- reset interview
+- interview progress
+- conversation
+- final feedback
 
 Optionally include a developer/debug panel behind a toggle showing:
 
@@ -951,14 +942,14 @@ This debug information must NOT be visible to the candidate by default.
 
 Handle:
 
-* invalid sessionId
-* missing candidate
-* missing message
-* malformed candidate
-* LLM failure
-* timeout
-* empty candidate answer
-* session not found
+- invalid sessionId
+- missing candidate
+- missing message
+- malformed candidate
+- LLM failure
+- timeout
+- empty candidate answer
+- session not found
 
 Return clean API responses.
 
@@ -1144,11 +1135,11 @@ Focus complexity on the adaptive interview engine.
 
 Do not expose:
 
-* API keys
-* internal prompts
-* internal evaluation
-* hidden candidate metadata unnecessarily
-* stack traces
+- API keys
+- internal prompts
+- internal evaluation
+- hidden candidate metadata unnecessarily
+- stack traces
 
 Validate all API input.
 
@@ -1160,30 +1151,30 @@ Create automated tests for:
 
 ### API
 
-* start interview
-* continue interview
-* finish interview
-* invalid session
+- start interview
+- continue interview
+- finish interview
+- invalid session
 
 ### Interview requirements
 
 Verify:
 
-* at least 8 questions
-* at least 4 curriculum days
-* follow-up generation
-* context retention
-* final feedback
+- at least 8 questions
+- at least 4 curriculum days
+- follow-up generation
+- context retention
+- final feedback
 
 ### Candidate personalization
 
 Test at least:
 
-* strong AI Engineer candidate
-* junior candidate
-* candidate with skipped topics
-* candidate with failed missions
-* senior/principal candidate
+- strong AI Engineer candidate
+- junior candidate
+- candidate with skipped topics
+- candidate with failed missions
+- senior/principal candidate
 
 ### State
 
@@ -1227,19 +1218,19 @@ The interviewer should visibly adapt.
 
 DO NOT:
 
-* create a static list of 8 questions
-* ask every candidate identical questions
-* ignore candidate profile
-* ignore skipped missions
-* assume completed missions equal mastery
-* ask multiple questions in one message
-* reveal internal scoring
-* generate generic feedback
-* end before minimum requirements
-* lose state between API calls
-* hard-code a single candidate
-* hard-code the curriculum into frontend components
-* return an API schema different from the specification
+- create a static list of 8 questions
+- ask every candidate identical questions
+- ignore candidate profile
+- ignore skipped missions
+- assume completed missions equal mastery
+- ask multiple questions in one message
+- reveal internal scoring
+- generate generic feedback
+- end before minimum requirements
+- lose state between API calls
+- hard-code a single candidate
+- hard-code the curriculum into frontend components
+- return an API schema different from the specification
 
 ---
 
@@ -1318,15 +1309,15 @@ README.md
 
 The README must explain:
 
-* architecture
-* setup
-* environment variables
-* how to run frontend
-* how to run backend
-* API contract
-* interview state machine
-* personalization logic
-* how the agent satisfies the minimum requirements
+- architecture
+- setup
+- environment variables
+- how to run frontend
+- how to run backend
+- API contract
+- interview state machine
+- personalization logic
+- how the agent satisfies the minimum requirements
 
 ---
 
@@ -1361,6 +1352,7 @@ Before considering the project complete, verify:
 [ ] Final response has `done: true`
 
 [ ] Final response contains:
+
 - summary
 - strengths
 - gaps

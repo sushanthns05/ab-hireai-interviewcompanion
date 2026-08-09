@@ -3,10 +3,12 @@ import { createLLMClient, MIN_ANSWER_LENGTH, type LLMMessage } from "@/lib/inter
 import { z } from "zod";
 
 const requestSchema = z.object({
-  messages: z.array(z.object({
-    role: z.enum(["user", "assistant"]),
-    content: z.string(),
-  })),
+  messages: z.array(
+    z.object({
+      role: z.enum(["user", "assistant"]),
+      content: z.string(),
+    }),
+  ),
   interviewType: z.string(),
   persona: z.string(),
 });
@@ -34,11 +36,18 @@ export const Route = createFileRoute("/api/interview-chat")({
 
         const { messages, interviewType, persona } = parsed.data;
 
-        const latestUserMessage = [...messages].reverse().find((message) => message.role === "user");
+        const latestUserMessage = [...messages]
+          .reverse()
+          .find((message) => message.role === "user");
         if (latestUserMessage && latestUserMessage.content.trim().length < MIN_ANSWER_LENGTH) {
           return json({
             response: "Your answer is too short or invalid. Please provide a relevant response.",
-            fragments: ["Checking answer...", "Input is too short", "Score assigned: 0", "Please try again"],
+            fragments: [
+              "Checking answer...",
+              "Input is too short",
+              "Score assigned: 0",
+              "Please try again",
+            ],
             score: 0,
           });
         }
@@ -74,35 +83,35 @@ You must output ONLY a valid JSON object. Do not include placeholder text, markd
 
         try {
           const llm = createLLMClient();
-          
+
           const llmMessages: LLMMessage[] = [
             { role: "system", content: systemPrompt },
-            ...messages
+            ...messages,
           ];
 
-          const result = await llm.structuredGenerate<{ 
-            chain_of_thought?: string, 
-            is_valid_attempt?: boolean, 
-            scores?: any, 
-            overall_score?: number, 
-            feedback_message?: string 
+          const result = await llm.structuredGenerate<{
+            chain_of_thought?: string;
+            is_valid_attempt?: boolean;
+            scores?: any;
+            overall_score?: number;
+            feedback_message?: string;
           }>(llmMessages, { temperature: 0.7 });
-          
-          const response = typeof result.feedback_message === "string"
-            ? result.feedback_message.replace(/\s*undefined\s*$/i, "").trim()
-            : "";
+
+          const response =
+            typeof result.feedback_message === "string"
+              ? result.feedback_message.replace(/\s*undefined\s*$/i, "").trim()
+              : "";
           if (!response) return json({ error: "The AI returned an empty response." }, 502);
-          
-          const fragments = typeof result.chain_of_thought === "string" 
-            ? [result.chain_of_thought] 
-            : [];
-            
-          return json({ 
-            response, 
-            fragments, 
-            scores: result.scores, 
-            overall_score: result.overall_score, 
-            is_valid_attempt: result.is_valid_attempt 
+
+          const fragments =
+            typeof result.chain_of_thought === "string" ? [result.chain_of_thought] : [];
+
+          return json({
+            response,
+            fragments,
+            scores: result.scores,
+            overall_score: result.overall_score,
+            is_valid_attempt: result.is_valid_attempt,
           });
         } catch (error: any) {
           console.error("Chat error", error);

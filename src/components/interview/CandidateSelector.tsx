@@ -25,7 +25,8 @@ export function CandidateSelector({ onStart, starting }: Props) {
         <div>
           <h2 className="text-2xl font-semibold">Select a candidate</h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            Every interview is generated from the candidate&apos;s real mission history — no two are alike.
+            Every interview is generated from the candidate&apos;s real mission history — no two are
+            alike.
           </p>
         </div>
         <div className="relative w-full sm:w-72">
@@ -50,7 +51,9 @@ export function CandidateSelector({ onStart, starting }: Props) {
               type="button"
               onClick={() => setSelected(c)}
               className={`panel group text-left transition-all duration-200 ${
-                active ? "border-primary shadow-(--shadow-glow)" : "hover:border-primary hover:shadow-(--shadow-glow)"
+                active
+                  ? "border-primary shadow-(--shadow-glow)"
+                  : "hover:border-primary hover:shadow-(--shadow-glow)"
               }`}
               aria-pressed={active}
             >
@@ -70,15 +73,21 @@ export function CandidateSelector({ onStart, starting }: Props) {
 
                 <dl className="mt-4 grid grid-cols-3 gap-2 text-center">
                   <div className="rounded-none bg-secondary/60 py-2">
-                    <dt className="text-[10px] uppercase tracking-wide text-muted-foreground">Exp</dt>
+                    <dt className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                      Exp
+                    </dt>
                     <dd className="font-mono text-sm">{c.member.yearsExperience}y</dd>
                   </div>
                   <div className="rounded-none bg-secondary/60 py-2">
-                    <dt className="text-[10px] uppercase tracking-wide text-muted-foreground">Missions</dt>
+                    <dt className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                      Missions
+                    </dt>
                     <dd className="font-mono text-sm">{c.signals.missionsCompleted}</dd>
                   </div>
                   <div className="rounded-none bg-secondary/60 py-2">
-                    <dt className="text-[10px] uppercase tracking-wide text-muted-foreground">1st try</dt>
+                    <dt className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                      1st try
+                    </dt>
                     <dd className="font-mono text-sm">{c.signals.missionsFirstTry}</dd>
                   </div>
                 </dl>

@@ -1,13 +1,13 @@
 # The Interview Agent — ABTalks HireAI
 
-An adaptive AI technical interviewer for graduates of the 31-day Enterprise AI Engineering cohort, now featuring comprehensive mock practice capabilities. 
+An adaptive AI technical interviewer for graduates of the 31-day Enterprise AI Engineering cohort, now featuring comprehensive mock practice capabilities.
 It reads each candidate's real mission history, plans curriculum topics with intent, adapts difficulty turn by turn, follows up on what the candidate actually said, and closes with a comprehensive, structured feedback report.
 
 ## Features
 
 - **Live Adaptive AI Interviewing:** The core engine assesses seniority, tracks curriculum gaps, and controls difficulty seamlessly as the candidate answers real-time questions.
 - **Mock Interview Practice Mode:** Choose from various personas (HR, Technical Lead, Panel) and practice specific types of behavioral or technical questions in a low-pressure simulated environment.
-- **Strict Anti-Cheat (Focus Mode):** Active across both Live and Mock interviews. 
+- **Strict Anti-Cheat (Focus Mode):** Active across both Live and Mock interviews.
   - Forces Fullscreen automatically.
   - Intercepts tab-switching and window-switching.
   - Blocks `PrintScreen`, developer tools, context menus, and text copying.
@@ -76,19 +76,19 @@ When `done` is `true`, the response also carries the enriched feedback report:
 }
 ```
 
-`GET /api/interview?sessionId=…` returns the internal state (phase, difficulty, covered days, 
+`GET /api/interview?sessionId=…` returns the internal state (phase, difficulty, covered days,
 last action + reason) for the developer panel. `POST /api/interview-reset?sessionId=…` clears it.
 
 ## How it works
 
-| Layer | File | Responsibility |
-| --- | --- | --- |
-| Curriculum grounding | `src/lib/interview/curriculum.ts` | Day/module lookup, learning paths, topic text used to ground every question |
-| Candidate analysis | `src/lib/interview/analyzer.ts` | Seniority, role focus, skipped/failed/high-effort days, planned day sequence, base difficulty |
-| Interview engine | `src/lib/interview/engine.server.ts` | Phase machine (INTRO → BASELINE → DEEP_DIVE → CROSS_DOMAIN → SCENARIO → FINAL → FEEDBACK), evaluation, difficulty control |
-| Sessions | `src/lib/interview/sessions.server.ts` | In-memory session store with TTL |
-| HTTP | `src/lib/interview/handler.server.ts` | Zod validation, error mapping, session lifecycle |
+| Layer                | File                                   | Responsibility                                                                                                            |
+| -------------------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Curriculum grounding | `src/lib/interview/curriculum.ts`      | Day/module lookup, learning paths, topic text used to ground every question                                               |
+| Candidate analysis   | `src/lib/interview/analyzer.ts`        | Seniority, role focus, skipped/failed/high-effort days, planned day sequence, base difficulty                             |
+| Interview engine     | `src/lib/interview/engine.server.ts`   | Phase machine (INTRO → BASELINE → DEEP_DIVE → CROSS_DOMAIN → SCENARIO → FINAL → FEEDBACK), evaluation, difficulty control |
+| Sessions             | `src/lib/interview/sessions.server.ts` | In-memory session store with TTL                                                                                          |
+| HTTP                 | `src/lib/interview/handler.server.ts`  | Zod validation, error mapping, session lifecycle                                                                          |
 
-Guarantees enforced by the engine and covered by tests: 8–12 questions, at least 4 distinct 
-curriculum days, every question tied to a day plus a reason, no assumed knowledge of skipped 
+Guarantees enforced by the engine and covered by tests: 8–12 questions, at least 4 distinct
+curriculum days, every question tied to a day plus a reason, no assumed knowledge of skipped
 missions, and difficulty that moves with answer quality.

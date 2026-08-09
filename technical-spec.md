@@ -91,12 +91,12 @@ When the interview is complete, return:
 
 The final response must include:
 
-| Field | Type |
-|--------|------|
-| summary | string |
+| Field     | Type     |
+| --------- | -------- |
+| summary   | string   |
 | strengths | string[] |
-| gaps | string[] |
-| next | string[] |
+| gaps      | string[] |
+| next      | string[] |
 
 Each array should contain concise, actionable points.
 

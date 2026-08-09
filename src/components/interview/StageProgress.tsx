@@ -22,7 +22,7 @@ export function StageProgress({ stages }: StageProgressProps) {
           return (
             <div key={stage.id} className="flex items-center flex-1 last:flex-none group">
               <div className="flex flex-col items-center gap-2 relative z-10">
-                <div 
+                <div
                   className={`size-8 rounded-full flex items-center justify-center border-2 transition-colors
                     ${isComplete ? "bg-primary border-primary text-white" : ""}
                     ${isCurrent ? "border-primary bg-background text-primary" : ""}
@@ -35,7 +35,7 @@ export function StageProgress({ stages }: StageProgressProps) {
                     <span className="text-sm font-semibold">{index + 1}</span>
                   )}
                 </div>
-                <span 
+                <span
                   className={`absolute top-10 text-[11px] font-semibold uppercase tracking-wider whitespace-nowrap transition-colors
                     ${isCurrent ? "text-primary" : ""}
                     ${isComplete ? "text-foreground" : ""}
@@ -45,12 +45,12 @@ export function StageProgress({ stages }: StageProgressProps) {
                   {stage.label}
                 </span>
               </div>
-              
+
               {/* Connecting Line */}
               {index < stages.length - 1 && (
                 <div className="flex-1 h-0.5 mx-4 relative -top-2.5">
                   <div className="absolute inset-0 bg-muted" />
-                  <div 
+                  <div
                     className="absolute inset-y-0 left-0 bg-primary transition-all duration-1000"
                     style={{ width: isComplete ? "100%" : "0%" }}
                   />

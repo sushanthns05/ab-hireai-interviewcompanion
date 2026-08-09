@@ -1,7 +1,25 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Upload, UserCircle2, Code2, Play, LayoutDashboard, Mic, Send, Target, Briefcase, Loader2, ArrowRight, ArrowLeft, Brain, MessageSquareText, ShieldCheck, BarChart3, History } from "lucide-react";
+import {
+  Upload,
+  UserCircle2,
+  Code2,
+  Play,
+  LayoutDashboard,
+  Mic,
+  Send,
+  Target,
+  Briefcase,
+  Loader2,
+  ArrowRight,
+  ArrowLeft,
+  Brain,
+  MessageSquareText,
+  ShieldCheck,
+  BarChart3,
+  History,
+} from "lucide-react";
 import { ThinkingTrace } from "../components/interview-iq/ThinkingTrace";
 import { ConfidenceMeter } from "../components/interview-iq/ConfidenceMeter";
 import { ReportCard } from "../components/interview-iq/ReportCard";
@@ -21,12 +39,11 @@ export interface PastSession {
   type: string;
   persona: string;
   score: number;
-  messages: {role: "user" | "assistant", content: string}[];
+  messages: { role: "user" | "assistant"; content: string }[];
   strongerAnswer: string;
   fragments: string[];
   terminated?: boolean;
 }
-
 
 function cleanAiText(value: unknown): string {
   if (typeof value !== "string") return "";
@@ -34,7 +51,7 @@ function cleanAiText(value: unknown): string {
 }
 
 function InterviewIQApp() {
-  const [messages, setMessages] = useState<{role: "user" | "assistant", content: string}[]>([]);
+  const [messages, setMessages] = useState<{ role: "user" | "assistant"; content: string }[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState("");
 
   const [appState, setAppState] = useState<AppState>("HOME");
@@ -47,7 +64,7 @@ function InterviewIQApp() {
   useEffect(() => {
     if (appState === "HISTORY") {
       try {
-        const existing = JSON.parse(localStorage.getItem('hireai_sessions') || '[]');
+        const existing = JSON.parse(localStorage.getItem("hireai_sessions") || "[]");
         setSessions(existing);
       } catch (e) {
         setSessions([]);
@@ -69,7 +86,9 @@ function InterviewIQApp() {
   const [isTerminated, setIsTerminated] = useState(false);
 
   // Live State variables
-  const [livePhase, setLivePhase] = useState<"ai_thinking_1" | "ai_asking" | "user_answering" | "ai_thinking_2" | "done">("ai_thinking_1");
+  const [livePhase, setLivePhase] = useState<
+    "ai_thinking_1" | "ai_asking" | "user_answering" | "ai_thinking_2" | "done"
+  >("ai_thinking_1");
   const [confidenceScore, setConfidenceScore] = useState(0);
   const [celebration, setCelebration] = useState<string | null>(null);
 
@@ -95,7 +114,7 @@ function InterviewIQApp() {
     }
 
     const handleViolation = (message: string) => {
-      setFocusViolations(prev => {
+      setFocusViolations((prev) => {
         const newCount = prev + 1;
         if (newCount >= 4) {
           setFocusWarning("Interview terminated due to multiple focus mode violations (4/4).");
@@ -130,19 +149,19 @@ function InterviewIQApp() {
     };
 
     const preventShortcuts = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && ['c', 'p', 's'].includes(e.key.toLowerCase())) {
+      if ((e.metaKey || e.ctrlKey) && ["c", "p", "s"].includes(e.key.toLowerCase())) {
         e.preventDefault();
         handleViolation("Shortcuts are disabled.");
       }
-      if (e.key === 'PrintScreen' || e.code === 'PrintScreen') {
+      if (e.key === "PrintScreen" || e.code === "PrintScreen") {
         e.preventDefault();
         handleViolation("Taking screenshots is prohibited.");
       }
-      if (e.altKey && e.key.toLowerCase() === 'g') {
+      if (e.altKey && e.key.toLowerCase() === "g") {
         e.preventDefault();
         handleViolation("Screen capture shortcuts are disabled.");
       }
-      if (e.metaKey && e.shiftKey && e.key.toLowerCase() === 's') {
+      if (e.metaKey && e.shiftKey && e.key.toLowerCase() === "s") {
         e.preventDefault();
         handleViolation("Taking screenshots is prohibited.");
       }
@@ -169,7 +188,7 @@ function InterviewIQApp() {
     "Transcribing audio input...",
     "Extracting STAR framework components...",
     "Evaluating use of concrete metrics...",
-    "Generating feedback report..."
+    "Generating feedback report...",
   ]);
 
   // Clean up speech recognition on unmount
@@ -184,8 +203,8 @@ function InterviewIQApp() {
   // Mouse tracking for radial glow
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      document.documentElement.style.setProperty('--mouse-x', `${e.clientX}px`);
-      document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`);
+      document.documentElement.style.setProperty("--mouse-x", `${e.clientX}px`);
+      document.documentElement.style.setProperty("--mouse-y", `${e.clientY}px`);
     };
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
@@ -213,7 +232,8 @@ function InterviewIQApp() {
   }, [appState]);
 
   const toggleRecording = () => {
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const SpeechRecognition =
+      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechRecognition) {
       alert("Voice input is not supported in this browser. Please use Chrome or Edge.");
       return;
@@ -268,7 +288,7 @@ function InterviewIQApp() {
       recognitionRef.current?.stop();
       setIsRecording(false);
     }
-    
+
     const userMessage = value.trim();
     const newMessages = [...messages, { role: "user" as const, content: userMessage }];
     setMessages(newMessages);
@@ -285,7 +305,7 @@ function InterviewIQApp() {
           persona,
         }),
       });
-      
+
       const data = await response.json();
       const cleanResponse = cleanAiText(data.response);
       if (cleanResponse) {
@@ -319,7 +339,7 @@ function InterviewIQApp() {
       setIsRecording(false);
     }
     setLivePhase("ai_thinking_2");
-    
+
     try {
       const response = await fetch("/api/evaluate-answer", {
         method: "POST",
@@ -329,13 +349,13 @@ function InterviewIQApp() {
           persona,
         }),
       });
-      
+
       const data = await response.json();
-      
+
       if (data.score !== undefined) {
         const parsedStrongerAnswer = cleanAiText(data.strongerAnswer);
         const parsedFragments = data.fragments || aiFragments;
-        
+
         setResultScore(data.score);
         setStrongerAnswer(parsedStrongerAnswer);
         setAiFragments(parsedFragments);
@@ -350,11 +370,14 @@ function InterviewIQApp() {
           messages,
           strongerAnswer: parsedStrongerAnswer,
           fragments: parsedFragments,
-          terminated: isViolation
+          terminated: isViolation,
         };
         try {
-          const existing = JSON.parse(localStorage.getItem('hireai_sessions') || '[]');
-          localStorage.setItem('hireai_sessions', JSON.stringify([session, ...existing].slice(0, 50)));
+          const existing = JSON.parse(localStorage.getItem("hireai_sessions") || "[]");
+          localStorage.setItem(
+            "hireai_sessions",
+            JSON.stringify([session, ...existing].slice(0, 50)),
+          );
         } catch (e) {
           console.error("Failed to save session history", e);
         }
@@ -382,7 +405,7 @@ function InterviewIQApp() {
     setAppState("LIVE");
     setLivePhase("ai_thinking_1");
     setMessages([]);
-    
+
     try {
       const response = await fetch("/api/interview-chat", {
         method: "POST",
@@ -393,7 +416,7 @@ function InterviewIQApp() {
           persona,
         }),
       });
-      
+
       const data = await response.json();
       const cleanResponse = cleanAiText(data.response);
       if (cleanResponse) {
@@ -406,7 +429,9 @@ function InterviewIQApp() {
       }
     } catch (err) {
       console.error(err);
-      setCurrentQuestion("Hello! I am ready to begin your mock interview. Tell me when you are ready.");
+      setCurrentQuestion(
+        "Hello! I am ready to begin your mock interview. Tell me when you are ready.",
+      );
       setLivePhase("user_answering");
     }
   };
@@ -426,37 +451,34 @@ function InterviewIQApp() {
   };
 
   return (
-    <div 
+    <div
       className="min-h-screen w-full flex flex-col bg-background text-foreground font-sans selection:bg-[#c084fc]/30 selection:text-white relative"
       style={{
         backgroundImage: "url('/bg.png')",
         backgroundSize: "cover",
         backgroundPosition: "center",
-        backgroundAttachment: "fixed"
+        backgroundAttachment: "fixed",
       }}
     >
       {/* Premium Navbar */}
       <nav className="h-20 border-b border-white/5 bg-black/20 backdrop-blur-xl flex items-center justify-between px-8 z-50 sticky top-0">
-        <Link 
-          to="/"
-          onClick={() => setAppState("HOME")}
-          className="flex items-center gap-3 group"
-        >
+        <Link to="/" onClick={() => setAppState("HOME")} className="flex items-center gap-3 group">
           <div className="bg-linear-to-br from-[#c084fc] to-[#2dd4bf] size-8 rounded-lg flex items-center justify-center shadow-[0_0_15px_rgba(45,212,191,0.3)] group-hover:scale-105 transition-transform">
             <span className="text-white font-bold text-lg leading-none">IQ</span>
           </div>
           <span className="text-xl font-bold tracking-tight text-white">
-            AB<span className="bg-linear-to-r from-[#c084fc] to-[#2dd4bf] text-transparent bg-clip-text">InterviewIQ</span>
+            AB
+            <span className="bg-linear-to-r from-[#c084fc] to-[#2dd4bf] text-transparent bg-clip-text">
+              InterviewIQ
+            </span>
           </span>
         </Link>
-        
-        
       </nav>
 
       {/* FOCUS WARNING OVERLAY */}
       <AnimatePresence>
         {appState === "LIVE" && focusWarning && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
             animate={{ opacity: 1, backdropFilter: "blur(20px)" }}
             exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
@@ -466,11 +488,13 @@ function InterviewIQApp() {
             <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">Focus Mode Violation</h2>
             <p className="text-lg text-white/70 max-w-lg mb-8 leading-relaxed">
               {focusWarning}
-              <br /><br />
-              Live Interviews require your full attention to simulate a real environment. No shortcuts, no second tabs.
+              <br />
+              <br />
+              Live Interviews require your full attention to simulate a real environment. No
+              shortcuts, no second tabs.
             </p>
-            <Button 
-              size="lg" 
+            <Button
+              size="lg"
               variant="destructive"
               className="px-8 py-6 rounded-full text-lg font-bold shadow-[0_0_20px_rgba(239,68,68,0.3)] hover:shadow-[0_0_30px_rgba(239,68,68,0.5)] transition-all"
               onClick={async () => {
@@ -479,7 +503,7 @@ function InterviewIQApp() {
                   if (document.documentElement.requestFullscreen) {
                     await document.documentElement.requestFullscreen();
                   }
-                } catch(e) {}
+                } catch (e) {}
               }}
             >
               Return to Interview
@@ -490,14 +514,13 @@ function InterviewIQApp() {
 
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col items-center justify-center p-4 sm:p-8 relative overflow-hidden bg-black/40">
-        
         {/* Removed Static Abstract Background Decoration to use the new image */}
 
         {/* Interactive Radial Glow */}
-        <div 
+        <div
           className="pointer-events-none fixed inset-0 z-0 transition-opacity duration-500"
           style={{
-            background: `radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(192, 132, 252, 0.05), transparent 40%)`
+            background: `radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(192, 132, 252, 0.05), transparent 40%)`,
           }}
         />
 
@@ -513,7 +536,7 @@ function InterviewIQApp() {
               <Loader2 className="size-10 text-primary animate-spin" />
             </motion.div>
           )}
-          
+
           {/* HOME SCREEN */}
           {!isTransitioning && appState === "HOME" && (
             <motion.div
@@ -529,17 +552,23 @@ function InterviewIQApp() {
                 {/* Badge */}
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-md mb-8">
                   <div className="size-2 rounded-full bg-[#2dd4bf] shadow-[0_0_8px_rgba(45,212,191,0.8)]"></div>
-                  <span className="text-white/80 text-sm font-medium">AI-powered interview practice</span>
+                  <span className="text-white/80 text-sm font-medium">
+                    AI-powered interview practice
+                  </span>
                 </div>
 
                 {/* Headline */}
                 <h1 className="text-5xl sm:text-7xl font-extrabold tracking-tight mb-6 text-white leading-[1.1] max-w-200">
-                  Turn interview anxiety into <span className="bg-linear-to-r from-[#c084fc] to-[#2dd4bf] text-transparent bg-clip-text">confidence.</span>
+                  Turn interview anxiety into{" "}
+                  <span className="bg-linear-to-r from-[#c084fc] to-[#2dd4bf] text-transparent bg-clip-text">
+                    confidence.
+                  </span>
                 </h1>
 
                 {/* Subtext */}
                 <p className="text-white/60 text-lg sm:text-xl max-w-150 leading-relaxed mx-auto">
-                  Practice realistic interviews, sharpen your answers, and get instant AI feedback — built to adapt to your skill level.
+                  Practice realistic interviews, sharpen your answers, and get instant AI feedback —
+                  built to adapt to your skill level.
                 </p>
               </div>
 
@@ -562,7 +591,7 @@ function InterviewIQApp() {
 
               {/* Cards row below CTAs */}
               <div className="w-full flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center mt-8 sm:mt-12">
-                <button 
+                <button
                   onClick={() => navigateTo("SETUP")}
                   className="flex-1 flex flex-col items-start text-left gap-4 bg-black/40 backdrop-blur-2xl border border-white/10 hover:border-[#2dd4bf]/50 hover:bg-white/5 p-6 sm:p-8 rounded-3xl transition-all group cursor-pointer shadow-[0_0_30px_rgba(0,0,0,0.5)]"
                 >
@@ -570,11 +599,15 @@ function InterviewIQApp() {
                     <Target className="size-6 text-[#2dd4bf]" />
                   </div>
                   <div>
-                    <div className="font-semibold text-lg sm:text-xl text-white group-hover:text-[#2dd4bf] transition-colors">Mock Interview</div>
-                    <div className="text-sm text-white/50 mt-2 leading-relaxed">Hone your skills in a low-pressure simulated environment.</div>
+                    <div className="font-semibold text-lg sm:text-xl text-white group-hover:text-[#2dd4bf] transition-colors">
+                      Mock Interview
+                    </div>
+                    <div className="text-sm text-white/50 mt-2 leading-relaxed">
+                      Hone your skills in a low-pressure simulated environment.
+                    </div>
                   </div>
                 </button>
-                <Link 
+                <Link
                   to="/dashboard"
                   className="flex-1 flex flex-col items-start text-left gap-4 bg-black/40 backdrop-blur-2xl border border-white/10 hover:border-[#c084fc]/50 hover:bg-white/5 p-6 sm:p-8 rounded-3xl transition-all group cursor-pointer shadow-[0_0_30px_rgba(0,0,0,0.5)]"
                 >
@@ -582,13 +615,15 @@ function InterviewIQApp() {
                     <Briefcase className="size-6 text-[#c084fc]" />
                   </div>
                   <div>
-                    <div className="font-semibold text-lg sm:text-xl text-white group-hover:text-[#c084fc] transition-colors">Live Interview</div>
-                    <div className="text-sm text-white/50 mt-2 leading-relaxed">Start the adaptive technical interview session.</div>
+                    <div className="font-semibold text-lg sm:text-xl text-white group-hover:text-[#c084fc] transition-colors">
+                      Live Interview
+                    </div>
+                    <div className="text-sm text-white/50 mt-2 leading-relaxed">
+                      Start the adaptive technical interview session.
+                    </div>
                   </div>
                 </Link>
               </div>
-
-
             </motion.div>
           )}
 
@@ -602,7 +637,7 @@ function InterviewIQApp() {
               transition={{ duration: 0.4, ease: "easeOut" }}
               className="w-full max-w-2xl bg-card rounded-3xl shadow-panel border border-border p-6 sm:p-10 flex flex-col gap-8 sm:gap-10 z-10 relative"
             >
-              <button 
+              <button
                 onClick={() => {
                   window.history.back(); // Use browser back to maintain history stack
                   // Fallback if no history
@@ -613,10 +648,14 @@ function InterviewIQApp() {
               >
                 <ArrowLeft className="size-6 group-hover:-translate-x-1 transition-transform" />
               </button>
-              
+
               <div className="text-center mt-8 sm:mt-2">
-                <h1 className="text-3xl sm:text-4xl font-bold text-foreground tracking-tight">Configure Interview</h1>
-                <p className="text-muted-foreground mt-2">Tailor your mock session to your exact needs.</p>
+                <h1 className="text-3xl sm:text-4xl font-bold text-foreground tracking-tight">
+                  Configure Interview
+                </h1>
+                <p className="text-muted-foreground mt-2">
+                  Tailor your mock session to your exact needs.
+                </p>
               </div>
 
               <div className="flex flex-col gap-6 max-w-md mx-auto w-full">
@@ -627,15 +666,15 @@ function InterviewIQApp() {
                       Type
                     </label>
                     <div className="flex bg-muted p-1 rounded-xl">
-                      <button 
+                      <button
                         onClick={() => setInterviewType("behavioral")}
-                        className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${interviewType === 'behavioral' ? 'bg-card shadow-glow text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+                        className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${interviewType === "behavioral" ? "bg-card shadow-glow text-foreground" : "text-muted-foreground hover:text-foreground"}`}
                       >
                         Behavioral
                       </button>
-                      <button 
+                      <button
                         onClick={() => setInterviewType("technical")}
-                        className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${interviewType === 'technical' ? 'bg-card shadow-glow text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+                        className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${interviewType === "technical" ? "bg-card shadow-glow text-foreground" : "text-muted-foreground hover:text-foreground"}`}
                       >
                         Technical
                       </button>
@@ -647,16 +686,16 @@ function InterviewIQApp() {
                       Persona
                     </label>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
-                      <button 
+                      <button
                         onClick={() => setPersona("hr")}
-                        className={`flex items-center gap-2 p-3 rounded-xl border text-sm font-medium transition-all ${persona === 'hr' ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-card text-muted-foreground hover:border-primary/50'}`}
+                        className={`flex items-center gap-2 p-3 rounded-xl border text-sm font-medium transition-all ${persona === "hr" ? "border-primary bg-primary/10 text-primary" : "border-border bg-card text-muted-foreground hover:border-primary/50"}`}
                       >
                         <UserCircle2 className="size-4" />
                         Friendly HR
                       </button>
-                      <button 
+                      <button
                         onClick={() => setPersona("tech_lead")}
-                        className={`flex items-center gap-2 p-3 rounded-xl border text-sm font-medium transition-all ${persona === 'tech_lead' ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-card text-muted-foreground hover:border-primary/50'}`}
+                        className={`flex items-center gap-2 p-3 rounded-xl border text-sm font-medium transition-all ${persona === "tech_lead" ? "border-primary bg-primary/10 text-primary" : "border-border bg-card text-muted-foreground hover:border-primary/50"}`}
                       >
                         <Code2 className="size-4" />
                         Tech Lead
@@ -667,7 +706,7 @@ function InterviewIQApp() {
               </div>
 
               <div className="flex justify-center mt-4">
-                <button 
+                <button
                   onClick={handleStart}
                   className="flex items-center gap-2 bg-primary text-white px-8 py-4 rounded-full text-lg font-semibold hover:hover:bg-primary/80 hover:shadow-glow transition-all active:scale-95"
                 >
@@ -689,109 +728,115 @@ function InterviewIQApp() {
               className="w-full flex flex-col gap-6 items-center z-10 relative select-none"
             >
               <div className="w-full max-w-6xl flex flex-col lg:flex-row gap-8 lg:gap-12 items-stretch justify-center relative z-10">
-              {/* Left Column: AI Interface */}
-              <div className="flex-1 flex flex-col gap-8 w-full max-w-xl relative">
-                
-                {/* AI Question Box */}
-                <div className="bg-card p-6 sm:p-8 rounded-3xl shadow-panel border border-border flex flex-col gap-6 relative overflow-hidden h-full">
-                  <div className="flex items-center gap-3">
-                    <div className="bg-primary/20 size-10 rounded-full flex items-center justify-center shrink-0">
-                      <UserCircle2 className="size-5 text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-foreground leading-tight">AI Interviewer</h3>
-                      <p className="text-xs text-muted-foreground font-medium">Tech Lead Persona</p>
-                    </div>
-                  </div>
-                  
-                  <div className="text-lg text-foreground leading-relaxed font-medium min-h-20">
-                    {livePhase === "ai_thinking_1" ? (
-                      <div className="flex items-center gap-3 text-sm text-muted-foreground bg-surface-raised border border-border p-4 w-fit">
-                        <Loader2 className="size-5 animate-spin text-primary" />
-                        <span className="animate-pulse">Analyzing context and formulating question...</span>
+                {/* Left Column: AI Interface */}
+                <div className="flex-1 flex flex-col gap-8 w-full max-w-xl relative">
+                  {/* AI Question Box */}
+                  <div className="bg-card p-6 sm:p-8 rounded-3xl shadow-panel border border-border flex flex-col gap-6 relative overflow-hidden h-full">
+                    <div className="flex items-center gap-3">
+                      <div className="bg-primary/20 size-10 rounded-full flex items-center justify-center shrink-0">
+                        <UserCircle2 className="size-5 text-primary" />
                       </div>
-                    ) : (
-                      <StreamingMessage content={currentQuestion} />
-                    )}
+                      <div>
+                        <h3 className="font-semibold text-foreground leading-tight">
+                          AI Interviewer
+                        </h3>
+                        <p className="text-xs text-muted-foreground font-medium">
+                          Tech Lead Persona
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="text-lg text-foreground leading-relaxed font-medium min-h-20">
+                      {livePhase === "ai_thinking_1" ? (
+                        <div className="flex items-center gap-3 text-sm text-muted-foreground bg-surface-raised border border-border p-4 w-fit">
+                          <Loader2 className="size-5 animate-spin text-primary" />
+                          <span className="animate-pulse">
+                            Analyzing context and formulating question...
+                          </span>
+                        </div>
+                      ) : (
+                        <StreamingMessage content={currentQuestion} />
+                      )}
+                    </div>
                   </div>
-                </div>
 
-                {/* Thinking Trace Drawer/Panel */}
-                <div className="absolute top-[105%] left-0 w-full z-20">
-                  <ThinkingTrace 
-                    isThinking={livePhase === "ai_thinking_1" || livePhase === "ai_thinking_2"} 
-                    fragments={
-                      livePhase === "ai_thinking_1" 
-                        ? [
-                            "Loading standard technical baseline...",
-                            "Selecting a core concept to test...",
-                            "Calibrating technical depth for target role...",
-                            "Formulating adaptive technical question..."
-                          ]
-                        : aiFragments
-                    }
-                  />
-                </div>
-              </div>
-
-              {/* Right Column: User Interface / Input */}
-              <div className="flex-1 flex flex-col gap-4 max-w-xl w-full">
-                
-                <div className="flex-1 bg-card rounded-3xl shadow-panel border border-border p-6 flex flex-col gap-4">
-                  <div className="flex justify-between items-center px-2">
-                    <h3 className="font-semibold text-foreground uppercase tracking-wider text-sm">Your Answer</h3>
-                    <ConfidenceMeter 
-                      isSpeaking={isRecording} 
-                      confidenceScore={confidenceScore} 
-                      celebration={celebration} 
+                  {/* Thinking Trace Drawer/Panel */}
+                  <div className="absolute top-[105%] left-0 w-full z-20">
+                    <ThinkingTrace
+                      isThinking={livePhase === "ai_thinking_1" || livePhase === "ai_thinking_2"}
+                      fragments={
+                        livePhase === "ai_thinking_1"
+                          ? [
+                              "Loading standard technical baseline...",
+                              "Selecting a core concept to test...",
+                              "Calibrating technical depth for target role...",
+                              "Formulating adaptive technical question...",
+                            ]
+                          : aiFragments
+                      }
                     />
                   </div>
-                  
-                  <div className="flex-1 relative flex flex-col min-h-32">
-                    <Textarea
-                      value={value}
-                      onChange={(e) => setValue(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) submitAnswer();
-                      }}
-                      placeholder={isRecording ? "Listening..." : "Type or speak your answer..."}
-                      className={`flex-1 resize-none bg-background/50 border-0 focus-visible:ring-1 focus-visible:ring-primary rounded-xl p-4 text-base leading-relaxed ${isRecording ? 'border border-red-500/50 shadow-[0_0_15px_rgba(239,68,68,0.2)]' : ''}`}
-                      disabled={livePhase !== "user_answering"}
-                    />
-                  </div>
+                </div>
 
-                  <div className="flex flex-wrap justify-center sm:justify-end gap-2 sm:gap-3 mt-2">
-                    <Button 
-                      onClick={toggleRecording} 
-                      variant="outline" 
-                      size="lg" 
-                      disabled={livePhase !== "user_answering"}
-                      className={`transition-all rounded-full px-4 sm:px-6 gap-1 sm:gap-2 text-sm sm:text-base ${isRecording ? 'bg-red-500/10 text-red-500 border-red-500 animate-pulse hover:bg-red-500/20 hover:text-red-500' : 'hover:text-primary hover:border-primary'}`}
-                    >
-                      <Mic className="size-5" />
-                      {isRecording ? "Stop Recording" : "Use Voice"}
-                    </Button>
-                    <Button 
-                      onClick={submitAnswer} 
-                      size="lg"
-                      className="rounded-full px-4 sm:px-6 gap-1 sm:gap-2 text-sm sm:text-base"
-                      disabled={!value.trim() || livePhase !== "user_answering"}
-                    >
-                      <ArrowRight className="size-5" />
-                      Submit Answer
-                    </Button>
-                    <Button 
-                      onClick={() => endInterview(false)} 
-                      size="lg"
-                      variant="destructive"
-                      className="rounded-full px-4 sm:px-6 gap-1 sm:gap-2 text-sm sm:text-base"
-                      disabled={livePhase !== "user_answering"}
-                    >
-                      End Interview
-                    </Button>
+                {/* Right Column: User Interface / Input */}
+                <div className="flex-1 flex flex-col gap-4 max-w-xl w-full">
+                  <div className="flex-1 bg-card rounded-3xl shadow-panel border border-border p-6 flex flex-col gap-4">
+                    <div className="flex justify-between items-center px-2">
+                      <h3 className="font-semibold text-foreground uppercase tracking-wider text-sm">
+                        Your Answer
+                      </h3>
+                      <ConfidenceMeter
+                        isSpeaking={isRecording}
+                        confidenceScore={confidenceScore}
+                        celebration={celebration}
+                      />
+                    </div>
+
+                    <div className="flex-1 relative flex flex-col min-h-32">
+                      <Textarea
+                        value={value}
+                        onChange={(e) => setValue(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) submitAnswer();
+                        }}
+                        placeholder={isRecording ? "Listening..." : "Type or speak your answer..."}
+                        className={`flex-1 resize-none bg-background/50 border-0 focus-visible:ring-1 focus-visible:ring-primary rounded-xl p-4 text-base leading-relaxed ${isRecording ? "border border-red-500/50 shadow-[0_0_15px_rgba(239,68,68,0.2)]" : ""}`}
+                        disabled={livePhase !== "user_answering"}
+                      />
+                    </div>
+
+                    <div className="flex flex-wrap justify-center sm:justify-end gap-2 sm:gap-3 mt-2">
+                      <Button
+                        onClick={toggleRecording}
+                        variant="outline"
+                        size="lg"
+                        disabled={livePhase !== "user_answering"}
+                        className={`transition-all rounded-full px-4 sm:px-6 gap-1 sm:gap-2 text-sm sm:text-base ${isRecording ? "bg-red-500/10 text-red-500 border-red-500 animate-pulse hover:bg-red-500/20 hover:text-red-500" : "hover:text-primary hover:border-primary"}`}
+                      >
+                        <Mic className="size-5" />
+                        {isRecording ? "Stop Recording" : "Use Voice"}
+                      </Button>
+                      <Button
+                        onClick={submitAnswer}
+                        size="lg"
+                        className="rounded-full px-4 sm:px-6 gap-1 sm:gap-2 text-sm sm:text-base"
+                        disabled={!value.trim() || livePhase !== "user_answering"}
+                      >
+                        <ArrowRight className="size-5" />
+                        Submit Answer
+                      </Button>
+                      <Button
+                        onClick={() => endInterview(false)}
+                        size="lg"
+                        variant="destructive"
+                        className="rounded-full px-4 sm:px-6 gap-1 sm:gap-2 text-sm sm:text-base"
+                        disabled={livePhase !== "user_answering"}
+                      >
+                        End Interview
+                      </Button>
+                    </div>
                   </div>
                 </div>
-              </div>
               </div>
             </motion.div>
           )}
@@ -806,9 +851,13 @@ function InterviewIQApp() {
               transition={{ duration: 0.5, ease: "easeOut" }}
               className="w-full z-10"
             >
-              <ReportCard 
-                score={resultScore} 
-                originalAnswer={isTerminated ? "Session was terminated early." : "Full mock interview completed. See the stronger version for overall feedback."}
+              <ReportCard
+                score={resultScore}
+                originalAnswer={
+                  isTerminated
+                    ? "Session was terminated early."
+                    : "Full mock interview completed. See the stronger version for overall feedback."
+                }
                 strongerAnswer={strongerAnswer}
                 onRestart={handleRestart}
                 terminated={isTerminated}
@@ -827,7 +876,7 @@ function InterviewIQApp() {
               className="w-full max-w-5xl flex flex-col items-center gap-8 z-10 relative"
             >
               <div className="w-full flex justify-between items-center mb-4">
-                <button 
+                <button
                   onClick={() => navigateTo("HOME")}
                   className="flex items-center gap-2 text-white/60 hover:text-white transition-colors"
                 >
@@ -846,8 +895,10 @@ function InterviewIQApp() {
                         <History className="size-12 text-white/20" />
                       </div>
                       <h3 className="text-xl font-medium text-white">No sessions yet</h3>
-                      <p className="text-white/50 max-w-sm">Complete a mock interview to see your transcripts and feedback here.</p>
-                      <button 
+                      <p className="text-white/50 max-w-sm">
+                        Complete a mock interview to see your transcripts and feedback here.
+                      </p>
+                      <button
                         onClick={() => navigateTo("SETUP")}
                         className="mt-4 px-6 py-3 rounded-full bg-primary/20 text-primary hover:bg-primary/30 transition-colors font-semibold"
                       >
@@ -855,8 +906,8 @@ function InterviewIQApp() {
                       </button>
                     </div>
                   ) : (
-                    sessions.map(session => (
-                      <div 
+                    sessions.map((session) => (
+                      <div
                         key={session.id}
                         onClick={() => setSelectedSession(session)}
                         className="bg-card hover:bg-white/5 cursor-pointer border border-border p-6 rounded-3xl flex flex-col gap-4 transition-all hover:scale-[1.02] shadow-panel"
@@ -870,13 +921,19 @@ function InterviewIQApp() {
                           </div>
                         </div>
                         <div>
-                          <h3 className="text-lg font-bold text-white mb-1 capitalize">{session.type} Interview</h3>
-                          <p className="text-sm text-white/50 capitalize">Persona: {session.persona.replace('_', ' ')}</p>
+                          <h3 className="text-lg font-bold text-white mb-1 capitalize">
+                            {session.type} Interview
+                          </h3>
+                          <p className="text-sm text-white/50 capitalize">
+                            Persona: {session.persona.replace("_", " ")}
+                          </p>
                         </div>
                         <div className="mt-auto pt-4 border-t border-border flex justify-between items-end">
                           <div>
                             <div className="text-sm text-white/50 mb-1">Score</div>
-                            <div className={`text-2xl font-black ${session.score >= 80 ? 'text-green-400' : session.score >= 60 ? 'text-yellow-400' : 'text-red-400'}`}>
+                            <div
+                              className={`text-2xl font-black ${session.score >= 80 ? "text-green-400" : session.score >= 60 ? "text-yellow-400" : "text-red-400"}`}
+                            >
                               {session.score}/100
                             </div>
                           </div>
@@ -892,29 +949,47 @@ function InterviewIQApp() {
                   <div className="flex-1 flex flex-col border-b lg:border-b-0 lg:border-r border-border max-h-[50vh] lg:max-h-none">
                     <div className="p-6 border-b border-border flex justify-between items-center bg-black/20">
                       <h2 className="text-xl font-bold text-white">Full Transcript</h2>
-                      <button onClick={() => setSelectedSession(null)} className="text-sm font-medium text-white/60 hover:text-white px-4 py-2 rounded-full hover:bg-white/10 transition-colors">
+                      <button
+                        onClick={() => setSelectedSession(null)}
+                        className="text-sm font-medium text-white/60 hover:text-white px-4 py-2 rounded-full hover:bg-white/10 transition-colors"
+                      >
                         Close Details
                       </button>
                     </div>
                     <div className="p-6 overflow-y-auto flex-1 flex flex-col gap-6">
-                      {selectedSession.messages.filter(m => m.content.trim()).map((msg, i) => (
-                        <div key={i} className={`flex gap-4 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
-                          <div className={`size-8 shrink-0 rounded-full flex items-center justify-center ${msg.role === 'user' ? 'bg-primary/20 text-primary' : 'bg-white/10 text-white/70'}`}>
-                            {msg.role === 'user' ? <UserCircle2 className="size-4" /> : <ShieldCheck className="size-4" />}
+                      {selectedSession.messages
+                        .filter((m) => m.content.trim())
+                        .map((msg, i) => (
+                          <div
+                            key={i}
+                            className={`flex gap-4 ${msg.role === "user" ? "flex-row-reverse" : ""}`}
+                          >
+                            <div
+                              className={`size-8 shrink-0 rounded-full flex items-center justify-center ${msg.role === "user" ? "bg-primary/20 text-primary" : "bg-white/10 text-white/70"}`}
+                            >
+                              {msg.role === "user" ? (
+                                <UserCircle2 className="size-4" />
+                              ) : (
+                                <ShieldCheck className="size-4" />
+                              )}
+                            </div>
+                            <div
+                              className={`p-4 rounded-2xl text-sm leading-relaxed max-w-[85%] ${msg.role === "user" ? "bg-primary text-white rounded-tr-sm" : "bg-white/5 text-white/80 border border-white/5 rounded-tl-sm"}`}
+                            >
+                              {msg.content}
+                            </div>
                           </div>
-                          <div className={`p-4 rounded-2xl text-sm leading-relaxed max-w-[85%] ${msg.role === 'user' ? 'bg-primary text-white rounded-tr-sm' : 'bg-white/5 text-white/80 border border-white/5 rounded-tl-sm'}`}>
-                            {msg.content}
-                          </div>
-                        </div>
-                      ))}
+                        ))}
                     </div>
                   </div>
-                  
+
                   {/* Right Column: Feedback */}
                   <div className="flex-1 flex flex-col bg-black/40 overflow-y-auto max-h-[50vh] lg:max-h-none">
                     <div className="p-6 border-b border-border sticky top-0 bg-black/40 backdrop-blur-xl z-10 flex justify-between items-center">
                       <h2 className="text-xl font-bold text-white">Feedback Report</h2>
-                      <div className={`px-4 py-1.5 rounded-full text-lg font-bold border ${selectedSession.score >= 80 ? 'bg-green-500/10 text-green-400 border-green-500/30' : selectedSession.score >= 60 ? 'bg-yellow-500/10 text-yellow-400 border-yellow-500/30' : 'bg-red-500/10 text-red-400 border-red-500/30'}`}>
+                      <div
+                        className={`px-4 py-1.5 rounded-full text-lg font-bold border ${selectedSession.score >= 80 ? "bg-green-500/10 text-green-400 border-green-500/30" : selectedSession.score >= 60 ? "bg-yellow-500/10 text-yellow-400 border-yellow-500/30" : "bg-red-500/10 text-red-400 border-red-500/30"}`}
+                      >
                         {selectedSession.score}/100
                       </div>
                     </div>
@@ -926,14 +1001,17 @@ function InterviewIQApp() {
                         </h3>
                         <div className="grid grid-cols-1 gap-3">
                           {selectedSession.fragments.map((frag, idx) => (
-                            <div key={idx} className="flex items-start gap-3 p-4 bg-white/5 rounded-xl border border-white/5">
+                            <div
+                              key={idx}
+                              className="flex items-start gap-3 p-4 bg-white/5 rounded-xl border border-white/5"
+                            >
                               <Target className="size-4 text-primary shrink-0 mt-1" />
                               <span className="text-sm text-white/80 leading-relaxed">{frag}</span>
                             </div>
                           ))}
                         </div>
                       </div>
-                      
+
                       <div>
                         <h3 className="text-sm font-bold text-primary uppercase tracking-widest mb-4 flex items-center gap-2">
                           <Target className="size-4" />

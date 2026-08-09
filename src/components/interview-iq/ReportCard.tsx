@@ -1,7 +1,14 @@
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { ArrowRight, Share2, Award, Zap, Target, TrendingUp, AlertCircle } from "lucide-react";
-import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from "recharts";
+import {
+  Radar,
+  RadarChart,
+  PolarGrid,
+  PolarAngleAxis,
+  PolarRadiusAxis,
+  ResponsiveContainer,
+} from "recharts";
 
 const mockRadarData = [
   { subject: "Technical", score: 85, fullMark: 100 },
@@ -19,54 +26,71 @@ interface ReportCardProps {
   terminated?: boolean;
 }
 
-export function ReportCard({ score, originalAnswer, strongerAnswer, onRestart, terminated = false }: ReportCardProps) {
+export function ReportCard({
+  score,
+  originalAnswer,
+  strongerAnswer,
+  onRestart,
+  terminated = false,
+}: ReportCardProps) {
   let performanceTitle = "";
   let performanceSubtitle = "";
 
   if (score >= 60) {
     performanceTitle = "Strong performance.";
-    performanceSubtitle = "You demonstrated excellent technical depth, but could be more concise when setting up the STAR framework context.";
+    performanceSubtitle =
+      "You demonstrated excellent technical depth, but could be more concise when setting up the STAR framework context.";
   } else if (score >= 40) {
     performanceTitle = "Good performance, but improvement is needed.";
-    performanceSubtitle = "You hit some key points, but the response lacked sufficient detail and structure.";
+    performanceSubtitle =
+      "You hit some key points, but the response lacked sufficient detail and structure.";
   } else {
     performanceTitle = "Weak performance.";
-    performanceSubtitle = "Your answer missed the core concepts. Review the stronger version below for a better approach.";
+    performanceSubtitle =
+      "Your answer missed the core concepts. Review the stronger version below for a better approach.";
   }
 
   if (terminated) {
     performanceTitle = "Interview Terminated";
-    performanceSubtitle = "Your interview was ended automatically due to repeated tab-switching or exiting fullscreen. This is recorded as a policy violation.";
+    performanceSubtitle =
+      "Your interview was ended automatically due to repeated tab-switching or exiting fullscreen. This is recorded as a policy violation.";
   }
 
   const handleShare = () => {
     const textToShare = `I just practiced a mock interview on ABInterviewIQ and scored ${score}/100! 🚀\n\nResult: ${performanceTitle}`;
-    
+
     if (navigator.share) {
-      navigator.share({
-        title: 'My Interview IQ Score',
-        text: textToShare,
-      }).catch((err) => {
-        console.error('Error sharing:', err);
-      });
+      navigator
+        .share({
+          title: "My Interview IQ Score",
+          text: textToShare,
+        })
+        .catch((err) => {
+          console.error("Error sharing:", err);
+        });
     } else {
-      navigator.clipboard.writeText(textToShare).then(() => {
-        toast.success("Results copied to clipboard!");
-      }).catch(() => {
-        toast.error("Failed to copy results.");
-      });
+      navigator.clipboard
+        .writeText(textToShare)
+        .then(() => {
+          toast.success("Results copied to clipboard!");
+        })
+        .catch(() => {
+          toast.error("Failed to copy results.");
+        });
     }
   };
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
       className="w-full max-w-3xl mx-auto bg-card rounded-3xl shadow-panel border border-border overflow-hidden flex flex-col"
     >
       {/* Header Banner */}
-      <div className={`p-8 border-b border-border flex items-center justify-between ${terminated ? 'bg-red-950/40 border-red-900/50' : 'bg-gradient-hero'}`}>
+      <div
+        className={`p-8 border-b border-border flex items-center justify-between ${terminated ? "bg-red-950/40 border-red-900/50" : "bg-gradient-hero"}`}
+      >
         <div className="flex flex-col gap-2">
           {terminated ? (
             <h2 className="text-sm font-semibold text-red-500 uppercase tracking-widest flex items-center gap-2">
@@ -79,23 +103,24 @@ export function ReportCard({ score, originalAnswer, strongerAnswer, onRestart, t
               InterviewIQ Report
             </h2>
           )}
-          <h1 className={`text-3xl font-bold tracking-tight ${terminated ? 'text-red-500' : 'text-foreground'}`}>
+          <h1
+            className={`text-3xl font-bold tracking-tight ${terminated ? "text-red-500" : "text-foreground"}`}
+          >
             {performanceTitle}
           </h1>
-          <p className="text-muted-foreground max-w-md mt-1">
-            {performanceSubtitle}
-          </p>
+          <p className="text-muted-foreground max-w-md mt-1">{performanceSubtitle}</p>
         </div>
-        
+
         {/* Score Badge */}
-        <div className={`flex flex-col items-center justify-center rounded-2xl border size-28 shrink-0 ${terminated ? 'bg-red-500/10 border-red-500/30 text-red-400' : 'bg-card border-border shadow-glow text-primary'}`}>
+        <div
+          className={`flex flex-col items-center justify-center rounded-2xl border size-28 shrink-0 ${terminated ? "bg-red-500/10 border-red-500/30 text-red-400" : "bg-card border-border shadow-glow text-primary"}`}
+        >
           <span className="text-4xl font-black">{score}</span>
           <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-1">
             Overall
           </span>
         </div>
       </div>
-
 
       {/* Side-by-Side Comparison */}
       <div className="p-8 grid md:grid-cols-2 gap-6 bg-muted/50 border-t border-border">
@@ -125,13 +150,13 @@ export function ReportCard({ score, originalAnswer, strongerAnswer, onRestart, t
 
       {/* Footer Actions */}
       <div className="p-6 bg-card border-t border-border flex items-center justify-between">
-        <button 
+        <button
           onClick={onRestart}
           className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
         >
           Try another question
         </button>
-        <button 
+        <button
           onClick={handleShare}
           className="flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:hover:bg-primary/80 hover:shadow-glow transition-all active:scale-95"
         >

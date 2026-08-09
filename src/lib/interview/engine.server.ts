@@ -65,9 +65,7 @@ function targetQuestionCount(analysis: CandidateAnalysis, candidate: Candidate):
 }
 
 function avgScore(e: AnswerEvaluation): number {
-  return (
-    (e.technicalCorrectness + e.conceptualDepth + e.practicalUnderstanding + e.reasoning) / 4
-  );
+  return (e.technicalCorrectness + e.conceptualDepth + e.practicalUnderstanding + e.reasoning) / 4;
 }
 
 function transcript(session: InterviewSession, limit = 8): string {
@@ -112,9 +110,7 @@ async function generateQuestion(
     `Chosen interviewing move: ${action}.`,
     session.skippedNote ?? "",
     askedBefore ? `Questions already asked (never repeat them):\n${askedBefore}` : "",
-    session.conversationHistory.length
-      ? `Recent conversation:\n${transcript(session)}`
-      : "",
+    session.conversationHistory.length ? `Recent conversation:\n${transcript(session)}` : "",
     "",
     action === "OPENING"
       ? "Write the opening of the interview: one short professional welcome sentence, then one question."
@@ -230,7 +226,10 @@ async function generateFeedback(
 
   const raw = await llm.structuredGenerate<Partial<InterviewFeedback>>(
     [
-      { role: "system", content: "You write concise, evidence-grounded technical interview feedback. JSON only." },
+      {
+        role: "system",
+        content: "You write concise, evidence-grounded technical interview feedback. JSON only.",
+      },
       { role: "user", content: user },
     ],
     { temperature: 0.3 },
@@ -238,9 +237,9 @@ async function generateFeedback(
 
   const list = (v: unknown) => (Array.isArray(v) ? v.map(String).filter(Boolean).slice(0, 5) : []);
   const safeNum = (v: unknown, fallback: number) => (typeof v === "number" ? v : fallback);
-  
-  const qualification = ["Strong", "Good", "Weak"].includes(String(raw.qualification)) 
-    ? (raw.qualification as "Strong" | "Good" | "Weak") 
+
+  const qualification = ["Strong", "Good", "Weak"].includes(String(raw.qualification))
+    ? (raw.qualification as "Strong" | "Good" | "Weak")
     : "Good";
 
   return {
@@ -278,11 +277,16 @@ function decideNext(
   const unseen = analysis.plannedDays.filter((d) => !session.coveredDays.includes(d));
 
   if (mustSwitch || action === "CHANGE_TOPIC") {
-    const day = unseen[0] ?? analysis.plannedDays[nextQuestionNumber % analysis.plannedDays.length]!;
+    const day =
+      unseen[0] ?? analysis.plannedDays[nextQuestionNumber % analysis.plannedDays.length]!;
     session.followUpCount = 0;
     const phase = phaseFor(nextQuestionNumber, session.targetQuestions);
     const nextAction: InterviewAction =
-      phase === "SCENARIO" || phase === "FINAL" ? "SCENARIO" : score >= 4 ? "TRADEOFF" : "CHANGE_TOPIC";
+      phase === "SCENARIO" || phase === "FINAL"
+        ? "SCENARIO"
+        : score >= 4
+          ? "TRADEOFF"
+          : "CHANGE_TOPIC";
     return { day, action: nextAction };
   }
 
@@ -321,7 +325,14 @@ export async function startInterview(
     session.skippedNote = `Never imply the candidate completed skipped days: ${analysis.skippedDays.join(", ")}.`;
   }
 
-  const q = await generateQuestion(llm, session, analysis, firstDay, "OPENING", Math.max(1, session.difficultyLevel - 1));
+  const q = await generateQuestion(
+    llm,
+    session,
+    analysis,
+    firstDay,
+    "OPENING",
+    Math.max(1, session.difficultyLevel - 1),
+  );
 
   session.questionCount = 1;
   session.currentDay = firstDay;

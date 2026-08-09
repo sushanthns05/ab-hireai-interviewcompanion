@@ -60,5 +60,11 @@ export function createMockLLM(quality: AnswerQuality = "strong") {
     },
   };
 
-  return { client, prompts, get questionCount() { return questionNo; } };
+  return {
+    client,
+    prompts,
+    get questionCount() {
+      return questionNo;
+    },
+  };
 }

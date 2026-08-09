@@ -8,10 +8,14 @@ interface ConfidenceMeterProps {
   celebration?: string | null;
 }
 
-export function ConfidenceMeter({ isSpeaking, confidenceScore, celebration }: ConfidenceMeterProps) {
+export function ConfidenceMeter({
+  isSpeaking,
+  confidenceScore,
+  celebration,
+}: ConfidenceMeterProps) {
   // We use a MotionValue to animate the circle smoothly without React state re-renders
   const scoreValue = useMotionValue(0);
-  
+
   useEffect(() => {
     // Spring animation to the new score
     const controls = animate(scoreValue, confidenceScore, {
@@ -33,9 +37,11 @@ export function ConfidenceMeter({ isSpeaking, confidenceScore, celebration }: Co
   return (
     <div className="relative flex flex-col items-center justify-center p-6 bg-card rounded-3xl shadow-panel border border-border w-64">
       <div className="absolute top-4 right-4 flex items-center gap-1.5">
-        <div className={`size-2 rounded-full ${isSpeaking ? 'bg-chart-3 animate-pulse' : 'bg-muted'}`} />
+        <div
+          className={`size-2 rounded-full ${isSpeaking ? "bg-chart-3 animate-pulse" : "bg-muted"}`}
+        />
         <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-          {isSpeaking ? 'Listening' : 'Ready'}
+          {isSpeaking ? "Listening" : "Ready"}
         </span>
       </div>
 

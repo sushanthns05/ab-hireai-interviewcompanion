@@ -1,8 +1,24 @@
-import { CheckCircle2, AlertTriangle, ArrowRight, RotateCcw, TrendingUp, AlertCircle, Award, Home } from "lucide-react";
+import {
+  CheckCircle2,
+  AlertTriangle,
+  ArrowRight,
+  RotateCcw,
+  TrendingUp,
+  AlertCircle,
+  Award,
+  Home,
+} from "lucide-react";
 import type { Candidate, InterviewFeedback } from "@/lib/interview/types";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from "recharts";
+import {
+  Radar,
+  RadarChart,
+  PolarGrid,
+  PolarAngleAxis,
+  PolarRadiusAxis,
+  ResponsiveContainer,
+} from "recharts";
 
 interface Props {
   candidate: Candidate;
@@ -21,42 +37,61 @@ export function FeedbackReport({
   onReset,
   terminated = false,
 }: Props) {
-  const radarData = feedback.competencyScores ? [
-    { subject: "Technical", score: feedback.competencyScores.technical, fullMark: 100 },
-    { subject: "Communication", score: feedback.competencyScores.communication, fullMark: 100 },
-    { subject: "Problem Solving", score: feedback.competencyScores.problemSolving, fullMark: 100 },
-    { subject: "Empathy", score: feedback.competencyScores.empathy, fullMark: 100 },
-    { subject: "Culture Fit", score: feedback.competencyScores.cultureFit, fullMark: 100 },
-  ] : [
-    { subject: "Technical", score: 85, fullMark: 100 },
-    { subject: "Communication", score: 90, fullMark: 100 },
-    { subject: "Problem Solving", score: 75, fullMark: 100 },
-    { subject: "Empathy", score: 80, fullMark: 100 },
-    { subject: "Culture Fit", score: 95, fullMark: 100 },
-  ];
+  const radarData = feedback.competencyScores
+    ? [
+        { subject: "Technical", score: feedback.competencyScores.technical, fullMark: 100 },
+        { subject: "Communication", score: feedback.competencyScores.communication, fullMark: 100 },
+        {
+          subject: "Problem Solving",
+          score: feedback.competencyScores.problemSolving,
+          fullMark: 100,
+        },
+        { subject: "Empathy", score: feedback.competencyScores.empathy, fullMark: 100 },
+        { subject: "Culture Fit", score: feedback.competencyScores.cultureFit, fullMark: 100 },
+      ]
+    : [
+        { subject: "Technical", score: 85, fullMark: 100 },
+        { subject: "Communication", score: 90, fullMark: 100 },
+        { subject: "Problem Solving", score: 75, fullMark: 100 },
+        { subject: "Empathy", score: 80, fullMark: 100 },
+        { subject: "Culture Fit", score: 95, fullMark: 100 },
+      ];
 
   return (
     <section className="mx-auto w-full max-w-4xl px-4 pb-20">
       <div className="panel overflow-hidden">
-        <div className={`p-8 ${terminated ? 'bg-red-950/40 border-b border-red-900/50' : ''}`} style={!terminated ? { backgroundImage: "var(--gradient-hero)" } : undefined}>
+        <div
+          className={`p-8 ${terminated ? "bg-red-950/40 border-b border-red-900/50" : ""}`}
+          style={!terminated ? { backgroundImage: "var(--gradient-hero)" } : undefined}
+        >
           {terminated ? (
             <div className="mb-6 bg-red-500/10 border border-red-500/20 rounded-xl p-4 flex gap-4 items-start">
               <AlertCircle className="size-6 text-red-500 shrink-0 mt-0.5" />
               <div>
                 <h3 className="text-lg font-bold text-red-500">Interview Terminated</h3>
                 <p className="text-red-400/90 text-sm mt-1 leading-relaxed">
-                  Your interview was ended automatically due to repeated tab-switching or exiting fullscreen. This is recorded as a policy violation. The scores below reflect only the answers provided before termination.
+                  Your interview was ended automatically due to repeated tab-switching or exiting
+                  fullscreen. This is recorded as a policy violation. The scores below reflect only
+                  the answers provided before termination.
                 </p>
               </div>
             </div>
           ) : (
             <p className="text-[11px] uppercase tracking-widest text-primary">Interview complete</p>
           )}
-          
+
           <div className="flex flex-wrap items-center gap-4 mt-2">
             <h2 className="text-3xl font-semibold">{candidate.member.name}</h2>
             {feedback.qualification && (
-              <Badge variant={feedback.qualification === "Strong" ? "default" : feedback.qualification === "Good" ? "secondary" : "destructive"}>
+              <Badge
+                variant={
+                  feedback.qualification === "Strong"
+                    ? "default"
+                    : feedback.qualification === "Good"
+                      ? "secondary"
+                      : "destructive"
+                }
+              >
                 {feedback.qualification} Performance
               </Badge>
             )}
@@ -93,7 +128,10 @@ export function FeedbackReport({
                 <ResponsiveContainer width="100%" height="100%">
                   <RadarChart cx="50%" cy="50%" outerRadius="70%" data={radarData}>
                     <PolarGrid stroke="var(--color-border)" />
-                    <PolarAngleAxis dataKey="subject" tick={{ fill: "var(--color-muted-foreground)", fontSize: 11 }} />
+                    <PolarAngleAxis
+                      dataKey="subject"
+                      tick={{ fill: "var(--color-muted-foreground)", fontSize: 11 }}
+                    />
                     <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
                     <Radar
                       name="Score"
@@ -109,7 +147,9 @@ export function FeedbackReport({
 
             {/* Feedback Summary Section */}
             <div className="p-8 bg-muted/30 flex flex-col justify-center">
-              <h3 className="text-sm uppercase tracking-widest text-muted-foreground mb-4">Overall summary</h3>
+              <h3 className="text-sm uppercase tracking-widest text-muted-foreground mb-4">
+                Overall summary
+              </h3>
               <p className="text-base leading-relaxed text-foreground">{feedback.summary}</p>
             </div>
           </div>
@@ -169,13 +209,18 @@ function Block({
   if (!items.length) return null;
   return (
     <div className={`p-8 bg-muted/10 ${className}`}>
-      <div className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-wider mb-4 ${iconClass}`}>
+      <div
+        className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-wider mb-4 ${iconClass}`}
+      >
         {icon}
         {title}
       </div>
       <ul className="space-y-3">
         {items.map((item, i) => (
-          <li key={i} className="bg-card p-4 rounded-xl border border-border text-sm text-foreground shadow-sm flex gap-3">
+          <li
+            key={i}
+            className="bg-card p-4 rounded-xl border border-border text-sm text-foreground shadow-sm flex gap-3"
+          >
             <span className={`font-bold mt-0.5 shrink-0 ${iconClass}`}>•</span>
             <span className="leading-relaxed">{item}</span>
           </li>

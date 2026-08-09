@@ -46,24 +46,24 @@ export function ThinkingTrace({ fragments, isThinking }: ThinkingTraceProps) {
           {visibleFragments.map((fragment, index) => {
             // The newest fragment gets full opacity, others fade
             const isLatest = index === visibleFragments.length - 1;
-            
+
             return (
               <motion.div
                 key={fragment + index}
                 initial={{ opacity: 0, y: 10, filter: "blur(4px)" }}
-                animate={{ 
-                  opacity: isLatest ? 1 : 0.4, 
+                animate={{
+                  opacity: isLatest ? 1 : 0.4,
                   y: 0,
-                  filter: "blur(0px)" 
+                  filter: "blur(0px)",
                 }}
                 exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ 
+                transition={{
                   type: "spring",
                   stiffness: 400,
                   damping: 25,
-                  mass: 0.8
+                  mass: 0.8,
                 }}
-                className={`flex items-start gap-2 ${isLatest ? 'text-foreground' : 'text-muted-foreground'}`}
+                className={`flex items-start gap-2 ${isLatest ? "text-foreground" : "text-muted-foreground"}`}
               >
                 <span className="text-primary mt-0.5 opacity-60">›</span>
                 <span className="leading-snug">{fragment}</span>

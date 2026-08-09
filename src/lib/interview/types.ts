@@ -39,13 +39,7 @@ export interface CurriculumDay {
 }
 
 export type InterviewPhase =
-  | "INTRO"
-  | "BASELINE"
-  | "DEEP_DIVE"
-  | "CROSS_DOMAIN"
-  | "SCENARIO"
-  | "FINAL"
-  | "FEEDBACK";
+  "INTRO" | "BASELINE" | "DEEP_DIVE" | "CROSS_DOMAIN" | "SCENARIO" | "FINAL" | "FEEDBACK";
 
 export type InterviewAction =
   | "PROBE_DEEPER"

@@ -3,10 +3,12 @@ import { createLLMClient } from "@/lib/interview/llm.server";
 import { z } from "zod";
 
 const requestSchema = z.object({
-  messages: z.array(z.object({
-    role: z.enum(["user", "assistant"]),
-    content: z.string(),
-  })),
+  messages: z.array(
+    z.object({
+      role: z.enum(["user", "assistant"]),
+      content: z.string(),
+    }),
+  ),
   persona: z.string(),
 });
 
@@ -51,15 +53,23 @@ export const Route = createFileRoute("/api/evaluate-answer")({
         if (candidateAnswers.length > 0 && invalidAnswers.length === candidateAnswers.length) {
           return json({
             score: 0,
-            strongerAnswer: "Your responses were too short or invalid to evaluate. Please provide relevant answers to each question.",
-            fragments: ["Checking responses...", "Invalid answers detected", "Score assigned: 0", "Try again with details"],
+            strongerAnswer:
+              "Your responses were too short or invalid to evaluate. Please provide relevant answers to each question.",
+            fragments: [
+              "Checking responses...",
+              "Invalid answers detected",
+              "Score assigned: 0",
+              "Try again with details",
+            ],
           });
         }
 
         try {
           const llm = createLLMClient();
-          
-          const transcript = messages.map(m => `${m.role === 'user' ? 'Candidate' : 'Interviewer'}: ${m.content}`).join('\n\n');
+
+          const transcript = messages
+            .map((m) => `${m.role === "user" ? "Candidate" : "Interviewer"}: ${m.content}`)
+            .join("\n\n");
 
           const llmMessages = [
             {
@@ -79,12 +89,16 @@ Respond ONLY with JSON matching this shape:
   "score": 85,
   "strongerAnswer": "string",
   "fragments": ["string", "string", "string", "string"]
-}`
-            }
+}`,
+            },
           ];
 
-          const result = await llm.structuredGenerate<{ score: number, strongerAnswer: string, fragments: string[] }>(llmMessages, { temperature: 0.3 });
-          
+          const result = await llm.structuredGenerate<{
+            score: number;
+            strongerAnswer: string;
+            fragments: string[];
+          }>(llmMessages, { temperature: 0.3 });
+
           return json(result);
         } catch (error: any) {
           console.error("Evaluation error", error);

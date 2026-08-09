@@ -20,17 +20,39 @@ export interface CandidateAnalysis {
 const ROLE_PATHS: { match: RegExp; focus: string[]; paths: string[] }[] = [
   {
     match: /data engineer|data scientist|analytics/i,
-    focus: ["embeddings", "vector search", "retrieval", "RAG", "evaluation", "production data systems"],
+    focus: [
+      "embeddings",
+      "vector search",
+      "retrieval",
+      "RAG",
+      "evaluation",
+      "production data systems",
+    ],
     paths: ["rag", "production"],
   },
   {
     match: /devops|sre|platform|infrastructure/i,
-    focus: ["Docker", "Kubernetes", "observability", "reliability", "production readiness", "security"],
+    focus: [
+      "Docker",
+      "Kubernetes",
+      "observability",
+      "reliability",
+      "production readiness",
+      "security",
+    ],
     paths: ["production", "chatbot"],
   },
   {
     match: /principal|distinguished|architect|staff/i,
-    focus: ["architecture tradeoffs", "RAG architecture", "agent orchestration", "MCP", "scalability", "reliability", "security"],
+    focus: [
+      "architecture tradeoffs",
+      "RAG architecture",
+      "agent orchestration",
+      "MCP",
+      "scalability",
+      "reliability",
+      "security",
+    ],
     paths: ["agents", "production", "rag"],
   },
   {
@@ -40,7 +62,14 @@ const ROLE_PATHS: { match: RegExp; focus: string[]; paths: string[] }[] = [
   },
   {
     match: /backend|software engineer|developer|mobile|legacy/i,
-    focus: ["FastAPI", "APIs", "function calling", "streaming", "conversation memory", "deployment"],
+    focus: [
+      "FastAPI",
+      "APIs",
+      "function calling",
+      "streaming",
+      "conversation memory",
+      "deployment",
+    ],
     paths: ["chatbot", "prompting", "rag"],
   },
   {
@@ -50,7 +79,8 @@ const ROLE_PATHS: { match: RegExp; focus: string[]; paths: string[] }[] = [
   },
 ];
 
-const NON_TECHNICAL = /analyst|marketing|hr |hr manager|ux|research|support|product manager|business/i;
+const NON_TECHNICAL =
+  /analyst|marketing|hr |hr manager|ux|research|support|product manager|business/i;
 
 function roleProfile(jobRole: string) {
   const hit = ROLE_PATHS.find((r) => r.match.test(jobRole));
@@ -113,9 +143,12 @@ export function analyzeCandidate(candidate: Candidate): CandidateAnalysis {
   }
   for (const m of missions) {
     const s = missionScore(m);
-    if (m.skipped) bump(m.day, -6); // never assume knowledge
-    else if (m.passed === false) bump(m.day, 2.5); // possible gap worth testing, carefully
-    else if (s >= 4) bump(m.day, 5); // high effort -> fragile understanding, probe
+    if (m.skipped)
+      bump(m.day, -6); // never assume knowledge
+    else if (m.passed === false)
+      bump(m.day, 2.5); // possible gap worth testing, carefully
+    else if (s >= 4)
+      bump(m.day, 5); // high effort -> fragile understanding, probe
     else if (s === 3) bump(m.day, 4);
     else if (s === 2) bump(m.day, 3);
     else bump(m.day, 2.5); // first-try pass: likely strength, must still be verified
@@ -158,20 +191,23 @@ export function analyzeCandidate(candidate: Candidate): CandidateAnalysis {
   // Guaranteed coverage floor if the candidate's data is very sparse.
   [7, 10, 12, 16, 22].forEach(pushDay);
 
-
   const notes: string[] = [];
   if (skippedDays.length)
     notes.push(
       `Skipped days ${skippedDays.join(", ")} — do NOT assume any knowledge there; only ask about them as an explicit gap-oriented question.`,
     );
   if (failedDays.length)
-    notes.push(`Failed days ${failedDays.join(", ")} — likely genuine gaps; test fundamentals there fairly.`);
+    notes.push(
+      `Failed days ${failedDays.join(", ")} — likely genuine gaps; test fundamentals there fairly.`,
+    );
   if (highEffortDays.length)
     notes.push(
       `High-attempt passes on days ${highEffortDays.join(", ")} — understanding may be fragile or memorized; probe beyond definitions.`,
     );
   if (strengthDays.length)
-    notes.push(`First-try passes on days ${strengthDays.join(", ")} — likely strengths, but verify, never assume mastery.`);
+    notes.push(
+      `First-try passes on days ${strengthDays.join(", ")} — likely strengths, but verify, never assume mastery.`,
+    );
   if (nonTechnicalRole)
     notes.push(
       `Non-AI-specialist role (${member.jobRole}) — emphasise practical application and system integration over deep specialisation.`,
@@ -197,7 +233,11 @@ export function candidateBrief(candidate: Candidate, analysis: CandidateAnalysis
   const { member, signals } = candidate;
   const missions = candidate.missions
     .map((m) => {
-      const state = m.skipped ? "SKIPPED" : m.passed === false ? "FAILED" : `passed in ${m.attempts ?? 1} attempt(s)`;
+      const state = m.skipped
+        ? "SKIPPED"
+        : m.passed === false
+          ? "FAILED"
+          : `passed in ${m.attempts ?? 1} attempt(s)`;
       return `Day ${m.day} ${m.title}: ${state}`;
     })
     .join("\n");
