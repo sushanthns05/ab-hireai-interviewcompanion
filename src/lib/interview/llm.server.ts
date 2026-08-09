@@ -32,7 +32,7 @@ export class LLMError extends Error {
 import fs from "node:fs";
 import path from "node:path";
 
-const DEFAULT_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai/";
+const DEFAULT_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai";
 const DEFAULT_MODEL = "gemini-1.5-flash";
 
 function getEnvVar(key: string, defaultValue?: string): string | undefined {
